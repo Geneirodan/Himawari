@@ -1,38 +1,34 @@
 ﻿using System.Text;
-using Himawari.Resources;
-using Himawari.Services;
+using Himawari.Abstractions;
+using Himawari.Extensions;
 using MediatR;
-using Microsoft.Extensions.Localization;
-using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using WTelegram;
+using static Himawari.Resources.Messages;
+using Message = Telegram.Bot.Types.Message;
 
 namespace Himawari.Commands;
 
-public record CallAllCommand(Message Message, CommandInfo CommandInfo) : ICommand
+public record CallAllCommand(Message Message) : ICommand
 {
     public class Handler(Bot bot) : IRequestHandler<CallAllCommand, Message>
     {
         public async Task<Message> Handle(CallAllCommand request, CancellationToken cancellationToken)
         {
-            var (message, (_, _, cultureInfo)) = request;
-            
-            var callingString = Messages.ResourceManager.GetString(nameof(Messages.Calling), cultureInfo);
-            var builder = new StringBuilder(callingString).Append('\n');
+            var message = request.Message;
+
             var members = await bot.GetChatMemberList(message.Chat.Id);
 
-            builder = members
-                .Select(x => x.User.Username)
-                .Aggregate(builder, (current, next) => current.Append('@').Append(next).Append('\n'));
+            var text = members
+                .Where(x => !x.User.IsBot)
+                .Select(x=>x.User)
+                .Aggregate(
+                    new StringBuilder(Calling).Append('\n'),
+                    (current, next) => current.Append('•').Append(' ').AppendLine(next.GetDisplayName())
+                )
+                .ToString();
 
-            return await bot.SendTextMessage(
-                chatId: message.Chat.Id,
-                text: builder.ToString(),
-                replyParameters: new ReplyParameters
-                {
-                    MessageId = message.MessageId,
-                    ChatId = message.Chat.Id
-                }
-            );
+            return await bot.SendReplyMessage(message, text, ParseMode.MarkdownV2);
         }
     }
 }

@@ -8,9 +8,6 @@
 //------------------------------------------------------------------------------
 
 namespace Himawari.Resources {
-    using System;
-    
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -60,6 +57,15 @@ namespace Himawari.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ask me to start charades game.
+        /// </summary>
+        internal static string Alias {
+            get {
+                return ResourceManager.GetString("Alias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ask me to call chat members.
         /// </summary>
         internal static string Call {
@@ -74,6 +80,15 @@ namespace Himawari.Resources {
         internal static string Gift {
             get {
                 return ResourceManager.GetString("Gift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask me to describe you my available commands.
+        /// </summary>
+        internal static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
             }
         }
         

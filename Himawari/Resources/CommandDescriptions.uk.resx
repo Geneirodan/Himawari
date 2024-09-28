@@ -27,4 +27,10 @@
     <data name="Gift" xml:space="preserve">
         <value>Попросити мене подарувати комусь подарунок</value>
     </data>
+    <data name="Help" xml:space="preserve">
+        <value>Попросити мене описати мої доступні команди</value>
+    </data>
+    <data name="Alias" xml:space="preserve">
+        <value>Попросити мене розпочати гру в крокодила</value>
+    </data>
 </root>

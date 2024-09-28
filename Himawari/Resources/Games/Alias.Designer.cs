@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Himawari.Resources {
+namespace Himawari.Resources.Games {
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -18,14 +18,14 @@ namespace Himawari.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Messages {
+    internal class Alias {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Messages() {
+        internal Alias() {
         }
         
         /// <summary>
@@ -35,7 +35,7 @@ namespace Himawari.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Himawari.Resources.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Himawari.Resources.Games.Alias", typeof(Alias).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,83 +57,92 @@ namespace Himawari.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members of this chat, heed my call!.
+        ///   Looks up a localized string similar to End game..
         /// </summary>
-        internal static string Calling {
+        internal static string EndGame {
             get {
-                return ResourceManager.GetString("Calling", resourceCulture);
+                return ResourceManager.GetString("EndGame", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m sorry, {0}, I can&apos;t send you a message.
+        ///   Looks up a localized string similar to Don&apos;t cheat!.
         /// </summary>
-        internal static string CantSendMessage {
+        internal static string Forbidden {
             get {
-                return ResourceManager.GetString("CantSendMessage", resourceCulture);
+                return ResourceManager.GetString("Forbidden", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} gifted {1} a(n).
+        ///   Looks up a localized string similar to The game as ended. Thank you for participation..
         /// </summary>
-        internal static string Gift {
+        internal static string GameEnded {
             get {
-                return ResourceManager.GetString("Gift", resourceCulture);
+                return ResourceManager.GetString("GameEnded", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I didn&apos;t understand what to gift.
+        ///   Looks up a localized string similar to Change word..
         /// </summary>
-        internal static string GiftNotFound {
+        internal static string NextWord {
             get {
-                return ResourceManager.GetString("GiftNotFound", resourceCulture);
+                return ResourceManager.GetString("NextWord", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Available commands:.
+        ///   Looks up a localized string similar to Sorry, but presenter has been already chosen..
         /// </summary>
-        internal static string Help {
+        internal static string PresenterAlreadyChosen {
             get {
-                return ResourceManager.GetString("Help", resourceCulture);
+                return ResourceManager.GetString("PresenterAlreadyChosen", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok, I&apos;ll talk to you in English.
+        ///   Looks up a localized string similar to Ok, the next presenter is {0}..
         /// </summary>
-        internal static string LanguageSet {
+        internal static string PresenterChosen {
             get {
-                return ResourceManager.GetString("LanguageSet", resourceCulture);
+                return ResourceManager.GetString("PresenterChosen", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I didn&apos;t find a member with that username. I searched, honestly..
+        ///   Looks up a localized string similar to See word..
         /// </summary>
-        internal static string MemberNotFound {
+        internal static string SeeWord {
             get {
-                return ResourceManager.GetString("MemberNotFound", resourceCulture);
+                return ResourceManager.GetString("SeeWord", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I didn&apos;t understand who to gift it to.
+        ///   Looks up a localized string similar to So, let&apos;s start playing alias. Who wants to be the presenter?.
         /// </summary>
-        internal static string NotUnderstandGift {
+        internal static string StartGame {
             get {
-                return ResourceManager.GetString("NotUnderstandGift", resourceCulture);
+                return ResourceManager.GetString("StartGame", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, I&apos;m unable to start a game..
+        ///   Looks up a localized string similar to I want!.
         /// </summary>
-        internal static string UnableToStartGame {
+        internal static string Want {
             get {
-                return ResourceManager.GetString("UnableToStartGame", resourceCulture);
+                return ResourceManager.GetString("Want", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hurray, you guessed the word! Who wants to be the next?.
+        /// </summary>
+        internal static string Win {
+            get {
+                return ResourceManager.GetString("Win", resourceCulture);
             }
         }
     }

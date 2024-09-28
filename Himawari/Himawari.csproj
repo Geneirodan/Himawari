@@ -2,42 +2,38 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <UserSecretsId>c5af9b08-d4c1-471f-a339-d9cdc19343c8</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.4.1" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
-        <PackageReference Include="WTelegramBot" Version="7.10.2" />
+        <PackageReference Include="DeepL.net" Version="1.10.0"/>
+        <PackageReference Include="MediatR" Version="12.4.1"/>
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8"/>
+        <PackageReference Include="WTelegramBot" Version="7.10.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\CommandDescriptions.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>CommandDescriptions.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\CommandKeys.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Commands.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\Messages.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Messages.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\Commands\Who.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Who.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Resources\Commands\Who.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Who.resx</DependentUpon>
-      </Compile>
+        <EmbeddedResource Update="Resources\Commands\Who.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Who.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\CommandDescriptions.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>CommandDescriptions.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\CommandKeys.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Commands.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Messages.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Games\Alias.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Alias.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 </Project>

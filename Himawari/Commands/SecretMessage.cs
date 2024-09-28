@@ -4,22 +4,22 @@ using WTelegram;
 
 namespace Himawari.Commands;
 
-public record SecretCommand(Message Message) : IRequest
+public record SecretMessage(Message Message) : IRequest
 {
-    public class Handler(Bot bot) : IRequestHandler<SecretCommand>
+    public class Handler(Bot bot) : IRequestHandler<SecretMessage>
     {
-        public async Task Handle(SecretCommand request, CancellationToken cancellationToken)
+        public async Task Handle(SecretMessage request, CancellationToken cancellationToken)
         {
             await bot.SendTextMessage(
                 request.Message.Chat.Id,
-                "\u26a1\ufe0fSS detected!\u26a1\ufe0f",
+                "\u26a1\ufe0f SS detected! \u26a1\ufe0f",
                 replyParameters: new ReplyParameters
                 {
                     MessageId = request.Message.MessageId,
                     ChatId = request.Message.Chat.Id,
                     Quote = "SS"
                 }
-            );
+            ).ConfigureAwait(false);
             await bot.SendSticker(
                 request.Message.Chat.Id,
                 "https://sl.combot.org/nazi_anime/webp/58xf09f87a9f09f87aa.webp",
@@ -28,7 +28,7 @@ public record SecretCommand(Message Message) : IRequest
                     MessageId = request.Message.MessageId,
                     ChatId = request.Message.Chat.Id
                 }
-            );
+            ).ConfigureAwait(false);
         }
     }
 }

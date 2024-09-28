@@ -35,4 +35,10 @@
     <data name="Who" xml:space="preserve">
         <value>Ask me to find the truth to your question through black magic and the wisdom of ancient machines </value>
     </data>
+    <data name="Help" xml:space="preserve">
+        <value>Ask me to describe you my available commands</value>
+    </data>
+    <data name="Alias" xml:space="preserve">
+        <value>Ask me to start charades game</value>
+    </data>
 </root>

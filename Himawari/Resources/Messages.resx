@@ -27,9 +27,27 @@
         <value>Members of this chat, heed my call!</value>
     </data>
     <data name="Help" xml:space="preserve">
-        <value>I've not understand you. I only understand these commands:</value>
+        <value>Available commands:</value>
     </data>
     <data name="LanguageSet" xml:space="preserve">
         <value>Ok, I'll talk to you in English</value>
+    </data>
+    <data name="Gift" xml:space="preserve">
+        <value>{0} gifted {1} a(n)</value>
+    </data>
+    <data name="MemberNotFound" xml:space="preserve">
+        <value>I didn't find a member with that username. I searched, honestly.</value>
+    </data>
+    <data name="GiftNotFound" xml:space="preserve">
+        <value>I didn't understand what to gift</value>
+    </data>
+    <data name="NotUnderstandGift" xml:space="preserve">
+        <value>I didn't understand who to gift it to</value>
+    </data>
+    <data name="CantSendMessage" xml:space="preserve">
+        <value>I'm sorry, {0}, I can't send you a message</value>
+    </data>
+    <data name="UnableToStartGame" xml:space="preserve">
+        <value>Sorry, I'm unable to start a game.</value>
     </data>
 </root>

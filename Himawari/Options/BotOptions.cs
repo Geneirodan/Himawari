@@ -1,4 +1,4 @@
-﻿namespace Himawari;
+﻿namespace Himawari.Options;
 
 public class BotOptions
 {

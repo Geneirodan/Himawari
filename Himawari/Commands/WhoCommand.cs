@@ -1,25 +1,29 @@
 ﻿using System.Collections;
+using System.Globalization;
 using System.Text;
+using Himawari.Abstractions;
+using Himawari.Extensions;
 using Himawari.Resources.Commands;
-using Himawari.Services;
 using MediatR;
 using Telegram.Bot.Types;
 using WTelegram;
 
 namespace Himawari.Commands;
 
-public record WhoCommand(Message Message, CommandInfo CommandInfo, string Rest) : ICommand
+public record WhoCommand(Message Message, string Rest) : ICommand
 {
+    // ReSharper disable once UnusedType.Global
     public class Handler(Bot bot) : IRequestHandler<WhoCommand, Message>
     {
         public async Task<Message> Handle(WhoCommand request, CancellationToken cancellationToken)
         {
-            var (message, (_, _, cultureInfo), rest) = request;
-            
-            var members = await bot.GetChatMemberList(message.Chat.Id);
-            
+            var (message, rest) = request;
+
+            var members = (await bot.GetChatMemberList(message.Chat.Id)).Where(x => !x.User.IsBot).ToArray();
+
             var index = Random.Shared.Next(members.Length);
-            
+
+            var cultureInfo = CultureInfo.CurrentUICulture;
             var resourceSet = Who.ResourceManager
                 .GetResourceSet(cultureInfo, true, true)!
                 .Cast<DictionaryEntry>()
@@ -28,22 +32,16 @@ public record WhoCommand(Message Message, CommandInfo CommandInfo, string Rest) 
                 .ToArray();
 
             var quote = Random.Shared.Next(resourceSet.Length);
-            
+
             var text = Who.ResourceManager.GetString(resourceSet[quote], cultureInfo);
-            var stringBuilder = new StringBuilder(text).Append(' ').Append('@').Append(members[index].User.Username);
-            
+            var stringBuilder = new StringBuilder(text)
+                .Append(' ')
+                .Append(members[index].User.GetUsername());
+
             if (!string.IsNullOrWhiteSpace(rest))
                 stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
-            
-            return await bot.SendTextMessage(
-                chatId: message.Chat.Id,
-                text: stringBuilder.ToString(),
-                replyParameters: new ReplyParameters
-                {
-                    MessageId = message.MessageId,
-                    ChatId = message.Chat.Id
-                }
-            );
+
+            return await bot.SendReplyMessage(message, stringBuilder.ToString());
         }
     }
 }

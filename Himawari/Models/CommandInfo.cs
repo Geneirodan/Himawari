@@ -1,6 +1,6 @@
-﻿using System.Globalization;
+﻿using Himawari.Enums;
 using Telegram.Bot.Types;
 
-namespace Himawari.Services;
+namespace Himawari.Models;
 
-public record CommandInfo(CommandType Type, BotCommand Command, CultureInfo CultureInfo);
+public record CommandInfo(Command Type, BotCommand BotCommand, string Locale);
