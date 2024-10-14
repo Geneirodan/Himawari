@@ -1,0 +1,39 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="Call" xml:space="preserve">
+        <value>Попросити мене позвати усіх у цьому чаті</value>
+    </data>
+    <data name="Lang" xml:space="preserve">
+        <value>Вказує мені, якою мовою відповідати</value>
+    </data>
+    <data name="Who" xml:space="preserve">
+        <value>Попросити мене знайти відповідь на ваше запитання за допомогою чорної магії та мудрості стародавніх машин </value>
+    </data>
+    <data name="Gift" xml:space="preserve">
+        <value>Попросити мене подарувати комусь подарунок</value>
+    </data>
+    <data name="Help" xml:space="preserve">
+        <value>Попросити мене описати мої доступні команди</value>
+    </data>
+    <data name="Alias" xml:space="preserve">
+        <value>Попросити мене розпочати гру в крокодила</value>
+    </data>
+    <data name="ShutUp" xml:space="preserve">
+        <value> </value>
+    </data>
+</root>

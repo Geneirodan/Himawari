@@ -1,0 +1,21 @@
+﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src\Core\Core.csproj" Type="Classic C#" />
+    <Project Path="src\SpellChecking\SpellChecking.csproj" Type="Classic C#" />
+    <Project Path="src\Web\Web.csproj" Type="Classic C#" />
+    <File Path="src\Directory.Build.props" />
+    <File Path="src\Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/Games/">
+    <Project Path="src\Games\Alias\Alias.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test\SpellChecking.Tests\SpellChecking.Tests.csproj" Type="Classic C#" />
+    <File Path="test\Directory.Build.props" />
+    <File Path="test\Directory.Packages.props" />
+  </Folder>
+</Solution>

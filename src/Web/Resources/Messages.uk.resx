@@ -1,0 +1,45 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="Calling" xml:space="preserve">
+        <value>Учасники цього чату, почуйте мій заклик!</value>
+    </data>
+    <data name="Help" xml:space="preserve">
+        <value>Доступні команди:</value>
+    </data>
+    <data name="LanguageSet" xml:space="preserve">
+        <value>Добре, я буду розмовляти з  вами українською</value>
+    </data>
+    <data name="Gift" xml:space="preserve">
+        <value>{0} дарує {1}</value>
+    </data>
+    <data name="MemberNotFound" xml:space="preserve">
+        <value>Я не знайшла учасника з таким ім'ям. Я шукала, чесно-чесно.</value>
+    </data>
+    <data name="GiftNotFound" xml:space="preserve">
+        <value>Я не зрозуміла, що подарувати</value>
+    </data>
+    <data name="NotUnderstandGift" xml:space="preserve">
+        <value>Я не зрозуміла, кому подарувати</value>
+    </data>
+    <data name="CantSendMessage" xml:space="preserve">
+        <value>Вибачте, {0}, я не можу віправляти вам повідомлення</value>
+    </data>
+    <data name="UnableToStartGame" xml:space="preserve">
+        <value>Вибачте, я не можу почати гру.</value>
+    </data>
+</root>
