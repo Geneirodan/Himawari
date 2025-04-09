@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Himawari.Core.Abstractions.Messages;
+using JetBrains.Annotations;
 using Telegram.Bot.Types;
 
 namespace Himawari.Core.Abstractions;

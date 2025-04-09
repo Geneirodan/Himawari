@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Himawari.Core.Abstractions.Messages;
 using Himawari.Core.Attributes;
 using Himawari.Core.Models;
 using JetBrains.Annotations;

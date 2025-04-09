@@ -7,7 +7,7 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
-public record SeeWordCallback(CallbackQuery Query) : ICallback
+public sealed record SeeWordCallback(CallbackQuery Query) : AbstractCallback(Query)
 {
     public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<SeeWordCallback>
     {

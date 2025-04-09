@@ -7,7 +7,7 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
-public record EndGameCallback(CallbackQuery Query) : ICallback<Message?>
+public sealed record EndGameCallback(CallbackQuery Query) : AbstractCallback<Message?>(Query)
 {
     public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<EndGameCallback, Message?>
     {

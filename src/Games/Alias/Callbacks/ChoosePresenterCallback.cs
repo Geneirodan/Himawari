@@ -12,7 +12,7 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
-public record ChoosePresenterCallback(CallbackQuery Query) : ICallback<Message?>
+public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCallback<Message?>(Query)
 {
     public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<ChoosePresenterCallback, Message?>
     {

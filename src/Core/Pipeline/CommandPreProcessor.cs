@@ -1,4 +1,4 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core.Abstractions.Messages;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
@@ -9,7 +9,7 @@ public sealed partial class CommandPreProcessor<TRequest>(ILogger<TRequest> logg
 {
     public Task Process(TRequest request, CancellationToken cancellationToken)
     {
-        LogCommand(typeof(TRequest).Name, request.Message.Text);
+        LogCommand(typeof(TRequest).Name, request.Message?.Text);
         return Task.CompletedTask;
     }
 

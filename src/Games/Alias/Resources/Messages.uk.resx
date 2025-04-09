@@ -30,7 +30,7 @@
         <value>Вибачте, але ведучий вже обраний.</value>
     </data>
     <data name="EndGame" xml:space="preserve">
-        <value>Перезапустити гру.</value>
+        <value>Закінчити гру.</value>
     </data>
     <data name="SeeWord" xml:space="preserve">
         <value>Подивитися слово.</value>

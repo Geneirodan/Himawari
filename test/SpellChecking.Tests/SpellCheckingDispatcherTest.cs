@@ -32,7 +32,7 @@ public class SpellCheckingDispatcherTest
         var message = new Message { Text = null };
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.Verify(
-            x => x.Send(It.IsAny<SendCorrectedTextMessageResponse>(), It.IsAny<CancellationToken>()),
+            x => x.Send(It.IsAny<SendCorrectedTextMessageReply>(), It.IsAny<CancellationToken>()),
             Times.Never
         );
     }
@@ -45,7 +45,7 @@ public class SpellCheckingDispatcherTest
         _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(false);
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.Verify(
-            x => x.Send(It.IsAny<SendCorrectedTextMessageResponse>(), It.IsAny<CancellationToken>()),
+            x => x.Send(It.IsAny<SendCorrectedTextMessageReply>(), It.IsAny<CancellationToken>()),
             Times.Never
         );
     }
@@ -58,7 +58,7 @@ public class SpellCheckingDispatcherTest
         _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(true);
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.Verify(
-            x => x.Send(It.IsAny<SendCorrectedTextMessageResponse>(), It.IsAny<CancellationToken>()),
+            x => x.Send(It.IsAny<SendCorrectedTextMessageReply>(), It.IsAny<CancellationToken>()),
             Times.Once
         );
     }
