@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Update="Resources\Messages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Alias.Designer.cs</LastGenOutput>

@@ -1,8 +1,10 @@
 ﻿services:
-  web:
-    image: web
+  service:
+    image: service
     build:
       context: .
-      dockerfile: src/Web/Dockerfile
+      dockerfile: src/Service/Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - 

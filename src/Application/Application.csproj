@@ -29,10 +29,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Data.Sqlite.Core" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Update="Resources\CommandDescriptions.Designer.cs">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>

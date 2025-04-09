@@ -3,7 +3,7 @@
     <ItemGroup>
       <PackageReference Include="JetBrains.Annotations" />
       <PackageReference Include="MediatR" />
-      <PackageReference Include="Microsoft.Data.Sqlite.Core" />
+      <PackageReference Include="Microsoft.Data.Sqlite" />
       <PackageReference Include="Scrutor" />
       <PackageReference Include="WTelegramBot" />
     </ItemGroup>
