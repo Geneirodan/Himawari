@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
+using Himawari.Alias.Models;
+using Himawari.Alias.Services;
 using Himawari.Core.Abstractions;
-using Himawari.Core.Enums;
 using Himawari.Core.Extensions;
-using Himawari.Core.Models;
 using MediatR;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -14,38 +14,37 @@ namespace Himawari.Alias.Callbacks;
 
 public record ChoosePresenterCallback(CallbackQuery Query) : ICallback<Message?>
 {
-    public class Handler(Bot bot, IAliasService service) : IRequestHandler<ChoosePresenterCallback, Message?>
+    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<ChoosePresenterCallback, Message?>
     {
         public async Task<Message?> Handle(ChoosePresenterCallback request, CancellationToken cancellationToken)
         {
             var chatId = request.Query.Message!.Chat.Id;
             if (service.GetPresenterId(chatId) is not null)
             {
-                await bot.AnswerCallbackQuery(request.Query.Id, PresenterAlreadyChosen, true);
+                await bot.AnswerCallbackQuery(request.Query.Id, PresenterAlreadyChosen, true).ConfigureAwait(false);
                 return null;
             }
             service.SetPresenterId(chatId, request.Query.From.Id);
 
             var locale = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var message = await bot.SendTextMessage(
+            var message = await bot.SendMessage(
                 chatId: chatId,
                 text: string.Format(PresenterChosen, request.Query.From.GetUsername()),
                 parseMode: ParseMode.MarkdownV2,
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData(
                         text: EndGame,
-                        callbackData: new LocalizedCallback(Callback.AliasRestart, locale).Serialize()
+                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.Restart, locale).Serialize()
                     ), 
                     InlineKeyboardButton.WithCallbackData(
                         text: SeeWord,
-                        callbackData: new LocalizedCallback(Callback.AliasSeeWord, locale).Serialize()
+                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.SeeWord, locale).Serialize()
                     ), 
                     InlineKeyboardButton.WithCallbackData(
                         text: NextWord,
-                        callbackData: new LocalizedCallback(Callback.AliasNextWord, locale).Serialize()
+                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.NextWord, locale).Serialize()
                     ))
-            );
-            service.GetMessages(chatId).Add(message.MessageId);
+            ).ConfigureAwait(false);
             return message;
         }
     }

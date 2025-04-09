@@ -2,19 +2,26 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="README.md" />
+    <File Path="compose.yaml" />
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path="qodana.yaml" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src\Application\Application.csproj" Type="Classic C#" />
     <Project Path="src\Core\Core.csproj" Type="Classic C#" />
-    <Project Path="src\SpellChecking\SpellChecking.csproj" Type="Classic C#" />
-    <Project Path="src\Web\Web.csproj" Type="Classic C#" />
+    <Project Path="src\Service\Service.csproj" Type="Classic C#" />
     <File Path="src\Directory.Build.props" />
     <File Path="src\Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/Features/">
+    <Project Path="src\Features\SillyThings\SillyThings.csproj" Type="Classic C#" />
+    <Project Path="src\Features\SpellChecking\SpellChecking.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/Games/">
     <Project Path="src\Games\Alias\Alias.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/test/">
-    <Project Path="test\SpellChecking.Tests\SpellChecking.Tests.csproj" Type="Classic C#" />
     <File Path="test\Directory.Build.props" />
     <File Path="test\Directory.Packages.props" />
   </Folder>
