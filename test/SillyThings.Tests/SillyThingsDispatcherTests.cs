@@ -5,6 +5,7 @@ using MediatR;
 using Moq;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Xunit;
 
 namespace Himawari.SillyThings.Tests;
 
@@ -47,7 +48,7 @@ public class SillyThingsDispatcherTests
     }
     
     [Fact]
-    public async Task OnMessage_ShoulReturnRhinoGif_WhenSequenceDetected()
+    public async Task OnMessage_ShouldReturnRhinoGif_WhenSequenceDetected()
     {
         var message = new Message { Text = "какіш" };
         await _dispatcher.OnMessage(message, UpdateType.Message);

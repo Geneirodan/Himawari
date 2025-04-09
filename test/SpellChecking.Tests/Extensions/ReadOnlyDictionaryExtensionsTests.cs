@@ -1,6 +1,7 @@
 ﻿using Himawari.SpellChecking.Extensions;
 using JetBrains.Annotations;
 using Shouldly;
+using Xunit;
 
 namespace Himawari.SpellChecking.Tests.Extensions;
 

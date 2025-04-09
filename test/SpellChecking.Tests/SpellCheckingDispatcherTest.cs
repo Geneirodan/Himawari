@@ -6,6 +6,7 @@ using MediatR;
 using Moq;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Xunit;
 
 namespace Himawari.SpellChecking.Tests;
 

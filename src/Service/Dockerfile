@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -7,16 +6,16 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Directory.Build.props", "src/"]
-COPY ["src/Directory.Packages.props", "src/"]
-COPY ["src/Service/Service.csproj", "src/Service/"]
-COPY ["src/Application/Application.csproj", "src/Application/"]
-COPY ["src/Core/Core.csproj", "src/Core/"]
-COPY ["src/Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
-COPY ["src/Games/Alias/Alias.csproj", "src/Games/Alias/"]
+COPY ["Directory.Build.props", "src/"]
+COPY ["Directory.Packages.props", "src/"]
+COPY ["Service/Service.csproj", "src/Service/"]
+COPY ["Application/Application.csproj", "src/Application/"]
+COPY ["Core/Core.csproj", "src/Core/"]
+COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
+COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
 RUN dotnet restore "src/Service/Service.csproj"
 COPY . .
-WORKDIR "/src/src/Service"
+WORKDIR "/src/Service"
 RUN dotnet build "Service.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

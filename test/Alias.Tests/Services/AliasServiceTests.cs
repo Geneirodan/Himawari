@@ -5,6 +5,7 @@ using Moq;
 using Moq.Language;
 using Moq.Protected;
 using Shouldly;
+using Xunit;
 
 namespace Himawari.Alias.Tests.Services;
 

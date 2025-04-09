@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
+using Xunit;
 
 namespace Himawari.Core.Tests.Services;
 
