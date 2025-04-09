@@ -1,4 +1,4 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core.Abstractions.Messages;
 using Himawari.SillyThings.Options;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -9,11 +9,11 @@ namespace Himawari.SillyThings.Responses;
 
 public static partial class SS
 {
-    public sealed record StickerResponse(Message Message) : IResponse
+    public sealed record StickerReply(Message Message) : IReply
     {
-        public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor) : IRequestHandler<StickerResponse, Message>
+        public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor) : IRequestHandler<StickerReply, Message>
         {
-            public async Task<Message> Handle(StickerResponse request, CancellationToken cancellationToken)
+            public async Task<Message> Handle(StickerReply request, CancellationToken cancellationToken)
             {
                 var message = request.Message;
                 return await bot.SendSticker(

@@ -1,4 +1,4 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core.Abstractions.Messages;
 using JetBrains.Annotations;
 
 namespace Himawari.Core.Attributes;

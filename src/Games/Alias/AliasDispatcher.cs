@@ -1,6 +1,6 @@
 ﻿using Himawari.Alias.Callbacks;
 using Himawari.Alias.Models;
-using Himawari.Alias.Responses;
+using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
 using Himawari.Core.Abstractions;
 using JetBrains.Annotations;
@@ -23,7 +23,7 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
         var currentWord = await aliasService.GetCurrentWordAsync(msg.Chat.Id).ConfigureAwait(false);
         if (messageText.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase))
         {
-            var response = new WinMessageResponse(msg);
+            var response = new WinReply(msg);
             using var scope = serviceProvider.CreateScope();
             await scope.ServiceProvider.GetRequiredService<ISender>().Send(response).ConfigureAwait(false);
         }
@@ -43,7 +43,7 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
         if (commandInfo is null)
             return;
 
-        ICallbackBase? req = commandInfo.Callback switch
+        IBaseRequest? request = commandInfo.Callback switch
         {
             AliasCallbackData.CallbackType.Choose => new ChoosePresenterCallback(query),
             AliasCallbackData.CallbackType.Restart => new EndGameCallback(query),
@@ -51,8 +51,8 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
             AliasCallbackData.CallbackType.NextWord => new NextWordCallback(query),
             _ => null
         };
-        if (req is not null)
+        if (request is not null)
             using (var scope = serviceProvider.CreateScope())
-                await scope.ServiceProvider.GetRequiredService<ISender>().Send(req).ConfigureAwait(false);
+                await scope.ServiceProvider.GetRequiredService<ISender>().Send(request).ConfigureAwait(false);
     }
 }

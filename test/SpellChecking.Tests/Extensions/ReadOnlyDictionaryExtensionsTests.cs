@@ -12,7 +12,7 @@ public class ReadOnlyDictionaryExtensionsTests
     {
         ['a'] = 'b', ['c'] = 'd', ['e'] = 'f', ['g'] = 'h', ['i'] = 'j',
         ['k'] = 'l', ['m'] = 'n', ['o'] = 'o', ['p'] = 'r', ['s'] = 't', 
-        ['u'] = 'v', ['v'] = 'w', ['w'] = 'x', ['x'] = 'y', ['y'] = 'z',
+        ['u'] = 'v', ['v'] = 'w', ['w'] = 'x', ['x'] = 'y', ['y'] = 'z'
     };
     [Theory]
     [MemberData(nameof(Generator))]
