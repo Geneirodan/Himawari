@@ -24,7 +24,6 @@ public record EndGameCallback(CallbackQuery Query) : ICallback<Message?>
             }
 
             service.Restart(chatId);
-            // await bot.DeleteMessages(message.Chat.Id, service.Messages.ToArray());
             return await bot.SendMessage(chatId, GameEnded).ConfigureAwait(false);
         }
     }

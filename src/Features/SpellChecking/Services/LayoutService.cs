@@ -6,6 +6,8 @@ using YamlDotNet.Serialization;
 
 namespace Himawari.SpellChecking.Services;
 
+using Maps = Dictionary<string, Dictionary<char, char>>;
+
 public sealed partial class LayoutService : ILayoutService
 {
     private const string DefaultLayoutKey = "qwerty";
@@ -13,8 +15,8 @@ public sealed partial class LayoutService : ILayoutService
     private readonly LayoutSettings _layoutSettings;
     private readonly Dictionary<string, WordList> _wordLists;
     private readonly ILogger<LayoutService> _logger;
-    private readonly Dictionary<string, Dictionary<char, char>> _maps;
-    private readonly Dictionary<string, Dictionary<char, char>> _reversedMaps;
+    private readonly Maps _maps;
+    private readonly Maps _reversedMaps;
 
     public LayoutService(
         IDeserializer deserializer,
@@ -50,8 +52,7 @@ public sealed partial class LayoutService : ILayoutService
         });
     }
 
-    private (Dictionary<string, Dictionary<char, char>> maps, Dictionary<string, Dictionary<char, char>> reversedMaps)
-        FillMaps()
+    private (Maps maps, Maps reversedMaps) FillMaps()
     {
         if (!_layoutSettings.Layouts.TryGetValue(DefaultLayoutKey, out var qwerty))
             throw new InvalidOperationException("QWERTY layout is necessary for spellchecking");
@@ -60,8 +61,8 @@ public sealed partial class LayoutService : ILayoutService
         var shiftQwerty = qwerty.Shift.SelectMany(x => x).ToArray();
         var fullQwerty = standardQwerty.Union(shiftQwerty).ToArray();
 
-        var maps = new Dictionary<string, Dictionary<char, char>>();
-        var reversedMaps = new Dictionary<string, Dictionary<char, char>>();
+        var maps = new Maps();
+        var reversedMaps = new Maps();
         foreach (var (key, keyboardLayout) in _layoutSettings.Layouts.Where(x => x.Key != DefaultLayoutKey))
         {
             var standard = keyboardLayout.Standard.SelectMany(x => x);

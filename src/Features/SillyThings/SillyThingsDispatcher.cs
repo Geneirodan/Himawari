@@ -21,11 +21,11 @@ public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : IM
 
         if (messageText.Contains("SS"))
         {
-            await sender.Send(new SS.DetectedResponse(msg));
-            await sender.Send(new SS.StickerResponse(msg));
+            await sender.Send(new SS.DetectedResponse(msg)).ConfigureAwait(false);
+            await sender.Send(new SS.StickerResponse(msg)).ConfigureAwait(false);
         }
 
         if (messageText.Equals("какіш", StringComparison.InvariantCultureIgnoreCase))
-            await sender.Send(new RhinoGifResponse(msg));
+            await sender.Send(new RhinoGifResponse(msg)).ConfigureAwait(false);
     }
 }

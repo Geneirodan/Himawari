@@ -13,7 +13,7 @@ public record NextWordCallback(CallbackQuery Query) : ICallback
     {
         public async Task Handle(NextWordCallback request, CancellationToken cancellationToken)
         {
-            if (request.Query.Message == null)
+            if (request.Query.Message is null)
                 return;
 
             var chatId = request.Query.Message.Chat.Id;
