@@ -1,4 +1,5 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Alias.Services;
+using Himawari.Core.Abstractions;
 using MediatR;
 using Telegram.Bot.Types;
 using WTelegram;
@@ -8,7 +9,7 @@ namespace Himawari.Alias.Callbacks;
 
 public record EndGameCallback(CallbackQuery Query) : ICallback<Message?>
 {
-    public class Handler(Bot bot, IAliasService service) : IRequestHandler<EndGameCallback, Message?>
+    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<EndGameCallback, Message?>
     {
         public async Task<Message?> Handle(EndGameCallback request, CancellationToken cancellationToken)
         {
@@ -18,13 +19,13 @@ public record EndGameCallback(CallbackQuery Query) : ICallback<Message?>
             var chatId = message.Chat.Id;
             if (service.GetPresenterId(chatId) is null)
             {
-                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true);
+                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true).ConfigureAwait(false);
                 return null;
             }
 
             service.Restart(chatId);
             // await bot.DeleteMessages(message.Chat.Id, service.Messages.ToArray());
-            return await bot.SendTextMessage(chatId, GameEnded);
+            return await bot.SendMessage(chatId, GameEnded).ConfigureAwait(false);
         }
     }
 }
