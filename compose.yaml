@@ -4,8 +4,6 @@
     build:
       context: src
       dockerfile: Service/Dockerfile
-    ports:
-      - "8080:8080"
     volumes:
       - himawari_data:/db
     environment:

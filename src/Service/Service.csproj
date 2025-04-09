@@ -6,14 +6,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\Application.csproj" />
-      <ProjectReference Include="..\Features\SpellChecking\SpellChecking.csproj" />
-      <ProjectReference Include="..\Games\Alias\Alias.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\Features\SpellChecking\SpellChecking.csproj"/>
+        <ProjectReference Include="..\Games\Alias\Alias.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Keyboards.yaml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="$(ProjectDir)Dictionaries\**" CopyToOutputDirectory="Always"/>
+    </ItemGroup>
+
 </Project>
