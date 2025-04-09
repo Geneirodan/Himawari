@@ -1,0 +1,17 @@
+﻿using System.Reflection;
+using Himawari.Alias.Services;
+using Himawari.Core;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Himawari.Alias;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddAliasGame(this IServiceCollection services)
+    {
+        services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
+            .AddSingleton<IAliasService, AliasService>()
+            .AddHttpClient<AliasService>();
+        return services;
+    }
+}

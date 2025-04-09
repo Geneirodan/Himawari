@@ -1,0 +1,18 @@
+﻿services:
+  service:
+    image: service
+    build:
+      context: src
+      dockerfile: Service/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - himawari_data:/db
+    environment:
+      ConnectionStrings__DefaultConnection: Data Source=/db/Himawari.sqlite
+      Bot__Token: ${BOT_TOKEN}
+      Bot__ApiHash: ${BOT_API_HASH}
+      Bot__ApiId: ${BOT_API_ID}
+
+volumes:
+  himawari_data:
