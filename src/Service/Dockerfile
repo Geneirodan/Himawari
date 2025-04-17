@@ -5,8 +5,8 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-RUN --mount=type=secret,id=GITHUB_USERNAME \
-    --mount=type=secret,id=GITHUB_TOKEN 
+RUN --mount=type=secret,id=GITHUB_USERNAME,env=GITHUB_USERNAME \
+    --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN 
 WORKDIR /src
 COPY ["Directory.Build.props", "src/"]
 COPY ["Directory.Packages.props", "src/"]
