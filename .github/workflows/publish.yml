@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,8 @@ jobs:
       - name: Build and push to dockerhub
         uses: docker/build-push-action@v6
         with:
-          context:
+          context: src
+          file: Service/Dockerfile
           push: true
           build-args: |
             GITHUB_USERNAME=Geneirodan
