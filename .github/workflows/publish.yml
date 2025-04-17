@@ -21,10 +21,10 @@ jobs:
       - name: Build and push to dockerhub
         uses: docker/build-push-action@v6
         with:
-          context: src
+          context: "{{defaultContext}}:src"
           file: Service/Dockerfile
           push: true
-          build-args: |
+          secrets: |
             GITHUB_USERNAME=Geneirodan
             GITHUB_TOKEN=${{ secrets.PACKAGES_TOKEN}}
           tags: geneirodan/himawari:latest
