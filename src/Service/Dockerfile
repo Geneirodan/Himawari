@@ -15,6 +15,8 @@ COPY ["Application/Application.csproj", "src/Application/"]
 COPY ["Core/Core.csproj", "src/Core/"]
 COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
 COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
+RUN echo GITHUB_USERNAME=$GITHUB_USERNAME
+RUN echo GITHUB_TOKEN=$GITHUB_TOKEN
 RUN dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
                 --name Github \
                 --username $GITHUB_USERNAME \

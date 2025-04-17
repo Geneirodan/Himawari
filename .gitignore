@@ -6,3 +6,4 @@ riderModule.iml
 .idea
 **/*.sqlite
 /Himawari.sln.DotSettings.user
+/act.env
