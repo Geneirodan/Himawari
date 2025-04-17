@@ -25,6 +25,6 @@ jobs:
           file: Service/Dockerfile
           push: true
           secrets: |
-            GITHUB_USERNAME=Geneirodan
-            GITHUB_TOKEN=${{ secrets.PACKAGES_TOKEN}}
+            github-username=Geneirodan
+            github-token=${{ secrets.PACKAGES_TOKEN}}
           tags: geneirodan/himawari:latest
