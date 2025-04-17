@@ -16,7 +16,7 @@ public sealed partial class MessagePostProcessor<TRequest, TResponse>(ILogger<TR
             LogMessage(response.MessageId);
         return Task.CompletedTask;
     }
-    
+
     [LoggerMessage(LogLevel.Information, "Message sent with id: {Id}")]
     private partial void LogMessage(int id);
 }

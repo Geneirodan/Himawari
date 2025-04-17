@@ -17,7 +17,10 @@ namespace Himawari.Core;
 [PublicAPI]
 public static class DependencyInjection
 {
-    public static IServiceCollection AddTelegramBot(this IServiceCollection services, Action<BotConfigurationRegistrar> configure)
+    public static IServiceCollection AddTelegramBot(
+        this IServiceCollection services,
+        Action<BotConfigurationRegistrar> configure
+    )
     {
         var configuration = new BotConfigurationRegistrar();
         configure(configuration);

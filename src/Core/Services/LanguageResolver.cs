@@ -6,7 +6,8 @@ namespace Himawari.Core.Services;
 
 public sealed class LanguageResolver(IMemoryCache cache, SqliteConnection connection) : ILanguageResolver
 {
-    public async Task<CultureInfo> GetCurrentCulture(long chatId) => cache.Get<CultureInfo>(chatId) ?? await GetLanguage(chatId).ConfigureAwait(false);
+    public async Task<CultureInfo> GetCurrentCulture(long chatId) => cache.Get<CultureInfo>(chatId) 
+                                                                     ?? await GetLanguage(chatId).ConfigureAwait(false);
 
     private async Task<CultureInfo> GetLanguage(long chatId)
     {

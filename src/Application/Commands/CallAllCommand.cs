@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Himawari.Application.Resources;
 using Himawari.Core.Abstractions;
 using Himawari.Core.Abstractions.Messages;
 using Himawari.Core.Attributes;
@@ -42,7 +43,7 @@ public sealed record CallAllCommand(Message Message) : ICommand
     public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
         : AbstractCommandDescriptor<CallAllCommand>(aliases.CurrentValue)
     {
-        public override string Description => Resources.CommandDescriptions.CallAll;
+        public override string Description => CommandDescriptions.CallAll;
         public override Func<Message, string, ICommand> Factory => (message, _) => new CallAllCommand(message);
     }
 }

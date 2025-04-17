@@ -13,8 +13,8 @@ namespace Himawari.SpellChecking.Tests;
 [TestSubject(typeof(SpellCheckingDispatcher))]
 public class SpellCheckingDispatcherTest
 {
-    private readonly Mock<ISender> _sender = new();
     private readonly SpellCheckingDispatcher _dispatcher;
+    private readonly Mock<ISender> _sender = new();
     private readonly Mock<IWrongLayoutParser> _wrongLayoutParser = new();
 
     public SpellCheckingDispatcherTest()
@@ -49,7 +49,7 @@ public class SpellCheckingDispatcherTest
             Times.Never
         );
     }
-    
+
     [Fact]
     public async Task OnMessage_ShouldReturnUpdatedText_WhenParsingSucceeded()
     {

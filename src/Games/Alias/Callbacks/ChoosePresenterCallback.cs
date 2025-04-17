@@ -24,6 +24,7 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
                 await bot.AnswerCallbackQuery(request.Query.Id, PresenterAlreadyChosen, true).ConfigureAwait(false);
                 return null;
             }
+
             service.SetPresenterId(chatId, request.Query.From.Id);
 
             var locale = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;

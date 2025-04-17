@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using Himawari.Application.Resources;
 using Himawari.Core.Abstractions;
 using Himawari.Core.Abstractions.Messages;
 using Himawari.Core.Attributes;
@@ -27,18 +28,18 @@ public sealed record HelpCommand(Message Message) : ICommand
                 .Aggregate(
                     new StringBuilder(Help).AppendLine(),
                     (b, c) => b.AppendLine($"\u26a1\ufe0f `{c.Command}` - {c.Description}"),
-                    x=>x.ToString()
+                    x => x.ToString()
                 );
-            
+
             return await bot.SendReplyMessage(request.Message, help, ParseMode.MarkdownV2).ConfigureAwait(false);
         }
     }
-    
+
     [PublicAPI]
     public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
         : AbstractCommandDescriptor<HelpCommand>(aliases.CurrentValue)
     {
-        public override string Description => Resources.CommandDescriptions.Help;
+        public override string Description => CommandDescriptions.Help;
         public override Func<Message, string, ICommand> Factory => (message, _) => new HelpCommand(message);
     }
 }

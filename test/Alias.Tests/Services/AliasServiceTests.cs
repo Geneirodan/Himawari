@@ -12,8 +12,8 @@ namespace Himawari.Alias.Tests.Services;
 [TestSubject(typeof(AliasService))]
 public class AliasServiceTests
 {
-    private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock = new();
     private readonly AliasService _aliasService;
+    private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock = new();
 
     public AliasServiceTests()
     {

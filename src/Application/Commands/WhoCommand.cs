@@ -25,7 +25,8 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
         {
             var (message, rest) = request;
 
-            var members = (await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false)).Where(x => !x.User.IsBot).ToArray();
+            var chatMembers = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
+            var members = chatMembers.Where(x => !x.User.IsBot).ToArray();
 
             var index = Random.Shared.Next(members.Length);
 
@@ -47,10 +48,11 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
             if (!string.IsNullOrWhiteSpace(rest))
                 stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
 
-            return await bot.SendReplyMessage(message, stringBuilder.ToString(), ParseMode.MarkdownV2).ConfigureAwait(false);
+            return await bot.SendReplyMessage(message, stringBuilder.ToString(), ParseMode.MarkdownV2)
+                .ConfigureAwait(false);
         }
     }
-    
+
     [PublicAPI]
     public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
         : AbstractCommandDescriptor<WhoCommand>(aliases.CurrentValue)

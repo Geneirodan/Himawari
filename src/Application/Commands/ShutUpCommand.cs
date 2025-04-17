@@ -1,4 +1,5 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Application.Resources;
+using Himawari.Core.Abstractions;
 using Himawari.Core.Abstractions.Messages;
 using Himawari.Core.Attributes;
 using Himawari.Core.Models;
@@ -14,9 +15,9 @@ namespace Himawari.Application.Commands;
 [BotCommand("/shutup")]
 public sealed record ShutUpCommand(Message Message) : ICommand
 {
-    public sealed class Handler(Bot bot, IOptionsMonitor<Options> optionsMonitor) : IRequestHandler<ShutUpCommand, Message?>
+    public sealed class Handler(Bot bot, IOptionsMonitor<Options> optionsMonitor)
+        : IRequestHandler<ShutUpCommand, Message?>
     {
-
         public async Task<Message?> Handle(ShutUpCommand request, CancellationToken cancellationToken)
         {
             var message = request.Message;
@@ -39,15 +40,15 @@ public sealed record ShutUpCommand(Message Message) : ICommand
                 replyParameters: parameters).ConfigureAwait(false);
         }
     }
-    
+
     [PublicAPI]
     public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
         : AbstractCommandDescriptor<ShutUpCommand>(aliases.CurrentValue)
     {
-        public override string Description => Resources.CommandDescriptions.ShutUp;
+        public override string Description => CommandDescriptions.ShutUp;
         public override Func<Message, string, ICommand> Factory => (message, _) => new ShutUpCommand(message);
     }
-    
+
     public sealed record Options
     {
         public required string[] GifUrls { get; init; }

@@ -1,6 +1,6 @@
 ﻿namespace Himawari.Core.Options;
 
-public sealed class BotOptions
+public sealed record BotOptions
 {
     public required string Token { get; init; }
     public required int ApiId { get; init; }

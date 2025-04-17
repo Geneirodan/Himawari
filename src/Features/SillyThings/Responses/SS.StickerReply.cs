@@ -11,7 +11,8 @@ public static partial class SS
 {
     public sealed record StickerReply(Message Message) : IReply
     {
-        public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor) : IRequestHandler<StickerReply, Message>
+        public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor)
+            : IRequestHandler<StickerReply, Message>
         {
             public async Task<Message> Handle(StickerReply request, CancellationToken cancellationToken)
             {

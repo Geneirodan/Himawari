@@ -10,7 +10,7 @@ using Telegram.Bot.Types.Enums;
 namespace Himawari.SpellChecking;
 
 [PublicAPI]
-public sealed class SpellCheckingDispatcher(IWrongLayoutParser parser, IServiceProvider serviceProvider) 
+public sealed class SpellCheckingDispatcher(IWrongLayoutParser parser, IServiceProvider serviceProvider)
     : IMessageHandler
 {
     public async Task OnMessage(Message msg, UpdateType update)

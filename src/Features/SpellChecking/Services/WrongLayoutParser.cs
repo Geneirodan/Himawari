@@ -9,6 +9,11 @@ public partial class WrongLayoutParser(ILayoutService service) : IWrongLayoutPar
 {
     private const float Threshold = 0.5f;
 
+
+    [GeneratedRegex(@"[\s]")] private static partial Regex WhitespaceRegex { get; }
+
+    [GeneratedRegex(@"['\-\w]+")] private static partial Regex AllowedCharactersRegex { get; }
+
     public bool TryParse(string inputString, [NotNullWhen(true)] out string? outputString)
     {
         outputString = null;
@@ -48,9 +53,4 @@ public partial class WrongLayoutParser(ILayoutService service) : IWrongLayoutPar
         outputString = map.Translate(inputString);
         return outputString != inputString;
     }
-
-
-    [GeneratedRegex(@"[\s]")] private static partial Regex WhitespaceRegex { get; }
-
-    [GeneratedRegex(@"['\-\w]+")] private static partial Regex AllowedCharactersRegex { get; }
 }

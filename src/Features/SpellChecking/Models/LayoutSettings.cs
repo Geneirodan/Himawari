@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+
 // ReSharper disable CollectionNeverUpdated.Global
 
 namespace Himawari.SpellChecking.Models;

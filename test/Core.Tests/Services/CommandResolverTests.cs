@@ -15,8 +15,8 @@ namespace Himawari.Core.Tests.Services;
 public class CommandResolverTests
 {
     private readonly Mock<IOptionsMonitor<Aliases>> _aliasesMock = new();
-    private readonly Mock<ICommandDescriptor> _descriptorMock = new();
     private readonly CommandResolver _commandResolver;
+    private readonly Mock<ICommandDescriptor> _descriptorMock = new();
 
     public CommandResolverTests()
     {

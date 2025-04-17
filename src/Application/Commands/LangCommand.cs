@@ -19,10 +19,22 @@ namespace Himawari.Application.Commands;
 [BotCommand("/lang")]
 public sealed record LangCommand(Message Message, string Lang) : ICommand
 {
-
-
-    public sealed class Handler(Bot bot, SqliteConnection connection, IOptionsMonitor<BotOptions> optionsMonitor, IMemoryCache cache) : IRequestHandler<LangCommand, Message>
+    public sealed class Handler(
+        Bot bot,
+        SqliteConnection connection,
+        IOptionsMonitor<BotOptions> optionsMonitor,
+        IMemoryCache cache
+    ) : IRequestHandler<LangCommand, Message>
     {
+        private const string SqlCommand = """
+                                           INSERT INTO Chats (Id, Lang) 
+                                           VALUES (@Id, @Lang)
+                                           ON CONFLICT(Id) 
+                                           DO 
+                                             UPDATE SET Lang = @Lang
+                                             WHERE Id = @Id;
+                                          """;
+
         private readonly string[] _supportedLanguages = optionsMonitor.CurrentValue.SupportedLocales;
 
         public async Task<Message> Handle(LangCommand request, CancellationToken cancellationToken)
@@ -33,6 +45,7 @@ public sealed record LangCommand(Message Message, string Lang) : ICommand
                 var text = string.Format(Messages.LanguageNotFound, string.Join(", ", _supportedLanguages));
                 return await bot.SendReplyMessage(message, text).ConfigureAwait(false);
             }
+
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(lang);
             cache.Set(message.Chat.Id, new CultureInfo(lang));
 
@@ -42,15 +55,6 @@ public sealed record LangCommand(Message Message, string Lang) : ICommand
             await command.ExecuteNonQueryAsync(cancellationToken).ConfigureAwait(false);
             return await bot.SendReplyMessage(message, Messages.LanguageSet).ConfigureAwait(false);
         }
-
-        private const string SqlCommand = """
-                                             INSERT INTO Chats (Id, Lang) 
-                                             VALUES (@Id, @Lang)
-                                             ON CONFLICT(Id) 
-                                             DO 
-                                               UPDATE SET Lang = @Lang
-                                               WHERE Id = @Id;
-                                            """;
     }
 
     [PublicAPI]

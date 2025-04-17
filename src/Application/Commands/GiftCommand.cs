@@ -21,10 +21,10 @@ public sealed record GiftCommand(Message Message, string Rest) : ICommand
         {
             var (message, rest) = request;
             var arr = rest.Split(' ', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            
+
             if (arr.Length == 0)
                 return await bot.SendReplyMessage(message, Messages.NotUnderstandGift).ConfigureAwait(false);
-            
+
             var members = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
             var username = members.FirstOrDefault(x => x.User.Username == arr[0].TrimStart('@'))?.User.Username;
             var text = username switch
@@ -33,12 +33,11 @@ public sealed record GiftCommand(Message Message, string Rest) : ICommand
                 not null when arr.Length == 1 => Messages.GiftNotFound,
                 _ => $"{string.Format(Messages.Gift, $"@{message.From?.Username}", $"@{username}")} {arr[1]}"
             };
-            
-            return await bot.SendReplyMessage(message, text).ConfigureAwait(false);
 
+            return await bot.SendReplyMessage(message, text).ConfigureAwait(false);
         }
     }
-    
+
     [PublicAPI]
     public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
         : AbstractCommandDescriptor<GiftCommand>(aliases.CurrentValue)

@@ -12,8 +12,8 @@ namespace Himawari.SillyThings.Tests;
 [TestSubject(typeof(SillyThingsDispatcher))]
 public class SillyThingsDispatcherTests
 {
-    private readonly Mock<ISender> _sender = new();
     private readonly SillyThingsDispatcher _dispatcher;
+    private readonly Mock<ISender> _sender = new();
 
     public SillyThingsDispatcherTests()
     {
@@ -24,7 +24,6 @@ public class SillyThingsDispatcherTests
         _dispatcher = new SillyThingsDispatcher(serviceProvider.Object);
     }
 
-    
 
     [Fact]
     public async Task OnMessage_ShouldEarlyReturn_WhenMessageTextIsNull()
@@ -33,7 +32,7 @@ public class SillyThingsDispatcherTests
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("SS")]
     [InlineData("SSAtStart")]
@@ -46,7 +45,7 @@ public class SillyThingsDispatcherTests
         _sender.Verify(x => x.Send(It.IsAny<SS.StickerReply>(), It.IsAny<CancellationToken>()), Times.Once);
         _sender.Verify(x => x.Send(It.IsAny<RhinoGifReply>(), It.IsAny<CancellationToken>()), Times.Never);
     }
-    
+
     [Fact]
     public async Task OnMessage_ShouldReturnRhinoGif_WhenSequenceDetected()
     {

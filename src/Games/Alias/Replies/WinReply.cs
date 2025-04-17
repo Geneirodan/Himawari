@@ -25,7 +25,7 @@ public sealed record WinReply(Message Message) : IReply
                 {
                     MessageId = request.Message.MessageId,
                     ChatId = chatId,
-                    Quote = await service.GetCurrentWordAsync(chatId,cancellationToken).ConfigureAwait(false)
+                    Quote = await service.GetCurrentWordAsync(chatId, cancellationToken).ConfigureAwait(false)
                 },
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData(
