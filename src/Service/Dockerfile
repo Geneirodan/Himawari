@@ -5,6 +5,8 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG GITHUB_USERNAME
+ARG GITHUB_TOKEN
 WORKDIR /src
 COPY ["Directory.Build.props", "src/"]
 COPY ["Directory.Packages.props", "src/"]
@@ -13,6 +15,11 @@ COPY ["Application/Application.csproj", "src/Application/"]
 COPY ["Core/Core.csproj", "src/Core/"]
 COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
 COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
+RUN dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
+                --name Github \
+                --username $GITHUB_USERNAME \
+                --password $GITHUB_TOKEN \
+                --store-password-in-clear-text
 RUN dotnet restore "src/Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
