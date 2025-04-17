@@ -1,12 +1,13 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+﻿# syntax=docker/dockerfile:1.15.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG GITHUB_USERNAME
-ARG GITHUB_TOKEN
+RUN --mount=type=secret,id=github-username,env=GITHUB_USERNAME \
+    --mount=type=secret,id=github-token,env=GITHUB_TOKEN 
 WORKDIR /src
 COPY ["Directory.Build.props", "src/"]
 COPY ["Directory.Packages.props", "src/"]
