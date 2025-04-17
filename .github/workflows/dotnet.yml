@@ -5,7 +5,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: [ "dev" ]
 
 jobs:    
   build:
@@ -21,7 +21,11 @@ jobs:
         with:
           dotnet-version: 9.0.x
          
-      - name: Prep packages
+      - name: Remove old GitHub packages
+        run: |
+          dotnet nuget remove source Github 
+      
+      - name: Add new Github packages
         run: |
           dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
             --name Github \

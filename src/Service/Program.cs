@@ -7,15 +7,17 @@ using Himawari.Core.Options;
 using Himawari.Service;
 using Microsoft.Data.Sqlite;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.AddSerilog();
 
 var configuration = builder.Configuration;
+var connectionString = configuration.GetConnectionString("DefaultConnection") 
+                       ?? throw new Exception("Connection string not found");
 builder.Services
     .Configure<BotOptions>(configuration.GetSection("Bot"))
     .Configure<Aliases>(configuration.GetSection("Aliases"))
-    .AddSingleton<SqliteConnection>(_ => new SqliteConnection(configuration.GetConnectionString("DefaultConnection")))
+    .AddSingleton<SqliteConnection>(_ => new SqliteConnection(connectionString))
     .AddBasicCommands(configuration.GetSection("Commands"))
     .AddAliasGame()
     // TODO: Fix critical bug with commas
@@ -27,7 +29,8 @@ builder.Services
         .AddUpdateHandler<AliasDispatcher>()
     )
     .AddHostedService<HostingService>()
-    .AddSharedOpenTelemetry(configuration);
+    .AddSharedOpenTelemetry(configuration)
+    .AddHealthChecks().AddSqlite(connectionString);
 
 var app = builder.Build();
 
@@ -45,5 +48,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.RegisterHandlers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
