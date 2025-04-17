@@ -13,8 +13,7 @@ COPY ["Service/Service.csproj", "src/Service/"]
 COPY ["Application/Application.csproj", "src/Application/"]
 COPY ["Core/Core.csproj", "src/Core/"]
 COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
-COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
-RUN dotnet nuget remove source Github
+COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"] 
 RUN --mount=type=secret,id=github-username \
     --mount=type=secret,id=github-token \
     dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
