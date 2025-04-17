@@ -9,8 +9,8 @@ namespace Himawari.Core;
 public sealed class BotConfigurationRegistrar
 {
     private readonly List<string> _messageHandlers = [];
-    private readonly List<string> _updateHandlers = [];
     private readonly List<Action<IServiceCollection>> _registrations = [];
+    private readonly List<string> _updateHandlers = [];
 
     public BotConfigurationRegistrar AddMessageHandler<T>() where T : class, IMessageHandler
     {
@@ -28,12 +28,13 @@ public sealed class BotConfigurationRegistrar
         return this;
     }
 
-    public void RegisterHandlers(IServiceProvider serviceProvider) {
+    public void RegisterHandlers(IServiceProvider serviceProvider)
+    {
         var bot = serviceProvider.GetRequiredService<Bot>();
 
-        foreach (var handler in _messageHandlers.Select(serviceProvider.GetRequiredKeyedService<IMessageHandler>)) 
+        foreach (var handler in _messageHandlers.Select(serviceProvider.GetRequiredKeyedService<IMessageHandler>))
             bot.OnMessage += handler.OnMessage;
-        foreach (var handler in _updateHandlers.Select(serviceProvider.GetRequiredKeyedService<IUpdateHandler>)) 
+        foreach (var handler in _updateHandlers.Select(serviceProvider.GetRequiredKeyedService<IUpdateHandler>))
             bot.OnUpdate += handler.OnUpdate;
     }
 

@@ -9,8 +9,8 @@ namespace Himawari.Core.Services;
 
 public sealed class CommandResolver : ICommandResolver
 {
-    private readonly Dictionary<string, string> _commandsByAlias;
     private readonly Dictionary<string, Func<Message, string, ICommand>> _commandFactories;
+    private readonly Dictionary<string, string> _commandsByAlias;
     private readonly ICommandDescriptor[] _descriptors;
 
     public CommandResolver(IEnumerable<ICommandDescriptor> descriptors, IOptionsMonitor<Aliases> aliases)
@@ -25,11 +25,16 @@ public sealed class CommandResolver : ICommandResolver
         _commandFactories = _descriptors.ToDictionary(x => x.Keyword, x => x.Factory);
     }
 
-    public Func<Message, string, ICommand>? GetFactoryByName(string commandName) =>
-        _commandFactories.GetValueOrDefault(commandName);
+    public Func<Message, string, ICommand>? GetFactoryByName(string commandName)
+    {
+        return _commandFactories.GetValueOrDefault(commandName);
+    }
 
-    public string? GetCommandByAlias(string alias) => _commandsByAlias.GetValueOrDefault(alias) ??
-                                                      _commandFactories.Keys.FirstOrDefault(x => x == alias);
+    public string? GetCommandByAlias(string alias)
+    {
+        return _commandsByAlias.GetValueOrDefault(alias) ??
+               _commandFactories.Keys.FirstOrDefault(x => x == alias);
+    }
 
     public IEnumerable<BotCommand> GetCommandsByCulture(CultureInfo cultureInfo)
     {

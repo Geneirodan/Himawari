@@ -18,6 +18,8 @@ public static class UserExtensions
             .ToString();
     }
 
-    public static string GetUsername(this User user) => 
-        user.Username is not null ? $"@{user.Username}" : user.GetDisplayName();
+    public static string GetUsername(this User user)
+    {
+        return user.Username is not null ? $"@{user.Username}" : user.GetDisplayName();
+    }
 }

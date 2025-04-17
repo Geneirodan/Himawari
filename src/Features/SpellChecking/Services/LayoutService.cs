@@ -13,10 +13,10 @@ public sealed partial class LayoutService : ILayoutService
     private const string DefaultLayoutKey = "qwerty";
 
     private readonly LayoutSettings _layoutSettings;
-    private readonly Dictionary<string, WordList> _wordLists;
     private readonly ILogger<LayoutService> _logger;
     private readonly Maps _maps;
     private readonly Maps _reversedMaps;
+    private readonly Dictionary<string, WordList> _wordLists;
 
     public LayoutService(
         IDeserializer deserializer,
@@ -28,10 +28,37 @@ public sealed partial class LayoutService : ILayoutService
         var spellcheckingOptions = options.Value;
 
         using (var streamReader = new StreamReader(spellcheckingOptions.LayoutsFilePath))
+        {
             _layoutSettings = deserializer.Deserialize<LayoutSettings>(streamReader);
+        }
 
         _wordLists = FillWordLists(spellcheckingOptions);
         (_maps, _reversedMaps) = FillMaps();
+    }
+
+    public WordList GetWordList(string localeName)
+    {
+        return _wordLists[localeName];
+    }
+
+    public IReadOnlyDictionary<char, char> GetMap(string localeName)
+    {
+        return _maps[localeName];
+    }
+
+    public IReadOnlyDictionary<char, char> GetReverseMap(string localeName)
+    {
+        return _reversedMaps[localeName];
+    }
+
+    public IEnumerable<string> GetSupportedLanguages()
+    {
+        return _layoutSettings.Locales.Keys;
+    }
+
+    public IEnumerable<string> GetLayouts(string localeName)
+    {
+        return _layoutSettings.Locales[localeName].Where(x => x != DefaultLayoutKey);
     }
 
     private Dictionary<string, WordList> FillWordLists(SpellCheckingOptions spellCheckingOptions)
@@ -74,14 +101,6 @@ public sealed partial class LayoutService : ILayoutService
 
         return (maps, reversedMaps);
     }
-
-    public WordList GetWordList(string localeName) => _wordLists[localeName];
-    public IReadOnlyDictionary<char, char> GetMap(string localeName) => _maps[localeName];
-    public IReadOnlyDictionary<char, char> GetReverseMap(string localeName) => _reversedMaps[localeName];
-    public IEnumerable<string> GetSupportedLanguages() => _layoutSettings.Locales.Keys;
-
-    public IEnumerable<string> GetLayouts(string localeName) =>
-        _layoutSettings.Locales[localeName].Where(x => x != DefaultLayoutKey);
 
     [LoggerMessage(LogLevel.Information, "Dictionaries folder: {Path}")]
     private partial void LogDictionariesFolder(string path);

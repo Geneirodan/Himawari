@@ -8,7 +8,7 @@ using WTelegram;
 
 namespace Himawari.SpellChecking.Responses;
 
-public sealed record SendCorrectedTextMessageReply(Message Message, string Text) : IReply 
+public sealed record SendCorrectedTextMessageReply(Message Message, string Text) : IReply
 {
     public sealed class Handler(Bot bot) : IRequestHandler<SendCorrectedTextMessageReply, Message>
     {

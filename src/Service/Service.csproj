@@ -1,27 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <UserSecretsId>c5af9b08-d4c1-471f-a339-d9cdc19343c8</UserSecretsId>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    </PropertyGroup>
+  <PropertyGroup>
+    <UserSecretsId>c5af9b08-d4c1-471f-a339-d9cdc19343c8</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj"/>
-        <ProjectReference Include="..\Features\SpellChecking\SpellChecking.csproj"/>
-        <ProjectReference Include="..\Games\Alias\Alias.csproj"/>
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj"/>
+    <!--        <ProjectReference Include="..\Features\SpellChecking\SpellChecking.csproj"/>-->
+    <ProjectReference Include="..\Games\Alias\Alias.csproj"/>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Content Include="..\..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
 
-    <ItemGroup>
-        <None Update="Keyboards.yaml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="$(ProjectDir)Dictionaries\**" CopyToOutputDirectory="Always"/>
-    </ItemGroup>
+  <ItemGroup>
+    <None Update="Keyboards.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(ProjectDir)Dictionaries\**" CopyToOutputDirectory="Always"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="geneirodan.observability"/>
+  </ItemGroup>
 
 </Project>

@@ -13,7 +13,7 @@ using Update = WTelegram.Types.Update;
 namespace Himawari.Alias;
 
 [PublicAPI]
-public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasService aliasService) 
+public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasService aliasService)
     : IMessageHandler, IUpdateHandler
 {
     public async Task OnMessage(Message msg, UpdateType update)

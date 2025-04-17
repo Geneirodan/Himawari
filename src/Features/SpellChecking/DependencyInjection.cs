@@ -12,10 +12,13 @@ public static class DependencyInjection
     public static IServiceCollection AddWrongLayoutDetection(
         this IServiceCollection services,
         IConfiguration configuration
-    ) => services
-        .Configure<SpellCheckingOptions>(configuration)
-        .AddTransient<IDeserializer>(_ => new DeserializerBuilder().WithCaseInsensitivePropertyMatching().Build())
-        .AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
-        .AddSingleton<ILayoutService, LayoutService>()
-        .AddSingleton<IWrongLayoutParser, WrongLayoutParser>();
+    )
+    {
+        return services
+            .Configure<SpellCheckingOptions>(configuration)
+            .AddTransient<IDeserializer>(_ => new DeserializerBuilder().WithCaseInsensitivePropertyMatching().Build())
+            .AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
+            .AddSingleton<ILayoutService, LayoutService>()
+            .AddSingleton<IWrongLayoutParser, WrongLayoutParser>();
+    }
 }

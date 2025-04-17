@@ -11,7 +11,7 @@ using Message = Telegram.Bot.Types.Message;
 namespace Himawari.Application;
 
 [PublicAPI]
-public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServiceProvider serviceProvider) 
+public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServiceProvider serviceProvider)
     : IMessageHandler
 {
     public async Task OnMessage(Message msg, UpdateType update)

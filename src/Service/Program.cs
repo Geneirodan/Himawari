@@ -1,13 +1,15 @@
+using Geneirodan.Observability;
 using Himawari.Alias;
 using Himawari.Application;
 using Himawari.Core;
 using Himawari.Core.Models;
 using Himawari.Core.Options;
 using Himawari.Service;
-using Himawari.SpellChecking;
 using Microsoft.Data.Sqlite;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.AddSerilog();
 
 var configuration = builder.Configuration;
 builder.Services
@@ -16,14 +18,16 @@ builder.Services
     .AddSingleton<SqliteConnection>(_ => new SqliteConnection(configuration.GetConnectionString("DefaultConnection")))
     .AddBasicCommands(configuration.GetSection("Commands"))
     .AddAliasGame()
-    .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
+    // TODO: Fix critical bug with commas
+    // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
     .AddTelegramBot(x => x
         .AddMessageHandler<CommandDispatcher>()
-        .AddMessageHandler<SpellCheckingDispatcher>()
+        // .AddMessageHandler<SpellCheckingDispatcher>()
         .AddMessageHandler<AliasDispatcher>()
         .AddUpdateHandler<AliasDispatcher>()
     )
-    .AddHostedService<HostingService>();
+    .AddHostedService<HostingService>()
+    .AddSharedOpenTelemetry(configuration);
 
 var app = builder.Build();
 

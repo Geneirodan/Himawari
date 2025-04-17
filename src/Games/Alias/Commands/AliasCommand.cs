@@ -37,8 +37,8 @@ public sealed record AliasCommand(Message Message) : ICommand
                 )
             ).ConfigureAwait(false);
         }
-        
-        
+
+
         [PublicAPI]
         public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
             : AbstractCommandDescriptor<AliasCommand>(aliases.CurrentValue)

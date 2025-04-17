@@ -1,4 +1,3 @@
-
 [*]
 charset = utf-8-bom
 end_of_line = crlf
@@ -87,7 +86,7 @@ configure_await_analysis_mode = library
 [{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_environment,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
 indent_size = 2
 
-[{*.yaml,*.yml}]
+[{*.yaml,*.yml,*.csproj,*.slnx,*.props}]
 indent_size = 2
 
 [*.{appxmanifest,asax,ascx,aspx,axaml,blockshader,build,c,c++,c++m,cc,ccm,cginc,compute,cp,cpp,cppm,cs,cshtml,cu,cuh,cxx,cxxm,dtd,fs,fsi,fsscript,fsx,fx,fxh,h,h++,hh,hlsl,hlsli,hlslinc,hp,hpp,hxx,icc,inc,inl,ino,ipp,ixx,master,ml,mli,mpp,mq4,mq5,mqh,mxx,nuspec,paml,razor,resw,resx,shaderFoundry,skin,tcc,tpp,urtshader,usf,ush,vb,xaml,xamlx,xoml,xsd}]
