@@ -6,8 +6,6 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-RUN --mount=type=secret,id=github-username,env=GITHUB_USERNAME \
-    --mount=type=secret,id=github-token,env=GITHUB_TOKEN 
 WORKDIR /src
 COPY ["Directory.Build.props", "src/"]
 COPY ["Directory.Packages.props", "src/"]
@@ -16,10 +14,12 @@ COPY ["Application/Application.csproj", "src/Application/"]
 COPY ["Core/Core.csproj", "src/Core/"]
 COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
 COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
-RUN dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
+RUN --mount=type=secret,id=github-username \
+    --mount=type=secret,id=github-token \
+    dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
                 --name Github \
-                --username $GITHUB_USERNAME \
-                --password $GITHUB_TOKEN \
+                --username $(cat /run/secrets/github-username) \
+                --password $(cat /run/secrets/github-token) \
                 --store-password-in-clear-text
 RUN dotnet restore "src/Service/Service.csproj"
 COPY . .
