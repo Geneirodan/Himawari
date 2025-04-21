@@ -11,7 +11,7 @@ public static class DependencyInjection
     {
         services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
             .AddSingleton<IAliasService, AliasService>()
-            .AddHttpClient<AliasService>();
+            .AddHttpClient<IAliasService, AliasService>();
         return services;
     }
 }
