@@ -24,7 +24,7 @@ public static class BotExtensions
         this Bot bot,
         Message message,
         string text,
-        ParseMode parseMode = ParseMode.None,
+        ParseMode parseMode = ParseMode.MarkdownV2,
         ReplyMarkup? replyMarkup = null
     ) => await bot.SendMessage(
         chatId: message.Chat.Id,

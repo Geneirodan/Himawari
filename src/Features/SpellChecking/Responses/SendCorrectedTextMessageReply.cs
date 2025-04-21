@@ -15,7 +15,7 @@ public sealed record SendCorrectedTextMessageReply(Message Message, string Text)
         public Task<Message> Handle(SendCorrectedTextMessageReply request, CancellationToken cancellationToken)
         {
             var (message, text) = request;
-            return bot.SendReplyMessage(message, $"{Messages.Maybe}\n**>{text}", ParseMode.MarkdownV2);
+            return bot.SendReplyMessage(message, $"{Messages.Maybe}\n**>{text}");
         }
     }
 }

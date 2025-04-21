@@ -5,6 +5,7 @@ using Himawari.Core;
 using Himawari.Core.Models;
 using Himawari.Core.Options;
 using Himawari.Service;
+using Himawari.VideoParser;
 using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -20,6 +21,7 @@ builder.Services
     .AddSingleton<SqliteConnection>(_ => new SqliteConnection(connectionString))
     .AddBasicCommands(configuration.GetSection("Commands"))
     .AddAliasGame()
+    .AddVideoParsing()
     // TODO: Fix critical bug with commas
     // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
     .AddTelegramBot(x => x
@@ -27,10 +29,11 @@ builder.Services
         // .AddMessageHandler<SpellCheckingDispatcher>()
         .AddMessageHandler<AliasDispatcher>()
         .AddUpdateHandler<AliasDispatcher>()
+        .AddMessageHandler<VideoParsingDispatcher>()
     )
     .AddHostedService<HostingService>()
     .AddSharedOpenTelemetry(configuration)
-    .AddHealthChecks().AddSqlite(connectionString);
+    .AddHealthChecks();
 
 var app = builder.Build();
 
