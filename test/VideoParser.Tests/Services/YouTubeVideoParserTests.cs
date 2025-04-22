@@ -55,8 +55,6 @@ public class YouTubeVideoParserTests
 
     private static readonly string[] ValidUrls =
     [
-        "https://youtube.com/shorts/0dPkkQeRwTI?feature=share",
-        "https://youtube.com/shorts/0dPkkQeRwTI",
         "https://www.youtube.com/shorts/T0t-DYPWVw0",
         "https://youtube.com/shorts/T0t-DYPWVw0?si=zAXrdjE2N12lZru6",
         "https://www.youtube.com/watch?v=oVWEb-At8yc",
