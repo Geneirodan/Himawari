@@ -1,6 +1,7 @@
 ﻿# syntax=docker/dockerfile:1.15.0
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
+RUN apt-get update && apt-get install ffmpeg
 EXPOSE 8080
 EXPOSE 8081
 

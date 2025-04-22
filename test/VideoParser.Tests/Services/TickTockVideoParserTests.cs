@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using Shouldly;
 using Xunit;
 
-namespace Himawari.VideoParser.Tests;
+namespace Himawari.VideoParser.Tests.Services;
 
 [TestSubject(typeof(TikTokVideoParser))]
 public class TikTokVideoParserTests

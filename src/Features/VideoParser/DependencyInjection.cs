@@ -9,8 +9,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddVideoParsing(this IServiceCollection services)
     {
-        services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
-            .AddHttpClient<IVideoParser, Services.TikTokVideoParser>();
-        return services;
+        services.AddHttpClient<IVideoParser, TikTokVideoParser>();
+        services.AddHttpClient<IVideoParser, YouTubeVideoParser>();
+        return services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly());
     }
 }
