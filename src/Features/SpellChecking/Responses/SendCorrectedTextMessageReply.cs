@@ -3,7 +3,6 @@ using Himawari.Core.Extensions;
 using Himawari.SpellChecking.Resources;
 using MediatR;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using WTelegram;
 
 namespace Himawari.SpellChecking.Responses;

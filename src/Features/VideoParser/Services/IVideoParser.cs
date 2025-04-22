@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot.Types;
+using YoutubeExplode.Videos.Streams;
 
 namespace Himawari.VideoParser.Services;
 
