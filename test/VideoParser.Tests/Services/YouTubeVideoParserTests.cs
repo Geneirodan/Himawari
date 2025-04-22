@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Himawari.VideoParser.Tests.Services;
 
+#if DEBUG
 [TestSubject(typeof(YouTubeVideoParser))]
 public class YouTubeVideoParserTests
 {
@@ -69,3 +70,4 @@ public class YouTubeVideoParserTests
         "somesort of somtsf"
     ];
 }
+# endif
