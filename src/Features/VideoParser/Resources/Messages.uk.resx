@@ -1,11 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
-<root>
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <xsd:element name="root" msdata:IsDataSet="true">
-            
-        </xsd:element>
-    </xsd:schema>
+﻿<root>
     <resheader name="resmimetype">
         <value>text/microsoft-resx</value>
     </resheader>
@@ -18,16 +11,16 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="Error" xml:space="preserve">
-        <value>Error occured when parsing {0} url</value>
-    </data>
     <data name="VideoNotFound" xml:space="preserve">
-        <value>Sorry, but I couldn't find this video</value>
+        <value>Вибачте, але я не можу знайти це відео</value>
+    </data>
+    <data name="Error" xml:space="preserve">
+        <value>Сталася помилка при обробці відео з {0}</value>
     </data>
     <data name="InvalidUrl" xml:space="preserve">
-        <value>Sorry, but the url you gave is wrong as far as I can tell</value>
+        <value>Вибачте, але наскільки я можу судити, ви вказали неправильну адресу</value>
     </data>
     <data name="DownloadFailed" xml:space="preserve">
-        <value>Sorry, but I couldn't download this video</value>
+        <value>Вибачте, але я не можу скачати це відео</value>
     </data>
 </root>

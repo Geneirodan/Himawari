@@ -6,6 +6,8 @@
     <File Path=".dockerignore" />
     <File Path=".editorconfig" />
     <File Path="qodana.yaml" />
+    <File Path=".github\workflows\dotnet.yml" />
+    <File Path=".github\workflows\publish.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src\Application\Application.csproj" Type="Classic C#" />

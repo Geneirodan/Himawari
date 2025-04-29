@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using Ardalis.Result;
+using Himawari.VideoParser.Resources;
 using Telegram.Bot.Types;
 using YoutubeExplode;
 using YoutubeExplode.Converter;
@@ -10,10 +12,10 @@ public partial class YouTubeVideoParser(HttpClient httpClient) : IVideoParser
     [GeneratedRegex(@"https:\/\/(www\.)?youtu(\.be|be\.com)\/")]
     private static partial Regex UrlRegex { get; }
 
-    public async Task<InputFile?> GetInputFile(string url)
+    public async Task<Result<InputFile>> GetInputFile(string url)
     {
         if (!ContainsUrl(url))
-            return null;
+            return Result<InputFile>.Error(Messages.InvalidUrl);
         var youtube = new YoutubeClient(httpClient);
         var video = await youtube.Videos.GetAsync(url).ConfigureAwait(false);
         var sanitizedTitle = string.Join("_", video.Title.Split(Path.GetInvalidFileNameChars()));
