@@ -33,7 +33,8 @@ builder.Services
     )
     .AddHostedService<HostingService>()
     .AddSharedOpenTelemetry(configuration)
-    .AddHealthChecks();
+    .AddHealthChecks()
+    .AddSqlite(connectionString);
 
 var app = builder.Build();
 

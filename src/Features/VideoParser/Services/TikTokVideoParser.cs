@@ -1,12 +1,14 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using Ardalis.Result;
+using Himawari.VideoParser.Resources;
 using Telegram.Bot.Types;
 
 namespace Himawari.VideoParser.Services;
 
 public partial class TikTokVideoParser(HttpClient client) : IVideoParser
 {
-    [GeneratedRegex(@"https:\/\/vm\.tiktok\.com\/(\w+)\/")]
+    [GeneratedRegex(@"https:\/\/vm\.tiktok\.com\/(\w+)\/?")]
     private static partial Regex ShortUrlRegex { get; }
 
     [GeneratedRegex(@"https:\/\/www\.tiktok\.com\/@[^/]+\/video\/(\d+)")]
@@ -15,7 +17,7 @@ public partial class TikTokVideoParser(HttpClient client) : IVideoParser
     public bool ContainsUrl(string url) => ShortUrlRegex.IsMatch(url) || UrlRegex.IsMatch(url);
     public string Type => "TikTok";
 
-    public async Task<InputFile?> GetInputFile(string url)
+    public async Task<Result<InputFile>> GetInputFile(string url)
     {
         var fullUrl = url;
         SetRandomUserAgent();
@@ -26,19 +28,21 @@ public partial class TikTokVideoParser(HttpClient client) : IVideoParser
             {
                 fullUrl = response.RequestMessage?.RequestUri?.ToString();
                 if(fullUrl is null)
-                    return null;
+                    return Result<InputFile>.Error(Messages.Error);
             }
             else
-                return null;
+                return Result<InputFile>.NotFound(Messages.VideoNotFound);
         }
 
         var match = UrlRegex.Match(fullUrl);
         if (!match.Success)
-            return null;
+            return Result<InputFile>.Error(Messages.InvalidUrl);
         var videoId = match.Groups[1].Value;
 
         var newUrl = await GetDownloadLinkAsync(videoId).ConfigureAwait(false);
-        return newUrl is null ? null : new InputFileUrl(newUrl);
+        return newUrl is not null 
+            ? new InputFileUrl(newUrl) 
+            : Result<InputFile>.Error(Messages.DownloadFailed);
     }
 
     private readonly string[] _userAgents =

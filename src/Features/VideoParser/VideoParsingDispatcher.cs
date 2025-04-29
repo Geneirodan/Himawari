@@ -25,9 +25,9 @@ public sealed class VideoParsingDispatcher(IServiceProvider serviceProvider) : I
         {
             if (!parser.ContainsUrl(url: messageText)) continue;
             var file = await parser.GetInputFile(messageText).ConfigureAwait(false);
-            IReply reply = file is null 
-                ? new ErrorReply(msg, parser.Type) 
-                : new ParseVideoReply(msg, file);
+            IReply reply = file.IsSuccess 
+                ? new ParseVideoReply(msg, file.Value) 
+                : new ErrorReply(msg, file.Errors.First());
             await sender.Send(reply).ConfigureAwait(false);
         }
     }

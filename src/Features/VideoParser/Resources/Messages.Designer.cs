@@ -60,11 +60,38 @@ namespace Himawari.VideoParser.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sorry, but I couldn&apos;t download this video.
+        /// </summary>
+        internal static string DownloadFailed {
+            get {
+                return ResourceManager.GetString("DownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error occured when parsing {0} url.
         /// </summary>
         internal static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, but the url you gave is wrong as far as I can tell.
+        /// </summary>
+        internal static string InvalidUrl {
+            get {
+                return ResourceManager.GetString("InvalidUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, but I couldn&apos;t find this video.
+        /// </summary>
+        internal static string VideoNotFound {
+            get {
+                return ResourceManager.GetString("VideoNotFound", resourceCulture);
             }
         }
     }
