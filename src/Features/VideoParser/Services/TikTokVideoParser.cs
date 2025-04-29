@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Ardalis.Result;
 using Himawari.VideoParser.Resources;
 using Telegram.Bot.Types;
@@ -14,35 +13,52 @@ public partial class TikTokVideoParser(HttpClient client) : IVideoParser
     [GeneratedRegex(@"https:\/\/www\.tiktok\.com\/@[^/]+\/video\/(\d+)")]
     private static partial Regex UrlRegex { get; }
 
+    [GeneratedRegex(@"https://tikcdn.io/ssstik/(\d+)")]
+    private static partial Regex DownloadUrlRegex { get; }
+
     public bool ContainsUrl(string url) => ShortUrlRegex.IsMatch(url) || UrlRegex.IsMatch(url);
     public string Type => "TikTok";
 
     public async Task<Result<InputFile>> GetInputFile(string url)
     {
-        var fullUrl = url;
-        SetRandomUserAgent();
-        if (ShortUrlRegex.Match(url) is { Success: true } shortMatch)
-        {
-            var response = await client.GetAsync(shortMatch.Groups[0].Value).ConfigureAwait(false);
-            if (response.IsSuccessStatusCode)
-            {
-                fullUrl = response.RequestMessage?.RequestUri?.ToString();
-                if(fullUrl is null)
-                    return Result<InputFile>.Error(Messages.Error);
-            }
-            else
-                return Result<InputFile>.NotFound(Messages.VideoNotFound);
-        }
-
-        var match = UrlRegex.Match(fullUrl);
-        if (!match.Success)
+        if (!ContainsUrl(url))
             return Result<InputFile>.Error(Messages.InvalidUrl);
-        var videoId = match.Groups[1].Value;
 
-        var newUrl = await GetDownloadLinkAsync(videoId).ConfigureAwait(false);
-        return newUrl is not null 
-            ? new InputFileUrl(newUrl) 
-            : Result<InputFile>.Error(Messages.DownloadFailed);
+        var content = new Dictionary<string, string>
+        {
+            { "id", url },
+            { "locale", "en" },
+            { "tt", "OGJyVWI_" }
+        };
+        const string requestUri = "https://ssstik.io/abc?url=dl";
+
+        var retryCount = 3;
+        
+        do
+        {
+            SetRandomUserAgent();
+            
+            var formContent = new FormUrlEncodedContent(content);
+            var response = await client.PostAsync(requestUri, formContent).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode) 
+                return Result<InputFile>.Error(Messages.Error);
+            
+            var html = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            if (!DownloadUrlRegex.IsMatch(html))
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                continue;
+            }
+
+            var downloadLink = DownloadUrlRegex.Match(html).Value;
+            var video = await client.GetAsync(downloadLink).ConfigureAwait(false);
+            if (!video.IsSuccessStatusCode)
+                return Result<InputFile>.Error(Messages.DownloadFailed);
+            
+            var stream = await video.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return new InputFileStream(stream, $"{Guid.CreateVersion7()}.mp4");
+        } while (retryCount-- > 0);
+        return Result<InputFile>.Error(Messages.DownloadFailed);
     }
 
     private readonly string[] _userAgents =
@@ -57,36 +73,5 @@ public partial class TikTokVideoParser(HttpClient client) : IVideoParser
     {
         var randomAgent = _userAgents[Random.Shared.Next(_userAgents.Length)];
         client.DefaultRequestHeaders.UserAgent.ParseAdd(randomAgent);
-    }
-
-    private async Task<string?> GetDownloadLinkAsync(string? videoId)
-    {
-        var apiUrl = $"https://api22-normal-c-alisg.tiktokv.com/aweme/v1/feed/" +
-                     $"?aweme_id={videoId}" +
-                     $"&iid=7318518857994389254" +
-                     $"&device_id=7318517321748022790" +
-                     $"&channel=googleplay" +
-                     $"&app_name=musical_ly" +
-                     $"&version_code=300904" +
-                     $"&device_platform=android" +
-                     $"&device_type=ASUS_Z01QD" +
-                     $"&version=9";
-
-        var response = await client.GetAsync(apiUrl).ConfigureAwait(false);
-        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-        return response.IsSuccessStatusCode ? ExtractDownloadUrl(content) : null;
-    }
-
-    private static string? ExtractDownloadUrl(string apiResponse)
-    {
-        using var doc = JsonDocument.Parse(apiResponse);
-        return doc.RootElement
-            .GetProperty("aweme_list")[0]
-            .GetProperty("video")
-            .GetProperty("play_addr")
-            .GetProperty("url_list")[0]
-            .GetString()?
-            .Replace("\\u0026", "&");
     }
 }

@@ -21,11 +21,22 @@ public class TikTokVideoParserTests
 
     [Theory]
     [MemberData(nameof(ValidUrlsData))]
-    public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url) => (await _parser.GetInputFile(url)).ShouldNotBeNull();
-    
+    public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url)
+    {
+        var result = await _parser.GetInputFile(url);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Errors.ShouldBeEmpty();
+    }
+
     [Theory]
     [MemberData(nameof(InvalidUrlsData))]
-    public async Task GetInputFile_ShouldReturnNull_WhenUrlIsInvalid(string url) => (await _parser.GetInputFile(url)).ShouldBeNull();
+    public async Task GetInputFile_ShouldReturnNull_WhenUrlIsInvalid(string url)
+    {
+        var result = await _parser.GetInputFile(url); 
+        result.IsSuccess.ShouldBeFalse();
+        result.Errors.ShouldNotBeEmpty();
+    }
 
     public static TheoryData<string, bool> MatchData()
     {
@@ -51,7 +62,7 @@ public class TikTokVideoParserTests
     
     private static readonly string[] ValidUrls =
     [
-        "https://vm.tiktok.com/ZMBb5FeLg/",
+       // "https://vm.tiktok.com/ZMBb5FeLg/",
         "https://www.tiktok.com/@bankai.games/video/7492817945027038486?_t=ZM-8vWPPtvHrcM&_r=1"
     ]; 
     

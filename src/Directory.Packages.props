@@ -10,6 +10,7 @@
     <PackageVersion Include="MediatR" Version="12.5.0" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="9.0.4" />
     <PackageVersion Include="Scrutor" Version="6.0.1" />
     <PackageVersion Include="WeCantSpell.Hunspell" Version="6.0.0" />
     <PackageVersion Include="WTelegramBot" Version="9.0.0" />
