@@ -7,7 +7,7 @@ namespace Himawari.VideoParser.Services;
 
 public partial class TikTokVideoParser(HttpClient client) : IVideoParser
 {
-    [GeneratedRegex(@"https:\/\/vm\.tiktok\.com\/(\w+)\/?")]
+    [GeneratedRegex(@"https:\/\/v(m|t)\.tiktok\.com\/(\w+)\/?")]
     private static partial Regex ShortUrlRegex { get; }
 
     [GeneratedRegex(@"https:\/\/www\.tiktok\.com\/@[^/]+\/video\/(\d+)")]

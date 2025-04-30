@@ -20,6 +20,7 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
     {
         if (msg.Text is not { } messageText) return;
 
+        // TODO: Optimize unnecessary call to alias word generator
         var currentWord = await aliasService.GetCurrentWordAsync(msg.Chat.Id).ConfigureAwait(false);
         if (messageText.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase))
         {
