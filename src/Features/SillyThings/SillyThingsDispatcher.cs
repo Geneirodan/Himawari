@@ -1,17 +1,16 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core;
 using Himawari.SillyThings.Responses;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Himawari.SillyThings;
 
 [PublicAPI]
-public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : IMessageHandler
+public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : AbstractDispatcher
 {
-    public async Task OnMessage(Message msg, UpdateType update)
+    protected override async Task OnNewMessage(Message msg)
     {
         if (msg.Text is not { } messageText) return;
 

@@ -1,19 +1,18 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core;
 using Himawari.SpellChecking.Responses;
 using Himawari.SpellChecking.Services;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace Himawari.SpellChecking;
 
 [PublicAPI]
 public sealed class SpellCheckingDispatcher(IWrongLayoutParser parser, IServiceProvider serviceProvider)
-    : IMessageHandler
+    : AbstractDispatcher
 {
-    public async Task OnMessage(Message msg, UpdateType update)
+    protected override async Task OnNewMessage(Message msg)
     {
         if (msg.Text is null || !parser.TryParse(msg.Text, out var correctedText))
             return;

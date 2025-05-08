@@ -1,4 +1,5 @@
-﻿using Himawari.Core.Abstractions;
+﻿using Himawari.Core;
+using Himawari.Core.Abstractions;
 using Himawari.Core.Extensions;
 using Himawari.Core.Services;
 using JetBrains.Annotations;
@@ -12,9 +13,9 @@ namespace Himawari.Application;
 
 [PublicAPI]
 public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServiceProvider serviceProvider)
-    : IMessageHandler
+    : AbstractDispatcher
 {
-    public async Task OnMessage(Message msg, UpdateType update)
+    protected override async Task OnNewMessage(Message msg)
     {
         if (msg.Text is not { } messageText) return;
 
