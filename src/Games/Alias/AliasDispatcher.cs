@@ -2,6 +2,7 @@
 using Himawari.Alias.Models;
 using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
+using Himawari.Core;
 using Himawari.Core.Abstractions;
 using JetBrains.Annotations;
 using MediatR;
@@ -14,9 +15,9 @@ namespace Himawari.Alias;
 
 [PublicAPI]
 public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasService aliasService)
-    : IMessageHandler, IUpdateHandler
+    : AbstractDispatcher, IUpdateHandler
 {
-    public async Task OnMessage(Message msg, UpdateType update)
+    protected override async Task OnNewMessage(Message msg)
     {
         if (msg.Text is not { } messageText) return;
 
