@@ -1,4 +1,4 @@
-﻿using Himawari.Core;
+﻿using Himawari.Core.Abstractions;
 using Himawari.SpellChecking.Responses;
 using Himawari.SpellChecking.Services;
 using JetBrains.Annotations;
