@@ -1,4 +1,4 @@
-﻿using Himawari.Core;
+﻿using Himawari.Core.Abstractions;
 using Himawari.SillyThings.Responses;
 using JetBrains.Annotations;
 using MediatR;

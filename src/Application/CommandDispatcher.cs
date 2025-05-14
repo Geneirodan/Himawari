@@ -1,11 +1,9 @@
-﻿using Himawari.Core;
-using Himawari.Core.Abstractions;
+﻿using Himawari.Core.Abstractions;
 using Himawari.Core.Extensions;
 using Himawari.Core.Services;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Types.Enums;
 using WTelegram;
 using Message = Telegram.Bot.Types.Message;
 

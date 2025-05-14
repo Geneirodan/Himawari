@@ -2,7 +2,6 @@
 using Himawari.Alias.Models;
 using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
-using Himawari.Core;
 using Himawari.Core.Abstractions;
 using JetBrains.Annotations;
 using MediatR;

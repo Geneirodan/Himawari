@@ -1,8 +1,7 @@
-﻿using Himawari.Core.Abstractions;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace Himawari.Core;
+namespace Himawari.Core.Abstractions;
 
 public abstract class AbstractDispatcher : IMessageHandler
 {
