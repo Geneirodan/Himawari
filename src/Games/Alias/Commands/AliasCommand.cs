@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Himawari.Alias.Models;
+﻿using Himawari.Alias.Enums;
+using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Core.Abstractions;
 using Himawari.Core.Abstractions.Messages;
@@ -23,16 +23,15 @@ public sealed record AliasCommand(Message Message) : ICommand
     {
         public async Task<Message> Handle(AliasCommand request, CancellationToken cancellationToken)
         {
-            var locale = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var chatId = request.Message.Chat.Id;
-            service.Restart(chatId);
+            service.EndGame(chatId);
             return await bot.SendReplyMessage(
                 message: request.Message,
                 text: StartGame,
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData(
                         text: Want,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.Choose, locale).Serialize()
+                        callbackData: AliasCallbackType.Choose.Serialize()
                     )
                 )
             ).ConfigureAwait(false);

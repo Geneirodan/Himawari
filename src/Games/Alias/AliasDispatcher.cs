@@ -1,5 +1,5 @@
 ﻿using Himawari.Alias.Callbacks;
-using Himawari.Alias.Models;
+using Himawari.Alias.Extensions;
 using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
 using Himawari.Core.Abstractions;
@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using static Himawari.Alias.Enums.AliasCallbackType;
 using Update = WTelegram.Types.Update;
 
 namespace Himawari.Alias;
@@ -20,7 +21,7 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
     {
         if (msg.Text is not { } messageText) return;
 
-        var currentWord = await aliasService.GetCurrentWordAsync(msg.Chat.Id).ConfigureAwait(false);
+        var currentWord = aliasService.GetCurrentWord(msg.Chat.Id);
         if (messageText.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase))
         {
             var response = new WinReply(msg);
@@ -36,19 +37,12 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
 
     private async Task ProcessCallbackQuery(CallbackQuery query)
     {
-        if (query.Data is null)
-            return;
-
-        var commandInfo = AliasCallbackData.Deserialize(query.Data);
-        if (commandInfo is null)
-            return;
-
-        IBaseRequest? request = commandInfo.Callback switch
+        IBaseRequest? request = query.Data.Deserialize() switch
         {
-            AliasCallbackData.CallbackType.Choose => new ChoosePresenterCallback(query),
-            AliasCallbackData.CallbackType.Restart => new EndGameCallback(query),
-            AliasCallbackData.CallbackType.SeeWord => new SeeWordCallback(query),
-            AliasCallbackData.CallbackType.NextWord => new NextWordCallback(query),
+            Choose => new ChoosePresenterCallback(query),
+            EndGame => new EndGameCallback(query),
+            SeeWord => new SeeWordCallback(query),
+            NextWord => new NextWordCallback(query),
             _ => null
         };
         if (request is not null)

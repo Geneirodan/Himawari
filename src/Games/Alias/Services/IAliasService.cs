@@ -2,9 +2,10 @@
 
 public interface IAliasService
 {
-    Task<string?> GetCurrentWordAsync(long chatId, CancellationToken cancellationToken = default);
-    void Restart(long chatId);
+    Task<string> StartAsync(long chatId, long presenterId, CancellationToken cancellationToken = default);
+    string? GetCurrentWord(long chatId);
+    void EndGame(long chatId);
     long? GetPresenterId(long chatId);
-    void ResetWord(long chatId);
-    void SetPresenterId(long chatId, long presenterId);
+    Task<string> NextWordAsync(long chatId, CancellationToken cancellationToken = default);
+    Task<string> GetOrCreateCurrentWordAsync(long chatId, CancellationToken cancellationToken = default);
 }

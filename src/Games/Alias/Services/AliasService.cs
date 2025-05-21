@@ -5,57 +5,49 @@ namespace Himawari.Alias.Services;
 
 public partial class AliasService(HttpClient client) : IAliasService
 {
-    private readonly Dictionary<long, long?> _presenterIds = [];
-    private readonly Dictionary<long, string?> _words = [];
+    private static readonly Dictionary<long, long?> PresenterIds = [];
+    private static readonly Dictionary<long, string> Words = [];
 
-    public async Task<string?> GetCurrentWordAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task<string> StartAsync(long chatId, long presenterId, CancellationToken cancellationToken = default)
     {
-        if (_words.TryGetValue(chatId, out var word))
-            return word;
-        word = await GetNewWordAsync(cancellationToken).ConfigureAwait(false);
-        _words[chatId] = word;
-        return word;
+        PresenterIds[chatId] = presenterId;
+        return await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
     }
 
-    public void Restart(long chatId)
+    public string? GetCurrentWord(long chatId) => Words.GetValueOrDefault(chatId);
+
+    public void EndGame(long chatId)
     {
-        ResetWord(chatId);
-        _presenterIds.Remove(chatId);
+        Words.Remove(chatId);
+        PresenterIds.Remove(chatId);
     }
 
-    public long? GetPresenterId(long chatId)
-    {
-        return _presenterIds.GetValueOrDefault(chatId);
-    }
+    public long? GetPresenterId(long chatId) => PresenterIds.GetValueOrDefault(chatId);
 
-    public void SetPresenterId(long chatId, long presenterId)
+    public async Task<string> NextWordAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        _presenterIds[chatId] = presenterId;
-    }
-
-    public void ResetWord(long chatId)
-    {
-        _words.Remove(chatId);
-    }
-
-
-    private async Task<string?> GetNewWordAsync(CancellationToken cancellationToken = default)
-    {
-        var formContent = new FormUrlEncodedContent([
-            new KeyValuePair<string, string>("qu_words", "1"),
-            new KeyValuePair<string, string>("type_words", "objects"),
-            new KeyValuePair<string, string>("order", "in_order"),
-            new KeyValuePair<string, string>("done", "Create")
-        ]);
+        var nameValueCollection = new Dictionary<string, string>
+        {
+            {"qu_words", "1"},
+            {"type_words", "objects"},
+            {"order", "in_order"},
+            {"done", "Create"}
+        };
+        var formContent = new FormUrlEncodedContent(nameValueCollection);
         var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
         var requestUri = $"https://teoset.com/word-generator/lang.{culture}#element_list";
-        using var response = await client.PostAsync(requestUri, formContent, cancellationToken).ConfigureAwait(false);
-        var str = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        var first = ResultRegex().Matches(str).First();
-        var word = first.Groups[1].Value.Trim();
-        return word;
+        using (var response = await client.PostAsync(requestUri, formContent, cancellationToken).ConfigureAwait(false))
+        {
+            var str = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            Words[chatId] =  ResultRegex.Matches(str).First().Groups[1].Value.Trim();
+        }
+        return Words[chatId];
     }
 
-    [GeneratedRegex("""<span>(\w+)</span>""")]
-    private static partial Regex ResultRegex();
+    public async Task<string> GetOrCreateCurrentWordAsync(long chatId, CancellationToken cancellationToken = default) => 
+        GetCurrentWord(chatId) ?? await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
+
+
+    [GeneratedRegex(@"<span>(\w+)</span>")]
+    private static partial Regex ResultRegex { get; }
 }

@@ -13,18 +13,14 @@ public sealed record SeeWordCallback(CallbackQuery Query) : AbstractCallback(Que
     {
         public async Task Handle(SeeWordCallback request, CancellationToken cancellationToken)
         {
-            if (request.Query.Message is null)
+            if (request.Query.Message?.Chat.Id is not { } chatId)
                 return;
-            var chatId = request.Query.Message.Chat.Id;
-            if (service.GetPresenterId(chatId) is not { } presenterId)
-                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true).ConfigureAwait(false);
-            else if (presenterId != request.Query.From.Id)
-                await bot.AnswerCallbackQuery(request.Query.Id, Forbidden, true).ConfigureAwait(false);
-            else
-            {
-                var word = await service.GetCurrentWordAsync(chatId, cancellationToken).ConfigureAwait(false);
-                await bot.AnswerCallbackQuery(request.Query.Id, word, true).ConfigureAwait(false);
-            }
+            var word = service.GetPresenterId(chatId) is not { } presenterId
+                ? GameIsNotStarted
+                : presenterId != request.Query.From.Id
+                    ? Forbidden
+                    : await service.GetOrCreateCurrentWordAsync(chatId, cancellationToken).ConfigureAwait(false);
+            await bot.AnswerCallbackQuery(request.Query.Id, word, true).ConfigureAwait(false);
         }
     }
 }

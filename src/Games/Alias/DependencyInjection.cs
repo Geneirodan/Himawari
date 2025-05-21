@@ -9,7 +9,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAliasGame(this IServiceCollection services)
     {
-        services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
+        services.AddHybridCache();
+        services
+            .AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
             .AddSingleton<IAliasService, AliasService>()
             .AddHttpClient<IAliasService, AliasService>();
         return services;

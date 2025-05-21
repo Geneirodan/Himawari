@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Himawari.Alias.Models;
+﻿using Himawari.Alias.Enums;
+using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Core.Abstractions;
 using Himawari.Core.Extensions;
@@ -25,28 +25,18 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
                 return null;
             }
 
-            service.SetPresenterId(chatId, request.Query.From.Id);
+            await service.StartAsync(chatId, request.Query.From.Id, cancellationToken).ConfigureAwait(false);
 
-            var locale = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-            var message = await bot.SendMessage(
+            return await bot.SendMessage(
                 chatId: chatId,
                 text: string.Format(PresenterChosen, request.Query.From.GetUsername()),
                 parseMode: ParseMode.MarkdownV2,
                 replyMarkup: new InlineKeyboardMarkup(
-                    InlineKeyboardButton.WithCallbackData(
-                        text: EndGame,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.Restart, locale).Serialize()
-                    ), 
-                    InlineKeyboardButton.WithCallbackData(
-                        text: SeeWord,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.SeeWord, locale).Serialize()
-                    ), 
-                    InlineKeyboardButton.WithCallbackData(
-                        text: NextWord,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.NextWord, locale).Serialize()
-                    ))
+                    InlineKeyboardButton.WithCallbackData(EndGame, AliasCallbackType.EndGame.Serialize()),
+                    InlineKeyboardButton.WithCallbackData(SeeWord, AliasCallbackType.SeeWord.Serialize()),
+                    InlineKeyboardButton.WithCallbackData(NextWord, AliasCallbackType.NextWord.Serialize())
+                )
             ).ConfigureAwait(false);
-            return message;
         }
     }
 }

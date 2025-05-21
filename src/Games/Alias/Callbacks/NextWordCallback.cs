@@ -9,24 +9,18 @@ namespace Himawari.Alias.Callbacks;
 
 public sealed record NextWordCallback(CallbackQuery Query) : AbstractCallback(Query)
 {
-    public sealed class Handler(Bot bot, IAliasService service, ISender sender) : IRequestHandler<NextWordCallback>
+    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<NextWordCallback>
     {
         public async Task Handle(NextWordCallback request, CancellationToken cancellationToken)
         {
-            if (request.Query.Message is null)
+            if (request.Query.Message?.Chat.Id is not { } chatId)
                 return;
-
-            var chatId = request.Query.Message.Chat.Id;
-            if (service.GetPresenterId(chatId) is not { } presenterId)
-                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true).ConfigureAwait(false);
-            else if (presenterId != request.Query.From.Id)
-                await bot.AnswerCallbackQuery(request.Query.Id, Forbidden, true).ConfigureAwait(false);
-            else
-            {
-                service.ResetWord(chatId);
-                var req = new SeeWordCallback(request.Query);
-                await sender.Send(req, cancellationToken).ConfigureAwait(false);
-            }
+            var word = service.GetPresenterId(chatId) is not { } presenterId
+                ? GameIsNotStarted
+                : presenterId != request.Query.From.Id
+                    ? Forbidden
+                    : await service.NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
+            await bot.AnswerCallbackQuery(request.Query.Id, word, true).ConfigureAwait(false);
         }
     }
 }

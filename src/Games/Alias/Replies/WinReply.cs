@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Himawari.Alias.Models;
+﻿using Himawari.Alias.Enums;
+using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Core.Abstractions.Messages;
 using MediatR;
@@ -16,7 +16,6 @@ public sealed record WinReply(Message Message) : IReply
     {
         public async Task<Message> Handle(WinReply request, CancellationToken cancellationToken)
         {
-            var locale = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var chatId = request.Message.Chat.Id;
             var message = await bot.SendMessage(
                 chatId,
@@ -25,20 +24,20 @@ public sealed record WinReply(Message Message) : IReply
                 {
                     MessageId = request.Message.MessageId,
                     ChatId = chatId,
-                    Quote = await service.GetCurrentWordAsync(chatId, cancellationToken).ConfigureAwait(false)
+                    Quote = service.GetCurrentWord(chatId)
                 },
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData(
                         text: EndGame,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.Restart, locale).Serialize()
+                        callbackData: AliasCallbackType.EndGame.Serialize()
                     ), 
                     InlineKeyboardButton.WithCallbackData(
                         text: Want,
-                        callbackData: new AliasCallbackData(AliasCallbackData.CallbackType.Choose, locale).Serialize()
+                        callbackData: AliasCallbackType.Choose.Serialize()
                     )
                 )
             ).ConfigureAwait(false);
-            service.Restart(chatId);
+            service.EndGame(chatId);
             return message;
         }
     }
