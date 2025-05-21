@@ -25,4 +25,7 @@
       <DependentUpon>AliasCommand.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+  </ItemGroup>
 </Project>

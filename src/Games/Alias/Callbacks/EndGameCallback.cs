@@ -13,17 +13,15 @@ public sealed record EndGameCallback(CallbackQuery Query) : AbstractCallback<Mes
     {
         public async Task<Message?> Handle(EndGameCallback request, CancellationToken cancellationToken)
         {
-            if (request.Query.Message is not { } message)
+            if (request.Query.Message?.Chat.Id is not { } chatId)
                 return null;
-
-            var chatId = message.Chat.Id;
             if (service.GetPresenterId(chatId) is null)
             {
                 await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true).ConfigureAwait(false);
                 return null;
             }
 
-            service.Restart(chatId);
+            service.EndGame(chatId);
             return await bot.SendMessage(chatId, GameEnded).ConfigureAwait(false);
         }
     }

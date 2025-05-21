@@ -24,7 +24,7 @@ public class AliasServiceTests
     [Fact]
     public async Task GetCurrentWordAsync_ShouldFetchNewWord_WhenNoWordExists()
     {
-        const long chatId = 12345L;
+        const long chatId = 1;
         SetupHttpMessage()
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -32,7 +32,7 @@ public class AliasServiceTests
                 }
             );
 
-        var word = await _aliasService.GetCurrentWordAsync(chatId);
+        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId);
 
         word.ShouldNotBeNull();
         word.ShouldBe("test");
@@ -49,7 +49,7 @@ public class AliasServiceTests
     [Fact]
     public async Task GetCurrentWordAsync_ShouldReturnCachedWord_WhenWordExists()
     {
-        const long chatId = 12345L;
+        const long chatId = 2;
 
         SetupHttpMessage()
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
@@ -63,30 +63,41 @@ public class AliasServiceTests
                 }
             );
 
-        await _aliasService.GetCurrentWordAsync(chatId);
-        var word = await _aliasService.GetCurrentWordAsync(chatId);
+        await _aliasService.GetOrCreateCurrentWordAsync(chatId);
+        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId);
 
         word.ShouldNotBeNull();
         word.ShouldBe("test1");
     }
 
     [Fact]
-    public void Restart_ShouldResetWordAndPresenterId()
+    public async Task Restart_ShouldResetWordAndPresenterId()
     {
-        const long chatId = 12345L;
-        _aliasService.SetPresenterId(chatId, 67890L);
-
-        _aliasService.Restart(chatId);
+        SetupHttpMessage()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("<span>test1</span>")
+                }
+            );
+        const long chatId = 3;
+        await _aliasService.StartAsync(chatId, 67890L);
+        _aliasService.EndGame(chatId);
 
         _aliasService.GetPresenterId(chatId).ShouldBe(null);
     }
 
     [Fact]
-    public void GetPresenterId_ShouldReturnCorrectPresenterId()
+    public async Task GetPresenterId_ShouldReturnCorrectPresenterId()
     {
-        const long chatId = 12345L;
+        SetupHttpMessage()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("<span>test1</span>")
+                }
+            );
+        const long chatId = 4;
         const long presenterId = 67890L;
-        _aliasService.SetPresenterId(chatId, presenterId);
+        await _aliasService.StartAsync(chatId, presenterId);
 
         var result = _aliasService.GetPresenterId(chatId);
 

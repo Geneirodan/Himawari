@@ -11,7 +11,6 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using WTelegram;
 
 namespace Himawari.Application.Commands;
@@ -48,7 +47,7 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
             if (!string.IsNullOrWhiteSpace(rest))
                 stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
 
-            return await bot.SendReplyMessage(message, stringBuilder.ToString(), ParseMode.MarkdownV2)
+            return await bot.SendReplyMessage(message, stringBuilder.ToString())
                 .ConfigureAwait(false);
         }
     }

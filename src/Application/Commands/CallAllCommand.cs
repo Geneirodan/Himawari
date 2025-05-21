@@ -8,7 +8,6 @@ using Himawari.Core.Models;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Options;
-using Telegram.Bot.Types.Enums;
 using WTelegram;
 using static Himawari.Application.Resources.Messages;
 using Message = Telegram.Bot.Types.Message;
@@ -35,7 +34,7 @@ public sealed record CallAllCommand(Message Message) : ICommand
                 )
                 .ToString();
 
-            return await bot.SendReplyMessage(message, text, ParseMode.MarkdownV2).ConfigureAwait(false);
+            return await bot.SendReplyMessage(message, text).ConfigureAwait(false);
         }
     }
 
