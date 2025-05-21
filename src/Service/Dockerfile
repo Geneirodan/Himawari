@@ -1,7 +1,7 @@
 ﻿# syntax=docker/dockerfile:1.15.0
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-RUN apt-get update && apt-get install ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
 EXPOSE 8080
 EXPOSE 8081
 
@@ -14,8 +14,7 @@ COPY ["Service/Service.csproj", "src/Service/"]
 COPY ["Application/Application.csproj", "src/Application/"]
 COPY ["Core/Core.csproj", "src/Core/"]
 COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
-COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"]
-RUN dotnet nuget remove source Github
+COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"] 
 RUN --mount=type=secret,id=github-username \
     --mount=type=secret,id=github-token \
     dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
