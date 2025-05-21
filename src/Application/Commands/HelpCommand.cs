@@ -11,7 +11,6 @@ using JetBrains.Annotations;
 using MediatR;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using WTelegram;
 using static Himawari.Application.Resources.Messages;
 
@@ -31,7 +30,7 @@ public sealed record HelpCommand(Message Message) : ICommand
                     x => x.ToString()
                 );
 
-            return await bot.SendReplyMessage(request.Message, help, ParseMode.MarkdownV2).ConfigureAwait(false);
+            return await bot.SendReplyMessage(request.Message, help).ConfigureAwait(false);
         }
     }
 
