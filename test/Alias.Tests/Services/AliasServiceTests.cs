@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Himawari.Alias.Enums;
 using Himawari.Alias.Services;
 using JetBrains.Annotations;
 using Moq;
@@ -103,4 +104,25 @@ public class AliasServiceTests
 
         result.ShouldBe(presenterId);
     }
+
+    [Theory, MemberData(nameof(TestData))]
+    public async Task VerifyWord_ShouldReturnExpectedResult(string currentWord, string word, Guess expectedGuess)
+    {SetupHttpMessage()
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent($"<span>{currentWord}</span>")
+                }
+            );
+        const long chatId = 5;
+        await _aliasService.StartAsync(chatId, 67890L);
+        _aliasService.VerifyWord(chatId, word).ShouldBe(expectedGuess);
+    }
+
+    public static TheoryData<string, string, Guess> TestData() =>
+        new()
+        {
+            { "test", "Test", Guess.Correct },
+            { "test", "Tet", Guess.Partial },
+            { "test", "Te", Guess.Incorrect },
+        };
 }

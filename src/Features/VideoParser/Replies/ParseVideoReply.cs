@@ -5,19 +5,18 @@ using WTelegram;
 
 namespace Himawari.VideoParser.Replies;
 
-public record ParseVideoReply(Message Message, InputFile File) : IReply
+public record ParseVideoReply(Message Message, IAlbumInputMedia[] Files) : IReply
 {
-    public class Handler(Bot bot) : IRequestHandler<ParseVideoReply, Message>
+    public class Handler(Bot bot) : IRequestHandler<ParseVideoReply, IEnumerable<Message>>
     {
-        public async Task<Message> Handle(ParseVideoReply request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Message>> Handle(ParseVideoReply request, CancellationToken cancellationToken)
         {
-            var (message, inputFile) = request;
-            return await bot.SendVideo(
-                    chatId: message.Chat.Id,
-                    video: inputFile,
-                    replyParameters: new ReplyParameters { MessageId = message.MessageId, ChatId = message.Chat.Id }
-                )
-                .ConfigureAwait(false);
+            var (message, inputFiles) = request;
+            return await bot.SendMediaGroup(
+                chatId: message.Chat.Id,
+                media: inputFiles,
+                replyParameters: new ReplyParameters { MessageId = message.MessageId, ChatId = message.Chat.Id }
+            ).ConfigureAwait(false);
         }
     }
 }

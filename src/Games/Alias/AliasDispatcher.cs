@@ -1,4 +1,5 @@
 ﻿using Himawari.Alias.Callbacks;
+using Himawari.Alias.Enums;
 using Himawari.Alias.Extensions;
 using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
@@ -21,18 +22,23 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
     {
         if (msg.Text is not { } messageText) return;
 
-        var currentWord = aliasService.GetCurrentWord(msg.Chat.Id);
-        if (messageText.Equals(currentWord, StringComparison.InvariantCultureIgnoreCase))
+        var response = aliasService.VerifyWord(msg.Chat.Id, messageText) switch
         {
-            var response = new WinReply(msg);
+            Guess.Partial => new GuessReply(msg, false),
+            Guess.Correct => new GuessReply(msg, true),
+            _ => null
+        };
+        
+        if (response is not null)
+        {
             using var scope = serviceProvider.CreateScope();
             await scope.ServiceProvider.GetRequiredService<ISender>().Send(response).ConfigureAwait(false);
         }
     }
 
-    public Task OnUpdate(Update arg) => 
-        arg is { Type: UpdateType.CallbackQuery, CallbackQuery: { } query } 
-            ? ProcessCallbackQuery(query) 
+    public Task OnUpdate(Update arg) =>
+        arg is { Type: UpdateType.CallbackQuery, CallbackQuery: { } query }
+            ? ProcessCallbackQuery(query)
             : Task.CompletedTask;
 
     private async Task ProcessCallbackQuery(CallbackQuery query)

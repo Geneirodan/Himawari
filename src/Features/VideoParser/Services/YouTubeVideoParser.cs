@@ -12,10 +12,10 @@ public partial class YouTubeVideoParser(HttpClient httpClient) : IVideoParser
     [GeneratedRegex(@"https:\/\/(www\.)?youtu(\.be|be\.com)\/")]
     private static partial Regex UrlRegex { get; }
 
-    public async Task<Result<InputFile>> GetInputFile(string url)
+    public async Task<Result<IAlbumInputMedia[]>> GetInputFiles(string url)
     {
         if (!ContainsUrl(url))
-            return Result<InputFile>.Error(Messages.InvalidUrl);
+            return Result<IAlbumInputMedia[]>.Error(Messages.InvalidUrl);
         var youtube = new YoutubeClient(httpClient);
         var video = await youtube.Videos.GetAsync(url).ConfigureAwait(false);
         var sanitizedTitle = string.Join("_", video.Title.Split(Path.GetInvalidFileNameChars()));
@@ -29,7 +29,8 @@ public partial class YouTubeVideoParser(HttpClient httpClient) : IVideoParser
             bufferSize: 4096,
             options: FileOptions.DeleteOnClose
         );
-        return new InputFileStream(stream);
+        var file = new InputFileStream(stream);
+        return new[] { new InputMediaVideo(file) };
     }
 
     public bool ContainsUrl(string url) => UrlRegex.IsMatch(url);

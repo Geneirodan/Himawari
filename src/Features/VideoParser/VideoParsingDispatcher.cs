@@ -26,7 +26,7 @@ public sealed partial class VideoParsingDispatcher(IServiceProvider serviceProvi
         {
             if (!parser.ContainsUrl(url: messageText)) continue;
             LogDetectedUrl(parser.Type, messageText);
-            var file = await parser.GetInputFile(messageText).ConfigureAwait(false);
+            var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
             IReply reply = file.IsSuccess
                 ? new ParseVideoReply(msg, file.Value)
                 : new ErrorReply(msg, file.Errors.First());

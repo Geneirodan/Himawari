@@ -23,7 +23,7 @@ public class TikTokVideoParserTests
     [MemberData(nameof(ValidUrlsData))]
     public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url)
     {
-        var result = await _parser.GetInputFile(url);
+        var result = await _parser.GetInputFiles(url);
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Errors.ShouldBeEmpty();
@@ -33,7 +33,7 @@ public class TikTokVideoParserTests
     [MemberData(nameof(InvalidUrlsData))]
     public async Task GetInputFile_ShouldReturnNull_WhenUrlIsInvalid(string url)
     {
-        var result = await _parser.GetInputFile(url); 
+        var result = await _parser.GetInputFiles(url); 
         result.IsSuccess.ShouldBeFalse();
         result.Errors.ShouldNotBeEmpty();
     }
