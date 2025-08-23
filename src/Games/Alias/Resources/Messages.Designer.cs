@@ -152,9 +152,15 @@ namespace Himawari.Alias.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Hurray, you guessed the word! Who wants to be the next?.
         /// </summary>
-        internal static string Win {
+        internal static string CorrectGuess {
             get {
-                return ResourceManager.GetString("Win", resourceCulture);
+                return ResourceManager.GetString("CorrectGuess", resourceCulture);
+            }
+        }
+        
+        internal static string PartialGuess {
+            get {
+                return ResourceManager.GetString("PartialGuess", resourceCulture);
             }
         }
     }

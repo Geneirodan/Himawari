@@ -35,7 +35,7 @@
     <data name="Forbidden" xml:space="preserve">
         <value>Don't cheat!</value>
     </data>
-    <data name="Win" xml:space="preserve">
+    <data name="CorrectGuess" xml:space="preserve">
         <value>Hurray, you guessed the word! Who wants to be the next?</value>
     </data>
     <data name="PresenterAlreadyChosen" xml:space="preserve">
@@ -55,5 +55,8 @@
     </data>
     <data name="GameIsNotStarted" xml:space="preserve">
         <value>The game is not started.</value>
+    </data>
+    <data name="PartialGuess" xml:space="preserve">
+        <value>You're almost there!</value>
     </data>
 </root>

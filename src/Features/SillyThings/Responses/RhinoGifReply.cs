@@ -10,9 +10,12 @@ namespace Himawari.SillyThings.Responses;
 public sealed record RhinoGifReply(Message Message) : IReply
 {
     public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor)
-        : IRequestHandler<RhinoGifReply, Message>
+        : IRequestHandler<RhinoGifReply, IEnumerable<Message>>
     {
-        public async Task<Message> Handle(RhinoGifReply request, CancellationToken cancellationToken) =>
-            await bot.SendAnimation(request.Message.Chat.Id, optionsMonitor.CurrentValue.RhinoGifUrl).ConfigureAwait(false);
+        public async Task<IEnumerable<Message>> Handle(RhinoGifReply request, CancellationToken cancellationToken) =>
+        [
+            await bot.SendAnimation(request.Message.Chat.Id, optionsMonitor.CurrentValue.RhinoGifUrl)
+                .ConfigureAwait(false)
+        ];
     }
 }

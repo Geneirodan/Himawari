@@ -27,7 +27,7 @@
     <data name="Forbidden" xml:space="preserve">
         <value>Ей, не дури!</value>
     </data>
-    <data name="Win" xml:space="preserve">
+    <data name="CorrectGuess" xml:space="preserve">
         <value>Ура, ви вгадали слово! Хто хоче бути наступним?</value>
     </data>
     <data name="PresenterAlreadyChosen" xml:space="preserve">
@@ -47,5 +47,8 @@
     </data>
     <data name="GameIsNotStarted" xml:space="preserve">
         <value>Гра не почата.</value>
+    </data>
+    <data name="PartialGuess" xml:space="preserve">
+        <value>Ти майже вгадав!</value>
     </data>
 </root>

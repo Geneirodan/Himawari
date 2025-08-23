@@ -1,20 +1,26 @@
-﻿using Himawari.VideoParser.Services;
+﻿using Himawari.VideoParser.Options;
+using Himawari.VideoParser.Services;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moq;
 using Shouldly;
 using Xunit;
 
-namespace Himawari.VideoParser.Tests.Services;
+namespace Himawari.VideoParser.Tests;
 
 #if DEBUG
-[TestSubject(typeof(YouTubeVideoParser))]
-public class YouTubeVideoParserTests
+[TestSubject(typeof(CobaltToolsVideoParser)), UsedImplicitly]
+public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFixture>
 {
-    private readonly YouTubeVideoParser _parser;
+    private readonly CobaltToolsVideoParser _parser;
 
-    public YouTubeVideoParserTests()
+    public CobaltToolsVideoParserTests(CobaltToolsContainerFixture _)
     {
         var client = new HttpClient();
-        _parser = new YouTubeVideoParser(client);
+        var options = new Mock<IOptions<VideoParsingOptions>>();
+        options.SetupGet(o => o.Value).Returns(new VideoParsingOptions { CobaltToolsUrl = "http://localhost:9000" });
+        _parser = new CobaltToolsVideoParser(client, options.Object, LoggerMock.Object);
     }
 
     [Theory]
@@ -26,7 +32,7 @@ public class YouTubeVideoParserTests
     [MemberData(nameof(ValidUrlsData))]
     public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url)
     {
-        var result = await _parser.GetInputFile(url);
+        var result = await _parser.GetInputFiles(url, TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Errors.ShouldBeEmpty();
@@ -36,11 +42,11 @@ public class YouTubeVideoParserTests
     [MemberData(nameof(InvalidUrlsData))]
     public async Task GetInputFile_ShouldReturnNull_WhenUrlIsInvalid(string url)
     {
-        var result = await _parser.GetInputFile(url); 
+        var result = await _parser.GetInputFiles(url, TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeFalse();
         result.Errors.ShouldNotBeEmpty();
     }
-    
+
     public static TheoryData<string, bool> MatchData()
     {
         var td = new TheoryData<string, bool>();
@@ -65,12 +71,14 @@ public class YouTubeVideoParserTests
 
     private static readonly string[] ValidUrls =
     [
+        "https://vm.tiktok.com/ZMBb5FeLg/",
+        "https://www.tiktok.com/@bankai.games/video/7492817945027038486?_t=ZM-8vWPPtvHrcM&_r=1",
         "https://www.youtube.com/shorts/T0t-DYPWVw0",
         "https://youtube.com/shorts/T0t-DYPWVw0?si=zAXrdjE2N12lZru6",
         "https://www.youtube.com/watch?v=oVWEb-At8yc",
         "https://youtu.be/oVWEb-At8yc?si=B-njYVy3SsHNIrUX",
         "https://www.youtube.com/embed/oVWEb-At8yc"
-    ]; 
+    ];
 
     private static readonly string[] InvalidUrls =
     [
@@ -78,5 +86,7 @@ public class YouTubeVideoParserTests
         "https://www.tiktok.com/video/",
         "somesort of somtsf"
     ];
+
+    private static readonly Mock<ILogger<CobaltToolsVideoParser>> LoggerMock = new();
 }
-# endif
+#endif
