@@ -1,10 +1,12 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using JetBrains.Annotations;
 using Testcontainers.Xunit;
 using Xunit.Sdk;
 
 namespace Himawari.VideoParser.Tests;
 
+[UsedImplicitly]
 public class CobaltToolsContainerFixture(IMessageSink messageSink)
     : ContainerFixture<ContainerBuilder, IContainer>(messageSink)
 {

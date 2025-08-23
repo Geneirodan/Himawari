@@ -9,18 +9,18 @@ using Xunit;
 
 namespace Himawari.VideoParser.Tests;
 
-[TestSubject(typeof(CobaltToolsVideoParser))]
+#if DEBUG
+[TestSubject(typeof(CobaltToolsVideoParser)), UsedImplicitly]
 public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFixture>
 {
     private readonly CobaltToolsVideoParser _parser;
 
-    public CobaltToolsVideoParserTests()
+    public CobaltToolsVideoParserTests(CobaltToolsContainerFixture _)
     {
         var client = new HttpClient();
         var options = new Mock<IOptions<VideoParsingOptions>>();
         options.SetupGet(o => o.Value).Returns(new VideoParsingOptions { CobaltToolsUrl = "http://localhost:9000" });
         _parser = new CobaltToolsVideoParser(client, options.Object, LoggerMock.Object);
-        Task.Delay(2000).Wait();
     }
 
     [Theory]
@@ -32,7 +32,7 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
     [MemberData(nameof(ValidUrlsData))]
     public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url)
     {
-        var result = await _parser.GetInputFiles(url);
+        var result = await _parser.GetInputFiles(url, TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Errors.ShouldBeEmpty();
@@ -42,7 +42,7 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
     [MemberData(nameof(InvalidUrlsData))]
     public async Task GetInputFile_ShouldReturnNull_WhenUrlIsInvalid(string url)
     {
-        var result = await _parser.GetInputFiles(url);
+        var result = await _parser.GetInputFiles(url, TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeFalse();
         result.Errors.ShouldNotBeEmpty();
     }
@@ -89,3 +89,4 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
 
     private static readonly Mock<ILogger<CobaltToolsVideoParser>> LoggerMock = new();
 }
+#endif
