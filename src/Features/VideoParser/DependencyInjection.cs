@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Himawari.Core;
+using Himawari.VideoParser.Options;
 using Himawari.VideoParser.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -11,9 +12,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddVideoParsing(this IServiceCollection services)
     {
-        services.AddHttpClient<IVideoParser, TikTokVideoParser>().AddPolicyHandler(PolicySelector);
-        services.AddHttpClient<IVideoParser, YouTubeVideoParser>().AddPolicyHandler(PolicySelector);
-        return services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly());
+        services.AddOptions<VideoParsingOptions>()
+            .BindConfiguration("VideoParsing")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        services.AddHttpClient<IVideoParser, CobaltToolsVideoParser>().AddPolicyHandler(PolicySelector);
+       return services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly());
     }
 
     private static IAsyncPolicy<HttpResponseMessage> PolicySelector(HttpRequestMessage _) =>

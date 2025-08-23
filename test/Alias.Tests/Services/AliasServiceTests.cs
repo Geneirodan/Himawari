@@ -123,6 +123,6 @@ public class AliasServiceTests
         {
             { "test", "Test", Guess.Correct },
             { "test", "Tet", Guess.Partial },
-            { "test", "Te", Guess.Incorrect },
+            { "test", "Te", Guess.Incorrect }
         };
 }

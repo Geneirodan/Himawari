@@ -5,6 +5,7 @@ using Himawari.Core;
 using Himawari.Core.Models;
 using Himawari.Core.Options;
 using Himawari.Service;
+using Himawari.SillyThings;
 using Himawari.VideoParser;
 using Microsoft.Data.Sqlite;
 
@@ -21,6 +22,7 @@ builder.Services
     .AddSingleton<SqliteConnection>(_ => new SqliteConnection(connectionString))
     .AddBasicCommands(configuration.GetSection("Commands"))
     .AddAliasGame()
+    .AddSillyThings()
     .AddVideoParsing()
     // TODO: Fix critical bug with commas
     // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
@@ -30,6 +32,7 @@ builder.Services
         .AddMessageHandler<AliasDispatcher>()
         .AddUpdateHandler<AliasDispatcher>()
         .AddMessageHandler<VideoParsingDispatcher>()
+        .AddMessageHandler<SillyThingsDispatcher>()
     )
     .AddHostedService<HostingService>()
     .AddSharedOpenTelemetry(configuration)

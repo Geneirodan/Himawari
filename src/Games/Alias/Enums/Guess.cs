@@ -4,5 +4,5 @@ public enum Guess
 {
     Incorrect,
     Partial,
-    Correct,
+    Correct
 }

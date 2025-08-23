@@ -9,9 +9,10 @@ public static partial class SS
 {
     public sealed record DetectedReply(Message Message) : IReply
     {
-        public sealed class Handler(Bot bot) : IRequestHandler<DetectedReply, Message>
+        public sealed class Handler(Bot bot) : IRequestHandler<DetectedReply, IEnumerable<Message>>
         {
-            public async Task<Message> Handle(DetectedReply request, CancellationToken cancellationToken) =>
+            public async Task<IEnumerable<Message>> Handle(DetectedReply request, CancellationToken cancellationToken) =>
+            [
                 await bot.SendMessage(
                     chatId: request.Message.Chat.Id,
                     text: "\u26a1\ufe0f SS detected! \u26a1\ufe0f",
@@ -21,7 +22,8 @@ public static partial class SS
                         ChatId = request.Message.Chat.Id,
                         Quote = "SS"
                     }
-                ).ConfigureAwait(false);
+                ).ConfigureAwait(false)
+            ];
         }
     }
 }
