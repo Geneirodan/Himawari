@@ -7,7 +7,7 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace Himawari.VideoParser.Tests.Services;
+namespace Himawari.VideoParser.Tests;
 
 [TestSubject(typeof(CobaltToolsVideoParser))]
 public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFixture>
@@ -87,5 +87,5 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
         "somesort of somtsf"
     ];
 
-    private static readonly Mock<ILogger<CobaltToolsVideoParser>> LoggerMock = new Mock<ILogger<CobaltToolsVideoParser>>();
+    private static readonly Mock<ILogger<CobaltToolsVideoParser>> LoggerMock = new();
 }

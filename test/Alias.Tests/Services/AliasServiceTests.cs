@@ -33,7 +33,7 @@ public class AliasServiceTests
                 }
             );
 
-        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId);
+        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId, TestContext.Current.CancellationToken);
 
         word.ShouldNotBeNull();
         word.ShouldBe("test");
@@ -64,8 +64,8 @@ public class AliasServiceTests
                 }
             );
 
-        await _aliasService.GetOrCreateCurrentWordAsync(chatId);
-        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId);
+        await _aliasService.GetOrCreateCurrentWordAsync(chatId, TestContext.Current.CancellationToken);
+        var word = await _aliasService.GetOrCreateCurrentWordAsync(chatId, TestContext.Current.CancellationToken);
 
         word.ShouldNotBeNull();
         word.ShouldBe("test1");
@@ -81,7 +81,7 @@ public class AliasServiceTests
                 }
             );
         const long chatId = 3;
-        await _aliasService.StartAsync(chatId, 67890L);
+        await _aliasService.StartAsync(chatId, 67890L, TestContext.Current.CancellationToken);
         _aliasService.EndGame(chatId);
 
         _aliasService.GetPresenterId(chatId).ShouldBe(null);
@@ -98,7 +98,7 @@ public class AliasServiceTests
             );
         const long chatId = 4;
         const long presenterId = 67890L;
-        await _aliasService.StartAsync(chatId, presenterId);
+        await _aliasService.StartAsync(chatId, presenterId, TestContext.Current.CancellationToken);
 
         var result = _aliasService.GetPresenterId(chatId);
 
@@ -114,7 +114,7 @@ public class AliasServiceTests
                 }
             );
         const long chatId = 5;
-        await _aliasService.StartAsync(chatId, 67890L);
+        await _aliasService.StartAsync(chatId, 67890L, TestContext.Current.CancellationToken);
         _aliasService.VerifyWord(chatId, word).ShouldBe(expectedGuess);
     }
 
