@@ -41,8 +41,7 @@ public class SillyThingsDispatcherTests
     {
         var message = new Message { Text = text };
         await _dispatcher.OnMessage(message, UpdateType.Message);
-        _sender.Verify(x => x.Send(It.IsAny<SS.DetectedReply>(), It.IsAny<CancellationToken>()), Times.Once);
-        _sender.Verify(x => x.Send(It.IsAny<SS.StickerReply>(), It.IsAny<CancellationToken>()), Times.Once);
+        _sender.Verify(x => x.Send(It.IsAny<SSDetectedReply>(), It.IsAny<CancellationToken>()), Times.Once);
         _sender.Verify(x => x.Send(It.IsAny<RhinoGifReply>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -51,8 +50,7 @@ public class SillyThingsDispatcherTests
     {
         var message = new Message { Text = "какіш" };
         await _dispatcher.OnMessage(message, UpdateType.Message);
-        _sender.Verify(x => x.Send(It.IsAny<SS.DetectedReply>(), It.IsAny<CancellationToken>()), Times.Never);
-        _sender.Verify(x => x.Send(It.IsAny<SS.StickerReply>(), It.IsAny<CancellationToken>()), Times.Never);
+        _sender.Verify(x => x.Send(It.IsAny<SSDetectedReply>(), It.IsAny<CancellationToken>()), Times.Never);
         _sender.Verify(x => x.Send(It.IsAny<RhinoGifReply>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

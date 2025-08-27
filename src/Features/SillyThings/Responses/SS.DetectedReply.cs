@@ -1,27 +1,36 @@
 ﻿using Himawari.Core.Abstractions.Messages;
+using Himawari.SillyThings.Options;
 using MediatR;
+using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
 using WTelegram;
 
 namespace Himawari.SillyThings.Responses;
 
-public static partial class SS
+public sealed record SSDetectedReply(Message Message) : IReply
 {
-    public sealed record DetectedReply(Message Message) : IReply
+    public sealed class Handler(Bot bot, IOptionsMonitor<SillyThingsOptions> optionsMonitor)
+        : IRequestHandler<SSDetectedReply, IEnumerable<Message>>
     {
-        public sealed class Handler(Bot bot) : IRequestHandler<DetectedReply, IEnumerable<Message>>
+        public async Task<IEnumerable<Message>> Handle(SSDetectedReply request, CancellationToken cancellationToken)
         {
-            public async Task<IEnumerable<Message>> Handle(DetectedReply request, CancellationToken cancellationToken) =>
+            var message = request.Message;
+            return
             [
                 await bot.SendMessage(
-                    chatId: request.Message.Chat.Id,
+                    chatId: message.Chat.Id,
                     text: "\u26a1\ufe0f SS detected! \u26a1\ufe0f",
                     replyParameters: new ReplyParameters
                     {
-                        MessageId = request.Message.MessageId,
-                        ChatId = request.Message.Chat.Id,
+                        MessageId = message.MessageId,
+                        ChatId = message.Chat.Id,
                         Quote = "SS"
                     }
+                ).ConfigureAwait(false),
+                await bot.SendSticker(
+                    chatId: message.Chat.Id,
+                    sticker: optionsMonitor.CurrentValue.SsStickerUrl,
+                    replyParameters: new ReplyParameters { MessageId = message.MessageId, ChatId = message.Chat.Id }
                 ).ConfigureAwait(false)
             ];
         }
