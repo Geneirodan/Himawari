@@ -27,10 +27,11 @@ public sealed record CallAllCommand(Message Message) : ICommand
 
             var text = members
                 .Where(x => !x.User.IsBot)
-                .Select(x => x.User)
+                .Select(x => x.User.GetDisplayName())
+                .Where(x => !string.IsNullOrEmpty(x))
                 .Aggregate(
                     new StringBuilder(Calling).Append('\n'),
-                    (current, next) => current.Append('•').Append(' ').AppendLine(next.GetDisplayName())
+                    (current, next) => current.Append('•').Append(' ').AppendLine(next)
                 )
                 .ToString();
 

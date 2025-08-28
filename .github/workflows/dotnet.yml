@@ -39,8 +39,5 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
         
-      - name: Install FFmpeg
-        uses: FedericoCarboni/setup-ffmpeg@v3.1
-
       - name: Test
         run: dotnet test --no-build --verbosity normal -c Release

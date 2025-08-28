@@ -19,10 +19,7 @@ public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : Ab
         var sender = scope.ServiceProvider.GetRequiredService<ISender>();
 
         if (messageText.Contains("SS"))
-        {
-            await sender.Send(new SS.DetectedReply(msg)).ConfigureAwait(false);
-            await sender.Send(new SS.StickerReply(msg)).ConfigureAwait(false);
-        }
+            await sender.Send(new SSDetectedReply(msg)).ConfigureAwait(false);
 
         if (messageText.Equals("какіш", StringComparison.InvariantCultureIgnoreCase))
             await sender.Send(new RhinoGifReply(msg)).ConfigureAwait(false);
