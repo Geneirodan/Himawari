@@ -4,7 +4,7 @@
     <PackageReference Include="Testcontainers.XunitV3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Features\VideoParser\VideoParser.csproj" />
+    <ProjectReference Include="..\..\src\Telegram\Features\VideoParser\VideoParser.csproj" />
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 </Project>

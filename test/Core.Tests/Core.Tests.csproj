@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core\Core.csproj"/>
+    <ProjectReference Include="..\..\src\Telegram\Telegram.Core\Telegram.Core.csproj" />
   </ItemGroup>
 </Project>

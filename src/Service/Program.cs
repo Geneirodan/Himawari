@@ -1,11 +1,13 @@
 using Geneirodan.Observability;
 using Himawari.Alias;
-using Himawari.Application;
-using Himawari.Core;
-using Himawari.Core.Models;
-using Himawari.Core.Options;
-using Himawari.Service;
+using Himawari.CobaltTools;
+using Himawari.Discord.Music;
+using Himawari.Service.Services;
 using Himawari.SillyThings;
+using Himawari.Telegram.Application;
+using Himawari.Telegram.Core;
+using Himawari.Telegram.Core.Models;
+using Himawari.Telegram.Core.Options;
 using Himawari.Todolist;
 using Himawari.VideoParser;
 using Microsoft.Data.Sqlite;
@@ -25,6 +27,7 @@ builder.Services
     .AddAliasGame()
     .AddTodolist(configuration)
     .AddSillyThings(configuration)
+    .AddCobaltTools()
     .AddVideoParsing()
     // TODO: Fix critical bug with commas
     // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
@@ -36,7 +39,9 @@ builder.Services
         .AddMessageHandler<VideoParsingDispatcher>()
         .AddMessageHandler<SillyThingsDispatcher>()
     )
-    .AddHostedService<HostingService>()
+    .AddHostedService<TelegramBackgroundService>()
+    .AddHostedService<DiscordBackgroundService>()
+    .AddMusicServices()
     .AddSharedOpenTelemetry(configuration)
     .AddHealthChecks()
     .AddSqlite(connectionString);

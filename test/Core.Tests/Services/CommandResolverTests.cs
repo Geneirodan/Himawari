@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using Himawari.Core.Abstractions;
-using Himawari.Core.Abstractions.Messages;
-using Himawari.Core.Models;
-using Himawari.Core.Services;
+using Himawari.Telegram.Core.Abstractions;
+using Himawari.Telegram.Core.Abstractions.Messages;
+using Himawari.Telegram.Core.Models;
+using Himawari.Telegram.Core.Services;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Moq;

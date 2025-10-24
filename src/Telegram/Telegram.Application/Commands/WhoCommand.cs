@@ -1,0 +1,62 @@
+﻿using System.Collections;
+using System.Globalization;
+using System.Text;
+using Himawari.Telegram.Application.Resources;
+using Himawari.Telegram.Core.Abstractions;
+using Himawari.Telegram.Core.Abstractions.Messages;
+using Himawari.Telegram.Core.Attributes;
+using Himawari.Telegram.Core.Extensions;
+using Himawari.Telegram.Core.Models;
+using JetBrains.Annotations;
+using MediatR;
+using Microsoft.Extensions.Options;
+using Telegram.Bot.Types;
+using WTelegram;
+
+namespace Himawari.Telegram.Application.Commands;
+
+[BotCommand("/who")]
+public sealed record WhoCommand(Message Message, string Rest) : ICommand
+{
+    public sealed class Handler(Bot bot) : IRequestHandler<WhoCommand, Message>
+    {
+        public async Task<Message> Handle(WhoCommand request, CancellationToken cancellationToken)
+        {
+            var (message, rest) = request;
+
+            var chatMembers = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
+            var members = chatMembers.Where(x => !x.User.IsBot).ToArray();
+
+            var index = Random.Shared.Next(members.Length);
+
+            var cultureInfo = CultureInfo.CurrentUICulture;
+            var resourceSet = WhoCommandVariants.ResourceManager
+                .GetResourceSet(cultureInfo, true, true)!
+                .Cast<DictionaryEntry>()
+                .Select(entry => entry.Key)
+                .Cast<string>()
+                .ToArray();
+
+            var quote = Random.Shared.Next(resourceSet.Length);
+
+            var text = WhoCommandVariants.ResourceManager.GetString(resourceSet[quote], cultureInfo);
+            var stringBuilder = new StringBuilder(text)
+                .Append(' ')
+                .Append(members[index].User.GetUsername());
+
+            if (!string.IsNullOrWhiteSpace(rest))
+                stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
+
+            return await bot.SendReplyMessage(message, stringBuilder.ToString())
+                .ConfigureAwait(false);
+        }
+    }
+
+    [PublicAPI]
+    public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
+        : AbstractCommandDescriptor<WhoCommand>(aliases.CurrentValue)
+    {
+        public override string Description => CommandDescriptions.Who;
+        public override Func<Message, string, ICommand> Factory => (message, text) => new WhoCommand(message, text);
+    }
+}

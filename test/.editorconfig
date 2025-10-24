@@ -1,2 +1,3 @@
 ﻿[*.cs]
 configure_await_analysis_mode = ui
+dotnet_diagnostic.MA0004.severity = none

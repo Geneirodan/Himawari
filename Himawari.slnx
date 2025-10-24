@@ -10,23 +10,32 @@
     <File Path=".github\workflows\publish.yml" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src\Application\Application.csproj" Type="Classic C#" />
-    <Project Path="src\Core\Core.csproj" Type="Classic C#" />
     <Project Path="src\Service\Service.csproj" Type="Classic C#" />
     <File Path="src\Directory.Build.props" />
     <File Path="src\Directory.Packages.props" />
   </Folder>
-  <Folder Name="/src/Features/">
-    <Project Path="src\Features\SillyThings\SillyThings.csproj" Type="Classic C#" />
-    <Project Path="src\Features\SpellChecking\SpellChecking.csproj" Type="Classic C#" />
-    <Project Path="src\Features\Todolist\Todolist.csproj" Type="Classic C#" />
-    <Project Path="src\Features\VideoParser\VideoParser.csproj" Type="Classic C#" />
+  <Folder Name="/src/Common/">
+    <Project Path="src\Common\CobaltTools\CobaltTools.csproj" Type="Classic C#" />
   </Folder>
-  <Folder Name="/src/Games/">
-    <Project Path="src\Games\Alias\Alias.csproj" Type="Classic C#" />
+  <Folder Name="/src/Discord/">
+    <Project Path="src\Discord\Discord.Music\Discord.Music.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/src/Telegram/">
+    <Project Path="src\Telegram\Telegram.Application\Telegram.Application.csproj" Type="Classic C#" />
+    <Project Path="src\Telegram\Telegram.Core\Telegram.Core.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/src/Telegram/Features/">
+    <Project Path="src\Telegram\Features\SillyThings\SillyThings.csproj" Type="Classic C#" />
+    <Project Path="src\Telegram\Features\SpellChecking\SpellChecking.csproj" Type="Classic C#" />
+    <Project Path="src\Telegram\Features\Todolist\Todolist.csproj" Type="Classic C#" />
+    <Project Path="src\Telegram\Features\VideoParser\VideoParser.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/src/Telegram/Games/">
+    <Project Path="src\Telegram\Games\Alias\Alias.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/test/">
     <Project Path="test\Alias.Tests\Alias.Tests.csproj" Type="Classic C#" />
+    <Project Path="test\CobaltTools.Tests\CobaltTools.Tests.csproj" Type="Classic C#" />
     <Project Path="test\Core.Tests\Core.Tests.csproj" Type="Classic C#" />
     <Project Path="test\SillyThings.Tests\SillyThings.Tests.csproj" Type="Classic C#" />
     <Project Path="test\SpellChecking.Tests\SpellChecking.Tests.csproj" Type="Classic C#" />
