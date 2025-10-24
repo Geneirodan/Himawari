@@ -10,7 +10,7 @@ using Xunit;
 namespace Himawari.SillyThings.Tests;
 
 [TestSubject(typeof(SillyThingsDispatcher))]
-public class SillyThingsDispatcherTests
+public sealed class SillyThingsDispatcherTests
 {
     private readonly SillyThingsDispatcher _dispatcher;
     private readonly Mock<ISender> _sender = new();

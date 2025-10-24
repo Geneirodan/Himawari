@@ -8,6 +8,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="JetBrains.Annotations" Version="2025.2.0" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.234" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.8" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />

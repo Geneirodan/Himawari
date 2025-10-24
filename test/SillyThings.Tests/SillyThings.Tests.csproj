@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Features\SillyThings\SillyThings.csproj"/>
+    <ProjectReference Include="..\..\src\Telegram\Features\SillyThings\SillyThings.csproj" />
     <ProjectReference Include="..\TestHelpers\TestHelpers.csproj"/>
   </ItemGroup>
 </Project>

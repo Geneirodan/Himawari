@@ -6,12 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj"/>
-    <ProjectReference Include="..\Features\SillyThings\SillyThings.csproj" />
-    <ProjectReference Include="..\Features\Todolist\Todolist.csproj" />
-    <ProjectReference Include="..\Features\VideoParser\VideoParser.csproj" />
-    <!--        <ProjectReference Include="..\Features\SpellChecking\SpellChecking.csproj"/>-->
-    <ProjectReference Include="..\Games\Alias\Alias.csproj"/>
+    <ProjectReference Include="..\Discord\Discord.Music\Discord.Music.csproj" />
+    <ProjectReference Include="..\Telegram\Features\SillyThings\SillyThings.csproj" />
+    <ProjectReference Include="..\Telegram\Features\Todolist\Todolist.csproj" />
+    <ProjectReference Include="..\Telegram\Features\VideoParser\VideoParser.csproj" />
+    <ProjectReference Include="..\Telegram\Games\Alias\Alias.csproj" />
   </ItemGroup>
 
   <ItemGroup>

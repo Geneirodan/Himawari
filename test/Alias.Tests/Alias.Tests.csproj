@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Games\Alias\Alias.csproj"/>
+    <ProjectReference Include="..\..\src\Telegram\Games\Alias\Alias.csproj"/>
   </ItemGroup>
 </Project>

@@ -1,26 +1,26 @@
-﻿using Himawari.VideoParser.Options;
+﻿using Himawari.CobaltTools;
+using Himawari.CobaltTools.Models;
 using Himawari.VideoParser.Services;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
 using Xunit;
+using static Himawari.CobaltTools.Models.IPickerResponse.PickerObject;
 
 namespace Himawari.VideoParser.Tests;
 
-#if DEBUG
 [TestSubject(typeof(CobaltToolsVideoParser)), UsedImplicitly]
-public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFixture>
+public sealed class CobaltToolsVideoParserTests
 {
     private readonly CobaltToolsVideoParser _parser;
+    private readonly Mock<ICobaltToolsService> _cobaltToolsService = new();
+    private readonly FakeHttpMessageHandler _fakeHttpMessageHandler = new();
 
-    public CobaltToolsVideoParserTests(CobaltToolsContainerFixture _)
+    public CobaltToolsVideoParserTests()
     {
-        var client = new HttpClient();
-        var options = new Mock<IOptions<VideoParsingOptions>>();
-        options.SetupGet(o => o.Value).Returns(new VideoParsingOptions { CobaltToolsUrl = "http://localhost:9000" });
-        _parser = new CobaltToolsVideoParser(client, options.Object, LoggerMock.Object);
+        var client = new HttpClient(_fakeHttpMessageHandler);
+        _parser = new CobaltToolsVideoParser(client, _cobaltToolsService.Object, LoggerMock.Object);
     }
 
     [Theory]
@@ -29,13 +29,53 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
         _parser.ContainsUrl(url).ShouldBe(shouldMatch);
 
     [Theory]
-    [MemberData(nameof(ValidUrlsData))]
-    public async Task GetInputFile_ShouldNotReturnNull_WhenUrlIsValid(string url)
+    [InlineData(Status.Tunnel)]
+    [InlineData(Status.Redirect)]
+    public async Task GetInputFiles_ShouldReturnVideo_WhenCobaltToolsReturnedTunnelOrRedirectStatus(Status status)
     {
-        var result = await _parser.GetInputFiles(url, TestContext.Current.CancellationToken);
+        _cobaltToolsService.Setup(x => x.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new CobaltToolsResponse
+            {
+                Status = status,
+                Url = "http://new_url",
+                Filename = "video.mp4"
+            });
+        _fakeHttpMessageHandler.Handler = _ => new HttpResponseMessage
+        {
+            Content = new StringContent("FileContent")
+        };
+        var result = await _parser.GetInputFiles("https://www.youtube.com/shorts/T0t-DYPWVw0",
+            TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Errors.ShouldBeEmpty();
+        result.Value.Length.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task GetInputFiles_ShouldReturnMultipleMedia_WhenCobaltToolsReturnedPickerStatus()
+    {
+        _cobaltToolsService.Setup(x => x.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new CobaltToolsResponse
+            {
+                Status = Status.Picker,
+                Picker =
+                [
+                    new IPickerResponse.PickerObject(PickerType.Photo, "http://url1", Thumb: null),
+                    new IPickerResponse.PickerObject(PickerType.Gif, "http://url2", Thumb: null),
+                    new IPickerResponse.PickerObject(PickerType.Video, "http://url3", Thumb: null)
+                ]
+            });
+        _fakeHttpMessageHandler.Handler = _ => new HttpResponseMessage
+        {
+            Content = new StringContent("FileContent")
+        };
+        var result = await _parser.GetInputFiles("https://www.youtube.com/shorts/T0t-DYPWVw0",
+            TestContext.Current.CancellationToken);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ShouldNotBeNull();
+        result.Errors.ShouldBeEmpty();
+        result.Value.Length.ShouldBe(3);
     }
 
     [Theory]
@@ -50,15 +90,8 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
     public static TheoryData<string, bool> MatchData()
     {
         var td = new TheoryData<string, bool>();
-        foreach (var url in ValidUrls) td.Add(url, true);
-        foreach (var url in InvalidUrls) td.Add(url, false);
-        return td;
-    }
-
-    public static TheoryData<string> ValidUrlsData()
-    {
-        var td = new TheoryData<string>();
-        foreach (var url in ValidUrls) td.Add(url);
+        foreach (var url in ValidUrls) td.Add(url, p2: true);
+        foreach (var url in InvalidUrls) td.Add(url, p2: false);
         return td;
     }
 
@@ -89,4 +122,3 @@ public class CobaltToolsVideoParserTests : IClassFixture<CobaltToolsContainerFix
 
     private static readonly Mock<ILogger<CobaltToolsVideoParser>> LoggerMock = new();
 }
-#endif
