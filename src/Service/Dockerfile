@@ -29,7 +29,7 @@ RUN --mount=type=secret,id=github-username \
 RUN dotnet restore "src/Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
-RUN dotnet build "Service.csproj" --no-restore -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Service.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
