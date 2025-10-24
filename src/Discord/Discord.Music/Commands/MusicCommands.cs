@@ -1,4 +1,4 @@
-﻿using DisCatSharp.ApplicationCommands;
+using DisCatSharp.ApplicationCommands;
 using DisCatSharp.ApplicationCommands.Attributes;
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Enums;
@@ -118,7 +118,7 @@ public class MusicCommands : ApplicationCommandsModule
 
         await ctx.CreateResponseWithContent("Playback is stopped!").ConfigureAwait(false);
     }
-    [SlashCommand("skip", "Stop playback")]
+    [SlashCommand("skip", "Skip song")]
     public static async Task SkipAsync(InteractionContext ctx)
     {
         var connectionResult = await ctx.GetConnection().ConfigureAwait(false);
@@ -133,7 +133,7 @@ public class MusicCommands : ApplicationCommandsModule
 
         await connection.SkipAsync().ConfigureAwait(false);
 
-        await ctx.CreateResponseWithContent("Playback is stopped!").ConfigureAwait(false);
+        await ctx.CreateResponseWithContent($"Skipped `{connection.CurrentTrack?.Info.Title}`").ConfigureAwait(false);
     }
 
 }
