@@ -1,7 +1,6 @@
-﻿# syntax=docker/dockerfile:1.15.0
+# syntax=docker/dockerfile:1.15.0
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-RUN apt-get update && apt-get install -y ffmpeg
 EXPOSE 8080
 EXPOSE 8081
 
@@ -11,10 +10,15 @@ WORKDIR /src
 COPY ["Directory.Build.props", "src/"]
 COPY ["Directory.Packages.props", "src/"]
 COPY ["Service/Service.csproj", "src/Service/"]
-COPY ["Application/Application.csproj", "src/Application/"]
-COPY ["Core/Core.csproj", "src/Core/"]
-COPY ["Features/SpellChecking/SpellChecking.csproj", "src/Features/SpellChecking/"]
-COPY ["Games/Alias/Alias.csproj", "src/Games/Alias/"] 
+COPY ["Telegram/Telegram.Application/Telegram.Application.csproj", "src/Telegram.Application/"]
+COPY ["Telegram/Telegram.Core/Telegram.Core.csproj", "src/Telegram.Core/"]
+COPY ["Common/CobaltTools/CobaltTools.csproj", "src/Common/CobaltTools/"]
+COPY ["Telegram/Features/SillyThings/SillyThings.csproj", "src/Telegram/Features/SillyThings/"]
+COPY ["Telegram/Features/SpellChecking/SpellChecking.csproj", "src/Telegram/Features/SpellChecking/"]
+COPY ["Telegram/Features/Todolist/Todolist.csproj", "src/Telegram/Features/Todolist/"]
+COPY ["Telegram/Features/VideoParser/VideoParser.csproj", "src/Telegram/Features/VideoParser/"]
+COPY ["Telegram/Games/Alias/Alias.csproj", "src/Telegram/Games/Alias/"] 
+COPY ["Discord/Discord.Music/Discord.Music.csproj", "src/Discord/Discord.Music/"]
 RUN --mount=type=secret,id=github-username \
     --mount=type=secret,id=github-token \
     dotnet nuget add source "https://nuget.pkg.github.com/Geneirodan/index.json" \
@@ -25,7 +29,7 @@ RUN --mount=type=secret,id=github-username \
 RUN dotnet restore "src/Service/Service.csproj"
 COPY . .
 WORKDIR "/src/Service"
-RUN dotnet build "Service.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Service.csproj" --no-restore -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
