@@ -11,7 +11,7 @@ using Xunit;
 namespace Himawari.SpellChecking.Tests;
 
 [TestSubject(typeof(SpellCheckingDispatcher))]
-public class SpellCheckingDispatcherTest
+public sealed class SpellCheckingDispatcherTest
 {
     private readonly SpellCheckingDispatcher _dispatcher;
     private readonly Mock<ISender> _sender = new();
@@ -42,7 +42,7 @@ public class SpellCheckingDispatcherTest
     {
         var message = new Message { Text = "Good" };
         var output = string.Empty;
-        _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(false);
+        _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(value: false);
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.Verify(
             x => x.Send(It.IsAny<SendCorrectedTextMessageReply>(), It.IsAny<CancellationToken>()),
@@ -55,7 +55,7 @@ public class SpellCheckingDispatcherTest
     {
         var message = new Message { Text = "Пщщв" };
         var output = "Good";
-        _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(true);
+        _wrongLayoutParser.Setup(x => x.TryParse(It.IsAny<string>(), out output)).Returns(value: true);
         await _dispatcher.OnMessage(message, UpdateType.Message);
         _sender.Verify(
             x => x.Send(It.IsAny<SendCorrectedTextMessageReply>(), It.IsAny<CancellationToken>()),

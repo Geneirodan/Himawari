@@ -17,22 +17,24 @@ public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServi
     {
         if (msg.Text is not { } messageText) return;
 
-        using var scope = serviceProvider.CreateScope();
-
-        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
-        if (messageText.StartsWith('/') && messageText.Length > 1)
+        var scope = serviceProvider.CreateAsyncScope();
+        await using (scope.ConfigureAwait(false))
         {
-            var (command, rest, forMe) = await bot.ParseCommandAsync(messageText).ConfigureAwait(false);
+            var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+            if (messageText.StartsWith('/') && messageText.Length > 1)
+            {
+                var (command, rest, forMe) = await bot.ParseCommandAsync(messageText).ConfigureAwait(false);
 
-            if (!forMe) return;
+                if (!forMe) return;
 
-            command = resolver.GetCommandByAlias(command);
-            if (command is null)
-                return;
+                command = resolver.GetCommandByAlias(command);
+                if (command is null)
+                    return;
 
-            var req = resolver.GetFactoryByName(command)?.Invoke(msg, rest);
-            if (req is not null)
-                await sender.Send(req).ConfigureAwait(false);
+                var req = resolver.GetFactoryByName(command)?.Invoke(msg, rest);
+                if (req is not null)
+                    await sender.Send(req).ConfigureAwait(false);
+            }
         }
     }
 }

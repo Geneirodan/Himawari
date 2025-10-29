@@ -11,7 +11,7 @@ using Xunit;
 namespace Himawari.Alias.Tests.Services;
 
 [TestSubject(typeof(AliasService))]
-public class AliasServiceTests
+public sealed class AliasServiceTests
 {
     private readonly AliasService _aliasService;
     private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock = new();
@@ -84,7 +84,7 @@ public class AliasServiceTests
         await _aliasService.StartAsync(chatId, 67890L, TestContext.Current.CancellationToken);
         _aliasService.EndGame(chatId);
 
-        _aliasService.GetPresenterId(chatId).ShouldBe(null);
+        _aliasService.GetPresenterId(chatId).ShouldBeNull();
     }
 
     [Fact]

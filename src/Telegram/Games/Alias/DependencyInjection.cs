@@ -11,7 +11,7 @@ public static class DependencyInjection
     {
         services.AddHybridCache();
         services
-            .AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
+            .AddTelegramCommandsFromAssemblies(Assembly.GetExecutingAssembly())
             .AddSingleton<IAliasService, AliasService>()
             .AddHttpClient<IAliasService, AliasService>();
         return services;

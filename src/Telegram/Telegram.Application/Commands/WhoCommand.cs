@@ -31,7 +31,7 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
 
             var cultureInfo = CultureInfo.CurrentUICulture;
             var resourceSet = WhoCommandVariants.ResourceManager
-                .GetResourceSet(cultureInfo, true, true)!
+                .GetResourceSet(cultureInfo, createIfNotExists: true, tryParents: true)!
                 .Cast<DictionaryEntry>()
                 .Select(entry => entry.Key)
                 .Cast<string>()

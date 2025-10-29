@@ -6,13 +6,16 @@ using WTelegram;
 
 namespace Himawari.Service.Services;
 
-internal sealed class TelegramBackgroundService(Bot bot, ICommandResolver resolver, IOptionsMonitor<BotOptions> optionsMonitor)
+internal sealed class TelegramBackgroundService(
+    Bot bot,
+    ICommandResolver resolver,
+    IOptionsMonitor<BotOptions> optionsMonitor)
     : BackgroundService
 {
-    protected override Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        bot.DropPendingUpdates();
-        return UpdateCommands(cancellationToken);
+        await bot.DropPendingUpdates();
+        await UpdateCommands(cancellationToken);
     }
 
     private async Task UpdateCommands(CancellationToken cancellationToken)
@@ -27,6 +30,7 @@ internal sealed class TelegramBackgroundService(Bot bot, ICommandResolver resolv
                     await SetCommandsForLocale(locale);
                     first = false;
                 }
+
                 await SetCommandsForLocale(locale, locale);
             }
 

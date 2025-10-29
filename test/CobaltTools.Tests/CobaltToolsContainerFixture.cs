@@ -7,7 +7,7 @@ using Xunit.Sdk;
 namespace Himawari.CobaltTools.Tests;
 
 [UsedImplicitly]
-public class CobaltToolsContainerFixture(IMessageSink messageSink)
+public sealed class CobaltToolsContainerFixture(IMessageSink messageSink)
     : ContainerFixture<ContainerBuilder, IContainer>(messageSink)
 {
     protected override ContainerBuilder Configure(ContainerBuilder builder) =>

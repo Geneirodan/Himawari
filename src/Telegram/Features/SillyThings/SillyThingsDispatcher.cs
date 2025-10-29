@@ -14,14 +14,16 @@ public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : Ab
     {
         if (msg.Text is not { } messageText) return;
 
-        using var scope = serviceProvider.CreateScope();
+        var scope = serviceProvider.CreateAsyncScope();
+        await using (scope.ConfigureAwait(false))
+        {
+            var sender = scope.ServiceProvider.GetRequiredService<ISender>();
 
-        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+            if (messageText.Contains("SS", StringComparison.Ordinal))
+                await sender.Send(new SSDetectedReply(msg)).ConfigureAwait(false);
 
-        if (messageText.Contains("SS"))
-            await sender.Send(new SSDetectedReply(msg)).ConfigureAwait(false);
-
-        if (messageText.Equals("какіш", StringComparison.InvariantCultureIgnoreCase))
-            await sender.Send(new RhinoGifReply(msg)).ConfigureAwait(false);
+            if (messageText.Equals("какіш", StringComparison.InvariantCultureIgnoreCase))
+                await sender.Send(new RhinoGifReply(msg)).ConfigureAwait(false);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Himawari.Telegram.Core.Abstractions;
+using Himawari.Telegram.Core.Models;
 using Himawari.Telegram.Core.Options;
 using Himawari.Telegram.Core.Pipeline;
 using Himawari.Telegram.Core.Services;
@@ -19,9 +20,20 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddTelegramBot(
         this IServiceCollection services,
-        Action<BotConfigurationRegistrar> configure
+        Action<BotConfigurationRegistrar> configure,
+        string configSectionPath = "Telegram"
     )
     {
+        services.AddOptions<BotOptions>()
+            .BindConfiguration($"{configSectionPath}:Bot")
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
+
+        services.AddOptions<Aliases>()
+            .BindConfiguration($"{configSectionPath}:Aliases")
+            .ValidateOnStart()
+            .ValidateDataAnnotations();
+
         var configuration = new BotConfigurationRegistrar();
         configure(configuration);
         configuration.RegisterHandlers(services);
@@ -34,12 +46,11 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddCommandsFromAssemblies(
+    public static IServiceCollection AddTelegramCommandsFromAssemblies(
         this IServiceCollection services,
         params Assembly[] assemblies
     ) => services
         .AddMediatR(x => x.RegisterServicesFromAssemblies(assemblies)
-            .AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>))
             .AddRequestPreProcessor(typeof(IRequestPreProcessor<>), typeof(CommandPreProcessor<>))
             .AddBehavior(typeof(IPipelineBehavior<,>), typeof(LocalizationBehavior<,>))
             .AddRequestPostProcessor(typeof(IRequestPostProcessor<,>), typeof(MessagePostProcessor<,>))

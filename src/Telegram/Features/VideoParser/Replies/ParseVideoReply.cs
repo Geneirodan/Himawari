@@ -5,9 +5,9 @@ using WTelegram;
 
 namespace Himawari.VideoParser.Replies;
 
-public record ParseVideoReply(Message Message, IAlbumInputMedia[] Files) : IReply
+public sealed record ParseVideoReply(Message Message, IAlbumInputMedia[] Files) : IReply
 {
-    public class Handler(Bot bot) : IRequestHandler<ParseVideoReply, IEnumerable<Message>>
+    public sealed class Handler(Bot bot) : IRequestHandler<ParseVideoReply, IEnumerable<Message>>
     {
         public async Task<IEnumerable<Message>> Handle(ParseVideoReply request, CancellationToken cancellationToken)
         {

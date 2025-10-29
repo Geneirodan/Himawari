@@ -16,8 +16,10 @@
   </Folder>
   <Folder Name="/src/Common/">
     <Project Path="src\Common\CobaltTools\CobaltTools.csproj" Type="Classic C#" />
+    <Project Path="src\Common\Shared\Shared.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/Discord/">
+    <Project Path="src\Discord\Discord.Core\Discord.Core.csproj" Type="Classic C#" />
     <Project Path="src\Discord\Discord.Music\Discord.Music.csproj" Type="Classic C#" />
   </Folder>
   <Folder Name="/src/Telegram/">

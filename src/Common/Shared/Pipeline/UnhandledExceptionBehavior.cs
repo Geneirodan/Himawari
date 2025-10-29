@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Himawari.Telegram.Core.Pipeline;
+namespace Himawari.Shared.Pipeline;
 
 public sealed partial class UnhandledExceptionBehavior<TRequest, TResponse>(ILogger<TRequest> logger)
     : IPipelineBehavior<TRequest, TResponse>

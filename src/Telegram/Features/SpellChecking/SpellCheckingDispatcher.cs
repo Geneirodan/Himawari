@@ -18,7 +18,8 @@ public sealed class SpellCheckingDispatcher(IWrongLayoutParser parser, IServiceP
             return;
 
         var message = new SendCorrectedTextMessageReply(msg, correctedText);
-        using var scope = serviceProvider.CreateScope();
-        await scope.ServiceProvider.GetRequiredService<ISender>().Send(message).ConfigureAwait(false);
+        var scope = serviceProvider.CreateAsyncScope();
+        await using (scope.ConfigureAwait(false)) 
+            await scope.ServiceProvider.GetRequiredService<ISender>().Send(message).ConfigureAwait(false);
     }
 }

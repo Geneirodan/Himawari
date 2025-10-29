@@ -1,13 +1,16 @@
+using DisCatSharp.Lavalink;
 using Geneirodan.Observability;
 using Himawari.Alias;
 using Himawari.CobaltTools;
+using Himawari.Discord.Core;
 using Himawari.Discord.Music;
+using Himawari.Discord.Music.Commands;
+using Himawari.Discord.Music.Modules;
 using Himawari.Service.Services;
+using Himawari.Shared;
 using Himawari.SillyThings;
 using Himawari.Telegram.Application;
 using Himawari.Telegram.Core;
-using Himawari.Telegram.Core.Models;
-using Himawari.Telegram.Core.Options;
 using Himawari.Todolist;
 using Himawari.VideoParser;
 using Microsoft.Data.Sqlite;
@@ -17,20 +20,18 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.AddSerilog();
 
 var configuration = builder.Configuration;
-var connectionString = configuration.GetConnectionString("DefaultConnection") 
+var connectionString = configuration.GetConnectionString("DefaultConnection")
                        ?? throw new Exception("Connection string not found");
 builder.Services
-    .Configure<BotOptions>(configuration.GetSection("Bot"))
-    .Configure<Aliases>(configuration.GetSection("Aliases"))
+    .AddMediatR(x =>
+    {
+        x.LicenseKey = configuration["MEDIATR_KEY"];
+        x.RegisterServicesFromAssemblyContaining<Program>();
+    })
+    .AddCommonPipeline()
     .AddSingleton<SqliteConnection>(_ => new SqliteConnection(connectionString))
-    .AddBasicCommands(configuration.GetSection("Commands"))
-    .AddAliasGame()
-    .AddTodolist(configuration)
-    .AddSillyThings(configuration)
-    .AddCobaltTools()
-    .AddVideoParsing()
-    // TODO: Fix critical bug with commas
-    // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
+
+    // Telegram part
     .AddTelegramBot(x => x
         .AddMessageHandler<CommandDispatcher>()
         // .AddMessageHandler<SpellCheckingDispatcher>()
@@ -39,19 +40,35 @@ builder.Services
         .AddMessageHandler<VideoParsingDispatcher>()
         .AddMessageHandler<SillyThingsDispatcher>()
     )
+    .AddBasicTelegramCommands("Telegram:Commands")
+    .AddAliasGame()
+    .AddTodolist("Telegram:Todolist")
+    .AddSillyThings("Telegram:SillyThings")
+    .AddCobaltTools("CobaltTools")
+    .AddVideoParsing()
+    // TODO: Fix critical bug with commas
+    // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
     .AddHostedService<TelegramBackgroundService>()
+
+    // Discord part
+    .AddDiscordBot(
+        configureClient: client => client.UseLavalink(),
+        configSectionPath: "Discord",
+        assemblies: typeof(MusicCommandsModule).Assembly)
+    .AddMusicServices("Discord:Lavalink")
     .AddHostedService<DiscordBackgroundService>()
-    .AddMusicServices()
+
+    // Observability part
     .AddSharedOpenTelemetry(configuration)
     .AddHealthChecks()
     .AddSqlite(connectionString);
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+await using (var scope = app.Services.CreateAsyncScope())
 {
     await using var connection = scope.ServiceProvider.GetRequiredService<SqliteConnection>();
-    connection.Open();
+    await connection.OpenAsync();
     const string commandText = """
                                CREATE TABLE IF NOT EXISTS Chats (
                                    Id BIGINT PRIMARY KEY, 
@@ -65,4 +82,4 @@ app.RegisterHandlers();
 
 app.MapHealthChecks("/health");
 
-app.Run();
+await app.RunAsync();

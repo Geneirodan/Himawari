@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="DisCatSharp.ApplicationCommands"/>
+    <PackageReference Include="Geneirodan.MediatR" />
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="Microsoft.Extensions.Hosting"/>
+  </ItemGroup>
+</Project>

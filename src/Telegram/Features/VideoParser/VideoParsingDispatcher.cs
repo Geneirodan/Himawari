@@ -21,19 +21,21 @@ public sealed partial class VideoParsingDispatcher(
         if (msg.Text is not { } messageText)
             return;
 
-        using var scope = serviceProvider.CreateScope();
-
-        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
-        var parsers = scope.ServiceProvider.GetServices<IVideoParser>();
-        foreach (var parser in parsers)
+        var scope = serviceProvider.CreateAsyncScope();
+        await using (scope.ConfigureAwait(false))
         {
-            if (!parser.ContainsUrl(url: messageText)) continue;
-            LogDetectedUrl(parser.Type, messageText);
-            var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
-            IReply reply = file.IsSuccess
-                ? new ParseVideoReply(msg, file.Value)
-                : new ErrorReply(msg, file.Errors.First());
-            await sender.Send(reply).ConfigureAwait(false);
+            var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+            var parsers = scope.ServiceProvider.GetServices<IVideoParser>();
+            foreach (var parser in parsers)
+            {
+                if (!parser.ContainsUrl(url: messageText)) continue;
+                LogDetectedUrl(parser.Type, messageText);
+                var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
+                IReply reply = file.IsSuccess
+                    ? new ParseVideoReply(msg, file.Value)
+                    : new ErrorReply(msg, file.Errors.First());
+                await sender.Send(reply).ConfigureAwait(false);
+            }
         }
     }
 
