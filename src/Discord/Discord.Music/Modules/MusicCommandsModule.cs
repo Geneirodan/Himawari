@@ -1,4 +1,6 @@
-﻿using DisCatSharp.ApplicationCommands;
+﻿using System.Globalization;
+using System.Text;
+using DisCatSharp.ApplicationCommands;
 using DisCatSharp.ApplicationCommands.Attributes;
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Enums;
@@ -12,7 +14,6 @@ namespace Himawari.Discord.Music.Modules;
 [PublicAPI]
 public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsModule
 {
-
     [SlashCommand("play", "Play or enqueue a track")]
     public async Task PlayAsync(InteractionContext ctx, [Option("query", "Search string or link")] string query)
     {
@@ -20,7 +21,14 @@ public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsMod
         var command = new PlayCommand(ctx, query);
         var result = await sender.Send(command).ConfigureAwait(false);
         await result.HandleResult(
-            async () => await ctx.EditResponseWithContent(result.Value).ConfigureAwait(false),
+            async () =>
+            {
+                var (trackName, count) = result.Value;
+                var response = $"`{trackName}` added to queue! ";
+                if (count > 0)
+                    response += $"Now there is {count.ToString(CultureInfo.InvariantCulture)} songs in queue.";
+                await ctx.EditResponseWithContent(response).ConfigureAwait(false);
+            },
             async () => await ctx.EditResponseWithContent(result.Errors.First()).ConfigureAwait(false)
         ).ConfigureAwait(false);
     }
@@ -45,8 +53,17 @@ public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsMod
         var result = await sender.Send(command).ConfigureAwait(false);
         await result.HandleResult(
             ctx,
-            async () => await ctx.CreateResponseWithContent(result.Value).ConfigureAwait(false)
-        ).ConfigureAwait(false);
+            async () =>
+            {
+                var text = result.Value is { Length: > 0 } tracks
+                    ? tracks.Aggregate(
+                        seed: new StringBuilder("Queued tracks:"),
+                        func: (sb, track) => sb.AppendLine().Append(track.CreateTrackName()).Append(';'),
+                        resultSelector: sb => sb.ToString()
+                    )
+                    : "Queue is empty";
+                await ctx.CreateResponseWithContent(text, asEphemeral: true).ConfigureAwait(false);
+            }).ConfigureAwait(false);
     }
 
 
@@ -66,12 +83,11 @@ public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsMod
     [SlashCommand("resume", "Resume playback")]
     public async Task ResumeAsync(InteractionContext ctx)
     {
-        var command = new NowPlayingCommand(ctx);
+        var command = new ResumeCommand(ctx);
         var result = await sender.Send(command).ConfigureAwait(false);
         await result.HandleResult(
             ctx,
-            async () => await ctx.CreateResponseWithContent($"Now playing `{result.Value}`", asEphemeral: true)
-                .ConfigureAwait(false)
+            async () => await ctx.CreateResponseWithContent($"Now playing `{result.Value}`").ConfigureAwait(false)
         ).ConfigureAwait(false);
     }
 
@@ -100,12 +116,19 @@ public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsMod
     [SlashCommand("skip", "Skip song")]
     public async Task SkipAsync(InteractionContext ctx)
     {
-        var command = new NowPlayingCommand(ctx);
+        var command = new SkipCommand(ctx);
         var result = await sender.Send(command).ConfigureAwait(false);
         await result.HandleResult(
             ctx,
-            async () => await ctx.CreateResponseWithContent($"Skipped `{result.Value}`").ConfigureAwait(false)
-        ).ConfigureAwait(false);
-        
+            async () =>
+            {
+                var (oldTrackName, newTrackName, count) = result.Value;
+                var response = $"Skipped `{oldTrackName}`.";
+                if (newTrackName is not null)
+                    response += $" Now playing `{newTrackName}`.";
+                if (count > 0)
+                    response += $" Now there is {count.ToString(CultureInfo.InvariantCulture)} songs in queue.";
+                await ctx.CreateResponseWithContent(response).ConfigureAwait(false);
+            }).ConfigureAwait(false);
     }
 }
