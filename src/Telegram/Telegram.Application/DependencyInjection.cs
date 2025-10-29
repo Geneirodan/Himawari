@@ -1,17 +1,19 @@
 ﻿using System.Reflection;
 using Himawari.Telegram.Application.Commands;
 using Himawari.Telegram.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Himawari.Telegram.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddBasicCommands(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBasicTelegramCommands(this IServiceCollection services, string configSectionPath)
     {
-        return services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly())
-            .AddMemoryCache()
-            .Configure<ShutUpCommand.Options>(configuration.GetSection("ShutUp"));
+        services.AddOptions<ShutUpCommand.Options>()
+            .BindConfiguration($"{configSectionPath}:ShutUp")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        return services.AddTelegramCommandsFromAssemblies(Assembly.GetExecutingAssembly()).AddMemoryCache();
     }
 }

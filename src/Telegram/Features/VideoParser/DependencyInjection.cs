@@ -12,7 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddVideoParsing(this IServiceCollection services)
     {
         services.AddHttpClient<IVideoParser, CobaltToolsVideoParser>().AddPolicyHandler(PolicySelector);
-       return services.AddCommandsFromAssemblies(Assembly.GetExecutingAssembly());
+        return services.AddTelegramCommandsFromAssemblies(Assembly.GetExecutingAssembly());
     }
 
     private static IAsyncPolicy<HttpResponseMessage> PolicySelector(HttpRequestMessage _) =>

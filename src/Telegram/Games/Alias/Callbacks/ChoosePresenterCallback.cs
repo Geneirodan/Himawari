@@ -1,4 +1,5 @@
-﻿using Himawari.Alias.Enums;
+﻿using System.Globalization;
+using Himawari.Alias.Enums;
 using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
@@ -21,7 +22,8 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
             var chatId = request.Query.Message!.Chat.Id;
             if (service.GetPresenterId(chatId) is not null)
             {
-                await bot.AnswerCallbackQuery(request.Query.Id, PresenterAlreadyChosen, true).ConfigureAwait(false);
+                await bot.AnswerCallbackQuery(request.Query.Id, PresenterAlreadyChosen, showAlert: true)
+                    .ConfigureAwait(false);
                 return null;
             }
 
@@ -29,7 +31,7 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
 
             return await bot.SendMessage(
                 chatId: chatId,
-                text: string.Format(PresenterChosen, request.Query.From.GetUsername()),
+                text: string.Format(CultureInfo.CurrentUICulture, PresenterChosen, request.Query.From.GetUsername()),
                 parseMode: ParseMode.MarkdownV2,
                 replyMarkup: new InlineKeyboardMarkup(
                     InlineKeyboardButton.WithCallbackData(EndGame, AliasCallbackType.EndGame.Serialize()),

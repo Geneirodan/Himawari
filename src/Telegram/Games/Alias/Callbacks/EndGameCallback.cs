@@ -17,7 +17,7 @@ public sealed record EndGameCallback(CallbackQuery Query) : AbstractCallback<Mes
                 return null;
             if (service.GetPresenterId(chatId) is null)
             {
-                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, true).ConfigureAwait(false);
+                await bot.AnswerCallbackQuery(request.Query.Id, GameIsNotStarted, showAlert: true).ConfigureAwait(false);
                 return null;
             }
 

@@ -3,7 +3,11 @@
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="DisCatSharp.ApplicationCommands"/>
     <PackageReference Include="DisCatSharp.Lavalink" />
+    <PackageReference Include="geneirodan.mediatr" />
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Discord.Core\Discord.Core.csproj" />
   </ItemGroup>
 </Project>

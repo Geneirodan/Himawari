@@ -6,7 +6,7 @@ using Xunit;
 namespace Himawari.SpellChecking.Tests.Extensions;
 
 [TestSubject(typeof(ReadOnlyDictionaryExtensions))]
-public class ReadOnlyDictionaryExtensionsTests
+public sealed class ReadOnlyDictionaryExtensionsTests
 {
     private readonly Dictionary<char, char> _map = new()
     {

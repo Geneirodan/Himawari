@@ -12,7 +12,7 @@ using Xunit;
 namespace Himawari.Core.Tests.Services;
 
 [TestSubject(typeof(CommandResolver))]
-public class CommandResolverTests
+public sealed class CommandResolverTests
 {
     private readonly Mock<IOptionsMonitor<Aliases>> _aliasesMock = new();
     private readonly CommandResolver _commandResolver;
@@ -22,8 +22,8 @@ public class CommandResolverTests
     {
         var aliases = new Aliases
         {
-            { "/start", new HashSet<string> { "/begin", "/init" } },
-            { "/help", new HashSet<string> { "/assist", "/support" } }
+            { "/start", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/begin", "/init" } },
+            { "/help", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/assist", "/support" } }
         };
         _aliasesMock.Setup(a => a.CurrentValue).Returns(aliases);
 

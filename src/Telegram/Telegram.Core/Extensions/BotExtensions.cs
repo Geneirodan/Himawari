@@ -17,7 +17,7 @@ public static class BotExtensions
         var rest = commandArray.Length > 1 ? commandArray[1] : string.Empty;
 
         var me = await bot.GetMe().ConfigureAwait(false);
-        return (command[0], rest, command.Length == 1 || command[1] == me.Username);
+        return (command[0], rest, command.Length == 1 || string.Equals(command[1], me.Username, StringComparison.Ordinal));
     }
 
     public static async Task<Message> SendReplyMessage(

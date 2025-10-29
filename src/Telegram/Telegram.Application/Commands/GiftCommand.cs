@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
 using WTelegram;
+using static System.StringComparison;
 
 namespace Himawari.Telegram.Application.Commands;
 
@@ -26,7 +27,9 @@ public sealed record GiftCommand(Message Message, string Rest) : ICommand
                 return await bot.SendReplyMessage(message, Messages.NotUnderstandGift).ConfigureAwait(false);
 
             var members = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
-            var username = members.FirstOrDefault(x => x.User.Username == arr[0].TrimStart('@'))?.User.Username;
+            var username = members
+                .FirstOrDefault(x => string.Equals(x.User.Username, arr[0].TrimStart('@'), OrdinalIgnoreCase))?
+                .User.Username;
             var text = username switch
             {
                 null => Messages.MemberNotFound,

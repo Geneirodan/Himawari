@@ -20,9 +20,9 @@ public sealed class CommandResolver : ICommandResolver
         foreach (var (command, aliasSet) in aliases.CurrentValue)
         foreach (var alias in aliasSet)
             if (!_commandsByAlias.TryAdd(alias, command))
-                throw new ArgumentException($"Duplicate alias {alias}");
+                throw new ArgumentException($"Duplicate alias {alias}", nameof(aliases));
 
-        _commandFactories = _descriptors.ToDictionary(x => x.Keyword, x => x.Factory);
+        _commandFactories = _descriptors.ToDictionary(x => x.Keyword, x => x.Factory, StringComparer.OrdinalIgnoreCase);
     }
 
     public Func<Message, string, ICommand>? GetFactoryByName(string commandName)
@@ -33,7 +33,7 @@ public sealed class CommandResolver : ICommandResolver
     public string? GetCommandByAlias(string alias)
     {
         return _commandsByAlias.GetValueOrDefault(alias) ??
-               _commandFactories.Keys.FirstOrDefault(x => x == alias);
+               _commandFactories.Keys.FirstOrDefault(x => string.Equals(x, alias, StringComparison.OrdinalIgnoreCase));
     }
 
     public IEnumerable<BotCommand> GetCommandsByCulture(CultureInfo cultureInfo)

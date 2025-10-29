@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using DisCatSharp;
-using DisCatSharp.ApplicationCommands;
 using DisCatSharp.Lavalink;
+using Himawari.Discord.Music.Behaviors;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Himawari.Discord.Music;
@@ -11,40 +10,24 @@ namespace Himawari.Discord.Music;
 public static class DependencyInjection
 {
     public static IServiceCollection AddMusicServices(
-        this IServiceCollection services,
-        string configSectionPath = "Discord"
-    )
+        this IServiceCollection services, string configSectionPath)
     {
-        services.AddOptions<DiscordOptions>()
+        services.AddOptions<LavalinkOptions>()
             .BindConfiguration(configSectionPath)
             .ValidateOnStart();
-        return services.AddSingleton<DiscordClient>(serviceProvider =>
+        return services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())
+            .AddBehavior(typeof(IPipelineBehavior<,>), typeof(VoiceCommandBehavior<,>))
+            .AddBehavior(typeof(IPipelineBehavior<,>), typeof(CurrentTrackCommandBehavior<,>))
+        )
+        .AddSingleton(x=>
         {
-            var config = new DiscordConfiguration
+            var options = x.GetRequiredService<IOptions<LavalinkOptions>>().Value;
+            return new LavalinkConfiguration
             {
-                Token = serviceProvider.GetRequiredService<IOptions<DiscordOptions>>().Value.Token,
-                LoggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>(),
-                ServiceProvider = serviceProvider
+                RestEndpoint = options.Endpoint,
+                SocketEndpoint = options.Endpoint,
+                EnableBuiltInQueueSystem = true
             };
-            var discordClient = new DiscordClient(config);
-            discordClient.UseLavalink();
-            discordClient.RegisterApplicationCommandsFromAssembly(serviceProvider);
-            return discordClient;
         });
-    }
-
-    private static void RegisterApplicationCommandsFromAssembly(
-        this DiscordClient discordClient,
-        IServiceProvider serviceProvider
-    )
-    {
-        var config = new ApplicationCommandsConfiguration { ServiceProvider = serviceProvider };
-        var appCommandExt = discordClient.UseApplicationCommands(config);
-        var commands = Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(t => typeof(ApplicationCommandsModule).IsAssignableFrom(t) && !t.IsNested);
-
-        foreach (var command in commands)
-            appCommandExt.RegisterGlobalCommands(command);
     }
 }

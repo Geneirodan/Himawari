@@ -58,7 +58,7 @@ public sealed partial class LayoutService : ILayoutService
 
     public IEnumerable<string> GetLayouts(string localeName)
     {
-        return _layoutSettings.Locales[localeName].Where(x => x != DefaultLayoutKey);
+        return _layoutSettings.Locales[localeName].Where(x => !string.Equals(x, DefaultLayoutKey, StringComparison.OrdinalIgnoreCase));
     }
 
     private Dictionary<string, WordList> FillWordLists(SpellCheckingOptions spellCheckingOptions)
@@ -76,7 +76,7 @@ public sealed partial class LayoutService : ILayoutService
             var dictionaryFilePath = Path.Combine(dictionariesFolder, $"{x}.dic");
             var affixFilePath = Path.Combine(affixFolder, $"{x}.aff");
             return WordList.CreateFromFiles(dictionaryFilePath, affixFilePath);
-        });
+        }, StringComparer.OrdinalIgnoreCase);
     }
 
     private (Maps maps, Maps reversedMaps) FillMaps()
@@ -88,9 +88,10 @@ public sealed partial class LayoutService : ILayoutService
         var shiftQwerty = qwerty.Shift.SelectMany(x => x).ToArray();
         var fullQwerty = standardQwerty.Union(shiftQwerty).ToArray();
 
-        var maps = new Maps();
-        var reversedMaps = new Maps();
-        foreach (var (key, keyboardLayout) in _layoutSettings.Layouts.Where(x => x.Key != DefaultLayoutKey))
+        var maps = new Maps(StringComparer.OrdinalIgnoreCase);
+        var reversedMaps = new Maps(StringComparer.OrdinalIgnoreCase);
+        var layouts = _layoutSettings.Layouts.Where(x => !string.Equals(x.Key, DefaultLayoutKey, StringComparison.OrdinalIgnoreCase));
+        foreach (var (key, keyboardLayout) in layouts)
         {
             var standard = keyboardLayout.Standard.SelectMany(x => x);
             var shift = keyboardLayout.Shift.SelectMany(x => x);

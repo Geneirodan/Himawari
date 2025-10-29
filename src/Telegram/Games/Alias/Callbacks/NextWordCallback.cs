@@ -20,7 +20,7 @@ public sealed record NextWordCallback(CallbackQuery Query) : AbstractCallback(Qu
                 : presenterId != request.Query.From.Id
                     ? Forbidden
                     : await service.NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
-            await bot.AnswerCallbackQuery(request.Query.Id, word, true).ConfigureAwait(false);
+            await bot.AnswerCallbackQuery(request.Query.Id, word, showAlert: true).ConfigureAwait(false);
         }
     }
 }

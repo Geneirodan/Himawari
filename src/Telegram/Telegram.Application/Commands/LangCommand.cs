@@ -40,9 +40,13 @@ public sealed record LangCommand(Message Message, string Lang) : ICommand
         public async Task<Message> Handle(LangCommand request, CancellationToken cancellationToken)
         {
             var (message, lang) = request;
-            if (!_supportedLanguages.Contains(lang))
+            if (!_supportedLanguages.Contains(lang, StringComparer.OrdinalIgnoreCase))
             {
-                var text = string.Format(Messages.LanguageNotFound, string.Join(", ", _supportedLanguages));
+                var text = string.Format(
+                    CultureInfo.CurrentUICulture,
+                    Messages.LanguageNotFound,
+                    string.Join(", ", _supportedLanguages)
+                );
                 return await bot.SendReplyMessage(message, text).ConfigureAwait(false);
             }
 

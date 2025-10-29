@@ -17,7 +17,7 @@ public abstract class AbstractCommandDescriptor<TCommand> : ICommandDescriptor w
                         ?? throw new InvalidOperationException(
                             $"Command {type.Name} has no {nameof(BotCommandAttribute)} attribute");
         Keyword = $"/{attribute.Command.TrimStart('/')}";
-        Aliases = aliases.GetValueOrDefault(Keyword) ?? new HashSet<string>();
+        Aliases = aliases.GetValueOrDefault(Keyword) ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 
     public abstract string Description { get; }
