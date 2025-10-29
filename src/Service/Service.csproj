@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.Sqlite" />
-    <PackageReference Include="geneirodan.observability"/>
+    <PackageReference Include="Geneirodan.Observability"/>
   </ItemGroup>
 
 </Project>

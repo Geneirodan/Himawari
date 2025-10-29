@@ -3,7 +3,6 @@
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="DisCatSharp.ApplicationCommands"/>
     <PackageReference Include="DisCatSharp.Lavalink" />
-    <PackageReference Include="geneirodan.mediatr" />
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
   </ItemGroup>
