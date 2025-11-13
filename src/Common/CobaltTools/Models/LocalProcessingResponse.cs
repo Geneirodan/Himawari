@@ -1,18 +1,14 @@
 ﻿using System.Text.Json.Serialization;
 using JetBrains.Annotations;
+using static Himawari.CobaltTools.Models.LocalProcessingResponse;
 
 namespace Himawari.CobaltTools.Models;
 
 [PublicAPI]
-public interface ILocalProcessingResponse
+public sealed record LocalProcessingResponse(LocalProcessingType Type, string Service, string[] Tunnel, OutputObject Output, AudioObject Audio, bool? IsHls) : CobaltToolsResponse
 {
-    LocalProcessingType? Type { get; init; }
-    string? Service { get; init; }
-    string[]? Tunnel { get; init; }
-    OutputObject? Output { get; init; }
-
-    [PublicAPI]
-    sealed record OutputObject(
+    public override Status Status { get; init; } = Status.LocalProcessing;
+    public sealed record OutputObject(
         string Type,
         string Filename,
         OutputObject.MetadataObject Metadata,
@@ -33,10 +29,5 @@ public interface ILocalProcessingResponse
             public string? Sublanguage { get; init; }
         }
     }
-
-    AudioObject? Audio { get; init; }
-
-    sealed record AudioObject(bool Copy, string Format, string Bitrate, bool Cover, bool CropCover);
-
-    bool? IsHls { get; init; }
+    public sealed record AudioObject(bool Copy, string Format, string Bitrate, bool Cover, bool CropCover);
 }

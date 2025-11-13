@@ -4,7 +4,6 @@ using Himawari.Alias;
 using Himawari.CobaltTools;
 using Himawari.Discord.Core;
 using Himawari.Discord.Music;
-using Himawari.Discord.Music.Commands;
 using Himawari.Discord.Music.Modules;
 using Himawari.Service.Services;
 using Himawari.Shared;

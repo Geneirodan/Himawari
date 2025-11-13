@@ -29,7 +29,7 @@ public sealed partial class VideoParsingDispatcher(
             foreach (var parser in parsers)
             {
                 if (!parser.ContainsUrl(url: messageText)) continue;
-                LogDetectedUrl(parser.Type, messageText);
+                LogDetectedUrl(messageText);
                 var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
                 IReply reply = file.IsSuccess
                     ? new ParseVideoReply(msg, file.Value)
@@ -39,6 +39,6 @@ public sealed partial class VideoParsingDispatcher(
         }
     }
 
-    [LoggerMessage(LogLevel.Information, "Detected {Type} url in message '{Message}'")]
-    private partial void LogDetectedUrl(string type, string message);
+    [LoggerMessage(LogLevel.Information, "Detected video url in message '{Message}'")]
+    private partial void LogDetectedUrl(string message);
 }

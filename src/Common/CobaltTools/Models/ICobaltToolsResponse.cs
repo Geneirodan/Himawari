@@ -1,9 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using JetBrains.Annotations;
 
 namespace Himawari.CobaltTools.Models;
 
-public record CobaltToolsResponse : ICobaltToolsResponse
+[PublicAPI]
+public interface ICobaltToolsResponse
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public virtual Status Status { get; init; }
+    Status Status { get; init; }
 }

@@ -1,9 +1,7 @@
 ﻿using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
-using DisCatSharp.Lavalink;
 using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
-using Himawari.Discord.Music.Extensions;
 using MediatR;
 
 namespace Himawari.Discord.Music.Commands;

@@ -1,7 +1,6 @@
 ﻿using DisCatSharp;
 using DisCatSharp.Lavalink;
 using Himawari.Discord.Core;
-using Himawari.Discord.Music;
 using Microsoft.Extensions.Options;
 
 namespace Himawari.Service.Services;

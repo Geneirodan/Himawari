@@ -18,7 +18,7 @@ public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerF
     {
             var client = new HttpClient();
             var options = new Mock<IOptions<CobaltToolsOptions>>();
-            var cobaltToolsOptions = new CobaltToolsOptions { Url = $"http://{fixture.Container.Hostname}:9000" };
+            var cobaltToolsOptions = new CobaltToolsOptions { Url = $"https://{fixture.Container.Hostname}:9000" };
             options.SetupGet(o => o.Value).Returns(cobaltToolsOptions);
             _parser = new CobaltToolsService(client, options.Object);
     }
@@ -38,8 +38,10 @@ public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerF
         var result = await _parser.DownloadAsync(url, TestContext.Current.CancellationToken);
         result.ShouldNotBeNull();
         result.Status.ShouldBe(Status.Picker);
-        result.Picker.ShouldNotBeNull();
-        result.Picker.Length.ShouldBeGreaterThan(0);
+        var picker = result as PickerResponse;
+        picker.ShouldNotBeNull();
+        picker.Picker.ShouldNotBeNull();
+        picker.Picker.Length.ShouldBeGreaterThan(0);
     }
     [Theory]
     [MemberData(nameof(YouTubeUrlsData))]

@@ -12,11 +12,24 @@ public sealed record ParseVideoReply(Message Message, IAlbumInputMedia[] Files) 
         public async Task<IEnumerable<Message>> Handle(ParseVideoReply request, CancellationToken cancellationToken)
         {
             var (message, inputFiles) = request;
-            return await bot.SendMediaGroup(
-                chatId: message.Chat.Id,
-                media: inputFiles,
-                replyParameters: new ReplyParameters { MessageId = message.MessageId, ChatId = message.Chat.Id }
-            ).ConfigureAwait(false);
+            List<Message> messages =
+            [
+                ..await bot.SendMediaGroup(
+                    chatId: message.Chat.Id,
+                    media: inputFiles.Where(x => x is not InputMediaAudio),
+                    replyParameters: new ReplyParameters { MessageId = message.MessageId, ChatId = message.Chat.Id }
+                ).ConfigureAwait(false)
+            ];
+            var audioFiles = inputFiles.Where(x => x is InputMediaAudio).ToArray();
+            if (audioFiles.Length > 0)
+                messages.AddRange(
+                    await bot.SendMediaGroup(
+                        chatId: message.Chat.Id,
+                        media: audioFiles,
+                        replyParameters: new ReplyParameters { MessageId = messages[0].Id, ChatId = message.Chat.Id }
+                    ).ConfigureAwait(false)
+                );
+            return messages;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.Text;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Lavalink.Entities;
 using DisCatSharp.Lavalink.Enums;

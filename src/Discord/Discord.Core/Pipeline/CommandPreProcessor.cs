@@ -1,7 +1,6 @@
 ﻿using Himawari.Discord.Core.Abstractions;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
-using Serilog.Context;
 
 namespace Himawari.Discord.Core.Pipeline;
 
