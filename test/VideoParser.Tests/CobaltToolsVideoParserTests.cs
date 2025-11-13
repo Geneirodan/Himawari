@@ -53,7 +53,10 @@ public sealed class CobaltToolsVideoParserTests
                 new PickerResponse.PickerObject(MediaType.Photo, "http://url1", Thumb: null),
                 new PickerResponse.PickerObject(MediaType.Gif, "http://url2", Thumb: null),
                 new PickerResponse.PickerObject(MediaType.Video, "http://url3", Thumb: null)
-            ]));
+            ])
+            {
+                Status = Status.Picker
+            });
         _fakeHttpMessageHandler.Handler = _ => new HttpResponseMessage
         {
             Content = new StringContent("FileContent")

@@ -5,5 +5,5 @@ namespace Himawari.CobaltTools.Models;
 public record CobaltToolsResponse : ICobaltToolsResponse
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public virtual Status Status { get; init; }
+    public required Status Status { get; init; }
 }
