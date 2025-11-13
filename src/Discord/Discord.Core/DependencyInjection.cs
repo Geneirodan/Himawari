@@ -2,6 +2,7 @@
 using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using Himawari.Discord.Core.Pipeline;
+using JetBrains.Annotations;
 using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Himawari.Discord.Core;
 
+[PublicAPI]
 public static class DependencyInjection
 {
     public static IServiceCollection AddDiscordBot(this IServiceCollection services,

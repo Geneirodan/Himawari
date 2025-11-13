@@ -54,9 +54,7 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
         if (current is null)
             return Guess.Incorrect;
 
-        var delta = current.Length - word.Length;
-        
-        var errors = delta switch
+        var errors = (current.Length - word.Length) switch
         {
             0 => TestEquality(word, current),
             1 => TestPartialEquality(word, current),

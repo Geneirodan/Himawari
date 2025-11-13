@@ -4,5 +4,5 @@ namespace Himawari.CobaltTools;
 
 public interface ICobaltToolsService
 {
-    Task<CobaltToolsResponse?> DownloadAsync(string? url, CancellationToken token = default);
+    Task<ICobaltToolsResponse?> DownloadAsync(string? url, CancellationToken token = default);
 }

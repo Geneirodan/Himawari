@@ -18,7 +18,6 @@ public sealed class CurrentTrackCommandBehavior<TRequest, TResponse> : IPipeline
 
         request.CurrentTrack = currentTrack;
         return await next(cancellationToken).ConfigureAwait(false);
-
     }
 
 }

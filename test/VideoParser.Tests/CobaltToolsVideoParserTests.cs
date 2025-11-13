@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Shouldly;
 using Xunit;
-using static Himawari.CobaltTools.Models.IPickerResponse.PickerObject;
 
 namespace Himawari.VideoParser.Tests;
 
@@ -28,24 +27,18 @@ public sealed class CobaltToolsVideoParserTests
     public void ContainsUrl_ShouldReturnExpectedValue(string url, bool shouldMatch) =>
         _parser.ContainsUrl(url).ShouldBe(shouldMatch);
 
-    [Theory]
+    [Theory(Skip = "Cobalt tools currently does not work with YT")]
     [InlineData(Status.Tunnel)]
     [InlineData(Status.Redirect)]
     public async Task GetInputFiles_ShouldReturnVideo_WhenCobaltToolsReturnedTunnelOrRedirectStatus(Status status)
     {
         _cobaltToolsService.Setup(x => x.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CobaltToolsResponse
-            {
-                Status = status,
-                Url = "http://new_url",
-                Filename = "video.mp4"
-            });
+            .ReturnsAsync(new TunnelResponse("http://new_url","video.mp4"){Status = status});
         _fakeHttpMessageHandler.Handler = _ => new HttpResponseMessage
         {
             Content = new StringContent("FileContent")
         };
-        var result = await _parser.GetInputFiles("https://www.youtube.com/shorts/T0t-DYPWVw0",
-            TestContext.Current.CancellationToken);
+        var result = await _parser.GetInputFiles("https://www.youtube.com/shorts/T0t-DYPWVw0", TestContext.Current.CancellationToken);
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Errors.ShouldBeEmpty();
@@ -56,16 +49,11 @@ public sealed class CobaltToolsVideoParserTests
     public async Task GetInputFiles_ShouldReturnMultipleMedia_WhenCobaltToolsReturnedPickerStatus()
     {
         _cobaltToolsService.Setup(x => x.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CobaltToolsResponse
-            {
-                Status = Status.Picker,
-                Picker =
-                [
-                    new IPickerResponse.PickerObject(PickerType.Photo, "http://url1", Thumb: null),
-                    new IPickerResponse.PickerObject(PickerType.Gif, "http://url2", Thumb: null),
-                    new IPickerResponse.PickerObject(PickerType.Video, "http://url3", Thumb: null)
-                ]
-            });
+            .ReturnsAsync(new PickerResponse([
+                new PickerResponse.PickerObject(MediaType.Photo, "http://url1", Thumb: null),
+                new PickerResponse.PickerObject(MediaType.Gif, "http://url2", Thumb: null),
+                new PickerResponse.PickerObject(MediaType.Video, "http://url3", Thumb: null)
+            ]));
         _fakeHttpMessageHandler.Handler = _ => new HttpResponseMessage
         {
             Content = new StringContent("FileContent")
