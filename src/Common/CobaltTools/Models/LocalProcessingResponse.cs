@@ -5,9 +5,15 @@ using static Himawari.CobaltTools.Models.LocalProcessingResponse;
 namespace Himawari.CobaltTools.Models;
 
 [PublicAPI]
-public sealed record LocalProcessingResponse(LocalProcessingType Type, string Service, string[] Tunnel, OutputObject Output, AudioObject Audio, bool? IsHls) : CobaltToolsResponse
+public sealed record LocalProcessingResponse(
+    LocalProcessingType Type, 
+    string Service, 
+    string[] Tunnel, 
+    OutputObject Output, 
+    AudioObject Audio, 
+    bool? IsHls
+    ) : CobaltToolsResponse
 {
-    public override Status Status { get; init; } = Status.LocalProcessing;
     public sealed record OutputObject(
         string Type,
         string Filename,
