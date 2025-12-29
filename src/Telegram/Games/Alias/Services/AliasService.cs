@@ -24,28 +24,27 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
 
     public long? GetPresenterId(long chatId) => PresenterIds.GetValueOrDefault(chatId);
 
-    public async Task<string> NextWordAsync(long chatId, CancellationToken cancellationToken = default)
+    public async Task<string?> NextWordAsync(long chatId, CancellationToken cancellationToken = default)
     {
         var nameValueCollection = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["qu_word"] = "1",
+            ["qu_words"] = "1",
             ["type_words"] = "objects",
             ["order"] = "in_order",
             ["done"] = "Create"
         };
         var formContent = new FormUrlEncodedContent(nameValueCollection);
         var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-        var requestUri = $"https://teoset.com/word-generator/lang.{culture}#element_list";
-        using (var response = await client.PostAsync(requestUri, formContent, cancellationToken).ConfigureAwait(false))
-        {
-            var str = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-            Words[chatId] = ResultRegex.Matches(str)[0].Groups[1].Value.Trim();
-        }
-
-        return Words[chatId];
+        var requestUri = $"https://teoset.com/word-generator/lang.{culture}";
+        using var response = await client.PostAsync(requestUri, formContent, cancellationToken).ConfigureAwait(false);
+        var str = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+        var word = ResultRegex.Matches(str).FirstOrDefault()?.Groups[1].Value.Trim();
+        if(word is not null) 
+            Words[chatId] = word;
+        return word;
     }
 
-    public async Task<string> GetOrCreateCurrentWordAsync(long chatId, CancellationToken cancellationToken = default) =>
+    public async Task<string?> GetOrCreateCurrentWordAsync(long chatId, CancellationToken cancellationToken = default) =>
         Words.GetValueOrDefault(chatId) ?? await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
 
     public Guess VerifyWord(long chatId, string word)

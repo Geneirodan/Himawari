@@ -5,6 +5,6 @@ namespace Himawari.VideoParser.Services;
 
 public interface IVideoParser
 {
-    Task<Result<IAlbumInputMedia[]>> GetInputFiles(string url, CancellationToken cancellationToken = default);
+    Task<Result<IAlbumInputMedia[]>> GetInputFiles(string url, CancellationToken token = default);
     bool ContainsUrl(string url);
 }

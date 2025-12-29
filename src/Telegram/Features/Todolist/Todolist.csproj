@@ -1,11 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
     <ItemGroup>
       <EmbeddedResource Update="Resources.resx">
         <Generator>ResXFileCodeGenerator</Generator>
@@ -15,7 +8,6 @@
         <DependentUpon>Resources.resx</DependentUpon>
       </EmbeddedResource>
     </ItemGroup>
-
     <ItemGroup>
       <Compile Update="Resources.Designer.cs">
         <DesignTime>True</DesignTime>
@@ -23,9 +15,7 @@
         <DependentUpon>Resources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
-
     <ItemGroup>
       <ProjectReference Include="..\..\Telegram.Core\Telegram.Core.csproj" />
     </ItemGroup>
-
 </Project>
