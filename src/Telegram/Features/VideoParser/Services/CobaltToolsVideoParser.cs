@@ -18,8 +18,9 @@ public sealed partial class CobaltToolsVideoParser(
     [GeneratedRegex("""
                     https:\/\/
                     (v(m|t)\.tiktok\.com\/(\w+)\/?)|
-                    (www\.tiktok\.com\/@[^/]+\/video\/(\d+))|
-                    ((www\.)?youtu(\.be|be\.com)\/)
+                    (www\.tiktok\.com\/@[^\/]+\/video\/(\d+))|
+                    ((www\.)?youtu(\.be|be\.com)\/)|
+                    ((www\.)?instagram\.com\/reel\/(\w+)\/?)
                     """, RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex UrlRegex { get; }
 
