@@ -1,4 +1,4 @@
-﻿<root>
+<root>
     <resheader name="resmimetype">
         <value>text/microsoft-resx</value>
     </resheader>
@@ -15,6 +15,12 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
+    <data name="GameAlreadyRunning" xml:space="preserve">
+        <value>Гра вже йде. Дочекайтесь завершення раунду або натисніть Стоп.</value>
+    </data>
+    <data name="ChooseCategory" xml:space="preserve">
+        <value>Оберіть категорію слів:</value>
+    </data>
     <data name="StartGame" xml:space="preserve">
         <value>Ну що, почнемо грати у крокодила. Хто хоче бути ведучим?</value>
     </data>
@@ -22,7 +28,7 @@
         <value>Я хочу!</value>
     </data>
     <data name="PresenterChosen" xml:space="preserve">
-        <value>Добре, {0} буде наступним ведучим.</value>
+        <value>Добре, <b>{0}</b> буде наступним ведучим.</value>
     </data>
     <data name="Forbidden" xml:space="preserve">
         <value>Ей, не дури!</value>
@@ -50,5 +56,26 @@
     </data>
     <data name="PartialGuess" xml:space="preserve">
         <value>Ти майже вгадав!</value>
+    </data>
+    <data name="CorrectButton" xml:space="preserve">
+        <value>✅ Угадали</value>
+    </data>
+    <data name="SkipButton" xml:space="preserve">
+        <value>⏭ Пропустити</value>
+    </data>
+    <data name="StopButton" xml:space="preserve">
+        <value>🛑 Стоп</value>
+    </data>
+    <data name="CorrectWordConfirmed" xml:space="preserve">
+        <value>✅ Угадали! Наступне слово готове.</value>
+    </data>
+    <data name="RoundScoreSuffix" xml:space="preserve">
+        <value>Слів відгадано: {0}</value>
+    </data>
+    <data name="GameEndedWithScore" xml:space="preserve">
+        <value>Гру закінчено. Слів відгадано: {0}.</value>
+    </data>
+    <data name="TimeUpWithScore" xml:space="preserve">
+        <value>⏰ Час вийшов! Раунд завершено. Слів відгадано: {0}.</value>
     </data>
 </root>

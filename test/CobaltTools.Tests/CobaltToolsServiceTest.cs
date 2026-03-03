@@ -1,14 +1,18 @@
-﻿using Himawari.CobaltTools.Models;
+using Himawari.CobaltTools.Models;
 using Himawari.CobaltTools.Options;
-using Xunit;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
+using Xunit;
 
 namespace Himawari.CobaltTools.Tests;
 
 #if DEBUG
+[Trait("Category", "Integration")]
 [TestSubject(typeof(CobaltToolsService))]
 public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerFixture>
 {
@@ -16,11 +20,17 @@ public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerF
 
     public CobaltToolsServiceTest(CobaltToolsContainerFixture fixture)
     {
-            var client = new HttpClient();
-            var options = new Mock<IOptions<CobaltToolsOptions>>();
-            var cobaltToolsOptions = new CobaltToolsOptions { Url = $"https://{fixture.Container.Hostname}:9000" };
-            options.SetupGet(o => o.Value).Returns(cobaltToolsOptions);
-            _parser = new CobaltToolsService(client, options.Object);
+        var client = new HttpClient();
+        var options = new Mock<IOptions<CobaltToolsOptions>>();
+        var cobaltToolsOptions = new CobaltToolsOptions { Url = $"https://{fixture.Container.Hostname}:9000" };
+        options.SetupGet(o => o.Value).Returns(cobaltToolsOptions);
+
+        var services = new ServiceCollection();
+        services.AddHybridCache();
+        var cache = services.BuildServiceProvider().GetRequiredService<HybridCache>();
+        var logger = NullLogger<CobaltToolsService>.Instance;
+
+        _parser = new CobaltToolsService(client, cache, options.Object, logger);
     }
     
     [Theory]

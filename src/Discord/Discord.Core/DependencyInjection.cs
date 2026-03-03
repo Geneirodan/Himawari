@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using DisCatSharp;
 using DisCatSharp.ApplicationCommands;
 using Himawari.Discord.Core.Pipeline;
@@ -10,9 +10,20 @@ using Microsoft.Extensions.Options;
 
 namespace Himawari.Discord.Core;
 
+/// <summary>
+/// Dependency injection extensions for the Discord bot: options, client, and application commands from the given assemblies.
+/// </summary>
 [PublicAPI]
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Registers <see cref="DiscordOptions"/> from config, creates and configures <see cref="DiscordClient"/> (with <paramref name="configureClient"/>), and registers application commands from <paramref name="assemblies"/>.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configureClient">Action to configure the client (e.g. UseLavalink).</param>
+    /// <param name="configSectionPath">Configuration section (e.g. "Discord").</param>
+    /// <param name="assemblies">Assemblies to scan for application command modules.</param>
+    /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddDiscordBot(this IServiceCollection services,
         Action<DiscordClient> configureClient, string configSectionPath = "Discord",
         params Assembly[] assemblies
@@ -39,6 +50,12 @@ public static class DependencyInjection
             });
     }
 
+    /// <summary>
+    /// Registers global application commands from the given assemblies (modules inheriting <see cref="ApplicationCommandsModule"/>).
+    /// </summary>
+    /// <param name="discordClient">The Discord client.</param>
+    /// <param name="serviceProvider">Service provider for command resolution.</param>
+    /// <param name="assemblies">Assemblies to scan for command modules.</param>
     public static void RegisterApplicationCommandsFromAssemblies(
         this DiscordClient discordClient,
         IServiceProvider serviceProvider,

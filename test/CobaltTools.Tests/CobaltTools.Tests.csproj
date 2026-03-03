@@ -1,8 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <ItemGroup>
       <ProjectReference Include="..\..\src\Common\CobaltTools\CobaltTools.csproj" />
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="Testcontainers.XunitV3" />
     </ItemGroup>
 </Project>

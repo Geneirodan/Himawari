@@ -39,5 +39,19 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
         
-      - name: Test
-        run: dotnet test --no-build --verbosity normal -c Release
+      - name: Run unit tests
+        run: dotnet test --no-build --verbosity normal -c Release --filter "Category!=Integration"
+
+      - name: Check Docker
+        id: docker
+        continue-on-error: true
+        run: |
+          if docker info > /dev/null 2>&1; then
+            echo "available=true" >> $GITHUB_OUTPUT
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run integration tests (Docker required)
+        if: steps.docker.outputs.available == 'true'
+        run: dotnet test --no-build --verbosity normal -c Release --filter "Category=Integration"

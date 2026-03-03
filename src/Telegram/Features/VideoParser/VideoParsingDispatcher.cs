@@ -1,4 +1,4 @@
-﻿using Himawari.Telegram.Core.Abstractions;
+using Himawari.Telegram.Core.Abstractions;
 using Himawari.Telegram.Core.Abstractions.Messages;
 using Himawari.VideoParser.Replies;
 using Himawari.VideoParser.Services;
@@ -10,12 +10,16 @@ using Telegram.Bot.Types;
 
 namespace Himawari.VideoParser;
 
+/// <summary>
+/// Message handler: finds URLs in text via registered <see cref="IVideoParser"/> instances, calls <see cref="IVideoParser.GetInputFiles"/> and sends <see cref="ParseVideoReply"/> on success or <see cref="ErrorReply"/> on failure.
+/// </summary>
 [PublicAPI]
 public sealed partial class VideoParsingDispatcher(
     IServiceProvider serviceProvider,
     ILogger<VideoParsingDispatcher> logger
 ) : AbstractDispatcher
 {
+    /// <inheritdoc />
     protected override async Task OnNewMessage(Message msg)
     {
         if (msg.Text is not { } messageText)
@@ -31,10 +35,16 @@ public sealed partial class VideoParsingDispatcher(
                 if (!parser.ContainsUrl(url: messageText)) continue;
                 LogDetectedUrl(messageText);
                 var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
-                IReply reply = file.IsSuccess
-                    ? new ParseVideoReply(msg, file.Value)
-                    : new ErrorReply(msg, file.Errors.First());
-                await sender.Send(reply).ConfigureAwait(false);
+                if (file.IsSuccess)
+                {
+                    var stream = await sender.Send(new ParseVideoReply(msg, file.Value)).ConfigureAwait(false);
+                    await foreach (var _ in stream.ConfigureAwait(false))
+                    { }
+                }
+                else
+                {
+                    await sender.Send(new ErrorReply(msg, file.Errors.First())).ConfigureAwait(false);
+                }
             }
         }
     }

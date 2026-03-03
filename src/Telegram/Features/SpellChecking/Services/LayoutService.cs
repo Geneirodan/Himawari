@@ -1,4 +1,5 @@
-﻿using Himawari.SpellChecking.Models;
+using System.Collections.Frozen;
+using Himawari.SpellChecking.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WeCantSpell.Hunspell;
@@ -6,8 +7,11 @@ using YamlDotNet.Serialization;
 
 namespace Himawari.SpellChecking.Services;
 
-using Maps = Dictionary<string, Dictionary<char, char>>;
+using Maps = Dictionary<string, FrozenDictionary<char, char>>;
 
+/// <summary>
+/// Loads keyboard layouts and Hunspell dictionaries from config (YAML + dictionaries path). Implements <see cref="ILayoutService"/> for wrong-layout detection and spell checking.
+/// </summary>
 public sealed partial class LayoutService : ILayoutService
 {
     private const string DefaultLayoutKey = "qwerty";
@@ -26,8 +30,11 @@ public sealed partial class LayoutService : ILayoutService
     {
         _logger = logger;
         var spellcheckingOptions = options.Value;
+        var layoutsPath = spellcheckingOptions.LayoutsFilePath
+            ?? throw new InvalidOperationException(
+                "SpellChecking:LayoutsFilePath is not configured. Check appsettings.json (section Telegram:SpellChecking) or environment variables.");
 
-        using (var streamReader = new StreamReader(spellcheckingOptions.LayoutsFilePath))
+        using (var streamReader = new StreamReader(layoutsPath))
         {
             _layoutSettings = deserializer.Deserialize<LayoutSettings>(streamReader);
         }
@@ -36,26 +43,31 @@ public sealed partial class LayoutService : ILayoutService
         (_maps, _reversedMaps) = FillMaps();
     }
 
+    /// <inheritdoc />
     public WordList GetWordList(string localeName)
     {
         return _wordLists[localeName];
     }
 
-    public IReadOnlyDictionary<char, char> GetMap(string localeName)
+    /// <inheritdoc />
+    public FrozenDictionary<char, char> GetMap(string layoutName)
     {
-        return _maps[localeName];
+        return _maps[layoutName];
     }
 
-    public IReadOnlyDictionary<char, char> GetReverseMap(string localeName)
+    /// <inheritdoc />
+    public FrozenDictionary<char, char> GetReverseMap(string layoutName)
     {
-        return _reversedMaps[localeName];
+        return _reversedMaps[layoutName];
     }
 
+    /// <inheritdoc />
     public IEnumerable<string> GetSupportedLanguages()
     {
         return _layoutSettings.Locales.Keys;
     }
 
+    /// <inheritdoc />
     public IEnumerable<string> GetLayouts(string localeName)
     {
         return _layoutSettings.Locales[localeName].Where(x => !string.Equals(x, DefaultLayoutKey, StringComparison.OrdinalIgnoreCase));
@@ -96,8 +108,8 @@ public sealed partial class LayoutService : ILayoutService
             var standard = keyboardLayout.Standard.SelectMany(x => x);
             var shift = keyboardLayout.Shift.SelectMany(x => x);
             var zipped = standard.Union(shift).Zip(fullQwerty).ToArray();
-            maps.Add(key, zipped.ToDictionary(x => x.First, x => x.Second));
-            reversedMaps.Add(key, zipped.ToDictionary(x => x.Second, x => x.First));
+            maps.Add(key, zipped.ToDictionary(x => x.First, x => x.Second).ToFrozenDictionary());
+            reversedMaps.Add(key, zipped.ToDictionary(x => x.Second, x => x.First).ToFrozenDictionary());
         }
 
         return (maps, reversedMaps);

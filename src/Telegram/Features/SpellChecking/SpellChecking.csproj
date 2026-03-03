@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
     <PackageReference Include="WeCantSpell.Hunspell"/>
@@ -18,6 +18,9 @@
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Messages.uk.resx">
+      <DependentUpon>Messages.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Messages.ru.resx">
       <DependentUpon>Messages.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
