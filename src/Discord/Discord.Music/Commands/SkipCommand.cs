@@ -1,4 +1,4 @@
-﻿using Ardalis.Result;
+using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
 using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
@@ -8,9 +8,12 @@ using static Himawari.Discord.Music.Commands.SkipCommand;
 
 namespace Himawari.Discord.Music.Commands;
 
+/// <summary>Discord slash command: skip the current track and start the next in queue.</summary>
 public sealed record SkipCommand(BaseContext Context) : CurrentTrackCommandBase(Context), ICommand<Response>
 {
+    /// <summary>Response: previous track name, next track name (if any), and queue count.</summary>
     public sealed record Response(string OldTrackName, string? NewTrackName, int QueueCount);
+    /// <inheritdoc />
     public sealed class Handler : IRequestHandler<SkipCommand, Result<Response>>
     {
         public async Task<Result<Response>> Handle(SkipCommand request, CancellationToken cancellationToken)

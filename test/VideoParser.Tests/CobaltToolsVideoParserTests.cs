@@ -1,4 +1,4 @@
-﻿using Himawari.CobaltTools;
+using Himawari.CobaltTools;
 using Himawari.CobaltTools.Models;
 using Himawari.VideoParser.Services;
 using JetBrains.Annotations;
@@ -27,7 +27,7 @@ public sealed class CobaltToolsVideoParserTests
     public void ContainsUrl_ShouldReturnExpectedValue(string url, bool shouldMatch) =>
         _parser.ContainsUrl(url).ShouldBe(shouldMatch);
 
-    [Theory(Skip = "Cobalt tools currently does not work with YT")]
+    [Theory(Skip = "Requires live CobaltTools endpoint — use integration test suite")]
     [InlineData(Status.Tunnel)]
     [InlineData(Status.Redirect)]
     public async Task GetInputFiles_ShouldReturnVideo_WhenCobaltToolsReturnedTunnelOrRedirectStatus(Status status)

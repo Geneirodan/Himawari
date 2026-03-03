@@ -1,11 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <EmbeddedResource Update="Localization\BotMessages.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\BotMessages.ru.resx">
+      <DependentUpon>BotMessages.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\BotMessages.uk.resx">
+      <DependentUpon>BotMessages.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
     <PackageReference Include="JetBrains.Annotations"/>
     <PackageReference Include="MediatR"/>
     <PackageReference Include="Microsoft.Data.Sqlite"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     <PackageReference Include="Scrutor"/>
+    <PackageReference Include="System.Threading.RateLimiting" />
+    <PackageReference Include="System.Reactive" />
     <PackageReference Include="WTelegramBot"/>
   </ItemGroup>
 

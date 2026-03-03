@@ -1,5 +1,7 @@
-﻿using Himawari.Alias.Services;
+using System.Globalization;
+using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
+using Himawari.Telegram.Core.RateLimiting;
 using MediatR;
 using Telegram.Bot.Types;
 using WTelegram;
@@ -7,9 +9,11 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
+/// <summary>Callback when the user taps "end game": ends the Alias game for the chat and sends a confirmation message.</summary>
 public sealed record EndGameCallback(CallbackQuery Query) : AbstractCallback<Message?>(Query)
 {
-    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<EndGameCallback, Message?>
+    /// <inheritdoc />
+    public sealed class Handler(Bot bot, IOutgoingTelegramBot outgoingBot, IAliasService service, IAliasRoundTimer roundTimer) : IRequestHandler<EndGameCallback, Message?>
     {
         public async Task<Message?> Handle(EndGameCallback request, CancellationToken cancellationToken)
         {
@@ -21,8 +25,12 @@ public sealed record EndGameCallback(CallbackQuery Query) : AbstractCallback<Mes
                 return null;
             }
 
+            roundTimer.Cancel(chatId);
+            var score = service.GetCorrectCount(chatId);
             service.EndGame(chatId);
-            return await bot.SendMessage(chatId, GameEnded).ConfigureAwait(false);
+            await bot.AnswerCallbackQuery(request.Query.Id).ConfigureAwait(false);
+            var text = string.Format(CultureInfo.CurrentUICulture, GameEndedWithScore, score);
+            return await outgoingBot.SendMessageAsync(chatId, text, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }

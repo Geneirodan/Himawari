@@ -1,54 +1,55 @@
-﻿using System.Collections;
-using System.Globalization;
-using System.Text;
 using Himawari.Telegram.Application.Resources;
 using Himawari.Telegram.Core.Abstractions;
 using Himawari.Telegram.Core.Abstractions.Messages;
 using Himawari.Telegram.Core.Attributes;
 using Himawari.Telegram.Core.Extensions;
+using Himawari.Telegram.Core.Keyboards;
+using Himawari.Telegram.Core.Localization;
 using Himawari.Telegram.Core.Models;
+using Himawari.Telegram.Core.RateLimiting;
 using JetBrains.Annotations;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using WTelegram;
 
 namespace Himawari.Telegram.Application.Commands;
 
+/// <inheritdoc />
 [BotCommand("/who")]
 public sealed record WhoCommand(Message Message, string Rest) : ICommand
 {
-    public sealed class Handler(Bot bot) : IRequestHandler<WhoCommand, Message>
+    public sealed class Handler(Bot bot, IOutgoingTelegramBot outgoingBot, IBotLocalizer loc, ILogger<Handler> logger) : IRequestHandler<WhoCommand, Message>
     {
         public async Task<Message> Handle(WhoCommand request, CancellationToken cancellationToken)
         {
             var (message, rest) = request;
 
-            var chatMembers = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
-            var members = chatMembers.Where(x => !x.User.IsBot).ToArray();
+            ChatMember[] members;
+            try
+            {
+                var chatMembers = await bot.GetChatMemberList(message.Chat.Id).ConfigureAwait(false);
+                members = chatMembers.Where(x => !x.User.IsBot).ToArray();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "GetChatMemberList failed for chat {ChatId}", message.Chat.Id);
+                return await outgoingBot.SendReplyMessage(message, loc[Loc.WhoCantListMembers], cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
 
-            var index = Random.Shared.Next(members.Length);
+            if (members.Length == 0)
+                return await outgoingBot.SendReplyMessage(message, loc[Loc.WhoNoMembers], cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            var cultureInfo = CultureInfo.CurrentUICulture;
-            var resourceSet = WhoCommandVariants.ResourceManager
-                .GetResourceSet(cultureInfo, createIfNotExists: true, tryParents: true)!
-                .Cast<DictionaryEntry>()
-                .Select(entry => entry.Key)
-                .Cast<string>()
-                .ToArray();
-
-            var quote = Random.Shared.Next(resourceSet.Length);
-
-            var text = WhoCommandVariants.ResourceManager.GetString(resourceSet[quote], cultureInfo);
-            var stringBuilder = new StringBuilder(text)
-                .Append(' ')
-                .Append(members[index].User.GetUsername());
-
-            if (!string.IsNullOrWhiteSpace(rest))
-                stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
-
-            return await bot.SendReplyMessage(message, stringBuilder.ToString())
-                .ConfigureAwait(false);
+            var users = members.Select(m => m.User).ToList();
+            var keyboard = UserPickerKeyboard.Build(users, "who");
+            return await outgoingBot.SendReplyMessage(
+                message,
+                loc[Loc.WhoPickPrompt],
+                ParseMode.Html,
+                replyMarkup: keyboard,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 

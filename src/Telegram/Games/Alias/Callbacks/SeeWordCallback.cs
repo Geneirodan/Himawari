@@ -1,4 +1,4 @@
-﻿using Himawari.Alias.Services;
+using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
 using MediatR;
 using Telegram.Bot.Types;
@@ -7,8 +7,10 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
+/// <summary>Callback when the presenter taps "see word": answers the callback with the current word (or an error message) via <see cref="Bot.AnswerCallbackQuery"/>.</summary>
 public sealed record SeeWordCallback(CallbackQuery Query) : AbstractCallback(Query)
 {
+    /// <inheritdoc />
     public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<SeeWordCallback>
     {
         public async Task Handle(SeeWordCallback request, CancellationToken cancellationToken)

@@ -1,4 +1,5 @@
-﻿using Himawari.SillyThings.Responses;
+using Himawari.SillyThings.Options;
+using Himawari.SillyThings.Responses;
 using Himawari.TestHelpers;
 using JetBrains.Annotations;
 using MediatR;
@@ -21,7 +22,12 @@ public sealed class SillyThingsDispatcherTests
         serviceProvider
             .Setup(x => x.GetService(typeof(ISender)))
             .Returns(_sender.Object);
-        _dispatcher = new SillyThingsDispatcher(serviceProvider.Object);
+        var triggers = new SillyThingsTriggers(new SillyThingsOptions
+        {
+            RhinoGifUrl = "https://example.com/rhino.gif",
+            SsStickerUrl = "https://example.com/sticker.webp"
+        });
+        _dispatcher = new SillyThingsDispatcher(serviceProvider.Object, triggers);
     }
 
 

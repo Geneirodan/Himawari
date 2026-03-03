@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using DisCatSharp.ApplicationCommands;
 using DisCatSharp.ApplicationCommands.Attributes;
@@ -11,6 +11,9 @@ using MediatR;
 
 namespace Himawari.Discord.Music.Modules;
 
+/// <summary>
+/// Discord slash command module for music: play, pause, resume, stop, skip, now playing, queue, purge. Sends commands via MediatR <see cref="ISender"/> and edits the interaction response with the result.
+/// </summary>
 [PublicAPI]
 public sealed class MusicCommandsModule(ISender sender) : ApplicationCommandsModule
 {
