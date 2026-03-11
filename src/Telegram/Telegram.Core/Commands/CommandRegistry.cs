@@ -30,9 +30,6 @@ public sealed class CommandRegistry : ICommandResolver
     /// <summary>
     /// Builds the registry from descriptors and alias configuration.
     /// </summary>
-    /// <param name="descriptors">All registered command descriptors.</param>
-    /// <param name="aliases">Alias map from configuration (e.g. Telegram:Aliases).</param>
-    /// <param name="options">Registry options (fuzzy distance, show suggestions, natural-language triggers).</param>
     public CommandRegistry(
         IEnumerable<ICommandDescriptor> descriptors,
         IOptionsMonitor<Aliases> aliases,

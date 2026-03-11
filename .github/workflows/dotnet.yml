@@ -5,7 +5,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
 
 jobs:    
   build:
@@ -38,7 +40,8 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore -c Release
-        
+
+      # New test projects must be added to Himawari.slnx. Tests with [Trait("Category", "Integration")] run only when Docker is available (see step below).
       - name: Run unit tests
         run: dotnet test --no-build --verbosity normal -c Release --filter "Category!=Integration"
 

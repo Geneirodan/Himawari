@@ -19,18 +19,14 @@ using WTelegram;
 namespace Himawari.Telegram.Core;
 
 /// <summary>
-/// Dependency injection extensions for the Telegram bot: bot options, handlers, WTelegram <see cref="Bot"/>, and optional command pipeline.
+/// Dependency injection extensions for the Telegram bot: registers options, WTelegram <see cref="Bot"/>, command pipeline, and channel processing.
 /// </summary>
 [PublicAPI]
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers Telegram bot options, aliases, and the <see cref="Bot"/> instance; configures message and update handlers via <paramref name="configure"/>.
+    /// Registers Telegram bot options, aliases, and the <see cref="Bot"/> instance; delegates handler wiring to <paramref name="configure"/>.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="configure">Action to add message/update handlers to the registrar.</param>
-    /// <param name="configSectionPath">Configuration section prefix (e.g. "Telegram" binds Telegram:Bot, Telegram:Aliases).</param>
-    /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddTelegramBot(
         this IServiceCollection services,
         Action<BotConfigurationRegistrar> configure,
@@ -61,11 +57,8 @@ public static class DependencyInjection
     }
 
     /// <summary>
-    /// Registers MediatR command pipeline (pre-processor, localization, post-processor), <see cref="ILanguageRepository"/> and <see cref="IExplicitLanguageResolver"/> for /lang persistence, <see cref="ICommandResolver"/>, and scans assemblies for <see cref="ICommandDescriptor"/> implementations.
+    /// Registers MediatR pipeline for Telegram commands and scans <paramref name="assemblies"/> for <see cref="ICommandDescriptor"/>; wires /lang persistence and command resolver.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="assemblies">Assemblies to scan for commands and descriptors.</param>
-    /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddTelegramCommandsFromAssemblies(
         this IServiceCollection services,
         params Assembly[] assemblies
@@ -94,10 +87,8 @@ public static class DependencyInjection
     }
 
     /// <summary>
-    /// Registers the four-layer channel pipeline: bounded channel, worker pool, per-chat semaphore (for MediatR), and message handler provider. Bind options from <c>Telegram:Pipeline</c>. Call after <see cref="AddTelegramBot"/>.
+    /// Registers the bounded-channel update pipeline and per-chat concurrency control for Telegram updates. Bind options from <c>Telegram:Pipeline</c>; call after <see cref="AddTelegramBot"/>.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
     public static IServiceCollection AddTelegramChannelPipeline(this IServiceCollection services)
     {
         services.AddOptions<ChannelPipelineOptions>()
@@ -116,10 +107,8 @@ public static class DependencyInjection
     }
 
     /// <summary>
-    /// Subscribes all registered Telegram message and update handlers to the bot. Call after building the host (e.g. <c>app.RegisterHandlers()</c>).
+    /// Subscribes all registered Telegram message and update handlers to the bot at host startup.
     /// </summary>
-    /// <param name="host">The host whose services contain <see cref="BotConfigurationRegistrar"/> and <see cref="Bot"/>.</param>
-    /// <returns>The same <see cref="IHost"/> for chaining.</returns>
     public static IHost RegisterHandlers(this IHost host)
     {
         host.Services.GetRequiredService<BotConfigurationRegistrar>().RegisterHandlers(host.Services);
