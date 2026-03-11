@@ -1,9 +1,11 @@
-﻿using System.Globalization;
+using System.Globalization;
+using System.Text.Encodings.Web;
 using Himawari.Alias.Enums;
 using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
 using Himawari.Telegram.Core.Extensions;
+using Himawari.Telegram.Core.RateLimiting;
 using MediatR;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -13,9 +15,13 @@ using static Himawari.Alias.Resources.Messages;
 
 namespace Himawari.Alias.Callbacks;
 
+/// <summary>Callback when the user chooses to be the presenter: starts the game, sends the word-control keyboard, and starts the round timer.</summary>
 public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCallback<Message?>(Query)
 {
-    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<ChoosePresenterCallback, Message?>
+    private static readonly TimeSpan RoundDuration = TimeSpan.FromSeconds(60);
+
+    /// <inheritdoc />
+    public sealed class Handler(Bot bot, IOutgoingTelegramBot outgoingBot, IAliasService service, IAliasRoundTimer roundTimer) : IRequestHandler<ChoosePresenterCallback, Message?>
     {
         public async Task<Message?> Handle(ChoosePresenterCallback request, CancellationToken cancellationToken)
         {
@@ -27,17 +33,28 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
                 return null;
             }
 
-            await service.StartAsync(chatId, request.Query.From.Id, cancellationToken).ConfigureAwait(false);
+            var category = service.GetCategory(chatId);
+            await service.StartAsync(chatId, request.Query.From.Id, category, cancellationToken).ConfigureAwait(false);
 
-            return await bot.SendMessage(
-                chatId: chatId,
-                text: string.Format(CultureInfo.CurrentUICulture, PresenterChosen, request.Query.From.GetUsername()),
-                parseMode: ParseMode.MarkdownV2,
-                replyMarkup: new InlineKeyboardMarkup(
-                    InlineKeyboardButton.WithCallbackData(EndGame, AliasCallbackType.EndGame.Serialize()),
-                    InlineKeyboardButton.WithCallbackData(SeeWord, AliasCallbackType.SeeWord.Serialize()),
-                    InlineKeyboardButton.WithCallbackData(NextWord, AliasCallbackType.NextWord.Serialize())
-                )
+            roundTimer.Start(chatId, RoundDuration, async (cid, ct) =>
+            {
+                var score = service.GetCorrectCount(cid);
+                service.EndGame(cid);
+                var text = string.Format(CultureInfo.CurrentUICulture, TimeUpWithScore, score);
+                await outgoingBot.SendMessageAsync(cid, text, cancellationToken: ct).ConfigureAwait(false);
+            });
+
+            var usernameEncoded = HtmlEncoder.Default.Encode(request.Query.From.GetUsername() ?? string.Empty);
+            return await outgoingBot.SendMessageAsync(
+                chatId,
+                string.Format(CultureInfo.CurrentUICulture, PresenterChosen, usernameEncoded),
+                ParseMode.Html,
+                new InlineKeyboardMarkup(
+                    InlineKeyboardButton.WithCallbackData(CorrectButton, AliasCallbackType.Correct.Serialize()),
+                    InlineKeyboardButton.WithCallbackData(SkipButton, AliasCallbackType.Skip.Serialize()),
+                    InlineKeyboardButton.WithCallbackData(StopButton, AliasCallbackType.EndGame.Serialize())
+                ),
+                cancellationToken
             ).ConfigureAwait(false);
         }
     }

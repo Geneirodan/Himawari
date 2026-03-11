@@ -1,6 +1,14 @@
+/// <summary>
+/// Himawari host: runs Telegram and Discord bots in one process. Registers MediatR (common pipeline), Telegram bot
+/// (WTelegram) with message/update handlers and features (Alias, Todolist, SillyThings, CobaltTools, VideoParser),
+/// Discord bot (DisCatSharp + Lavalink), SQLite (Chats table), Geneirodan.Observability, and HealthChecks.
+/// </summary>
+
 using DisCatSharp.Lavalink;
 using Geneirodan.Observability;
 using Himawari.Alias;
+using Himawari.Alias.Options;
+using Microsoft.Extensions.Options;
 using Himawari.CobaltTools;
 using Himawari.Discord.Core;
 using Himawari.Discord.Music;
@@ -8,6 +16,7 @@ using Himawari.Discord.Music.Modules;
 using Himawari.Service.Services;
 using Himawari.Shared;
 using Himawari.SillyThings;
+using Himawari.SpellChecking;
 using Himawari.Telegram.Application;
 using Himawari.Telegram.Core;
 using Himawari.Todolist;
@@ -33,30 +42,32 @@ builder.Services
     // Telegram part
     .AddTelegramBot(x => x
         .AddMessageHandler<CommandDispatcher>()
-        // .AddMessageHandler<SpellCheckingDispatcher>()
+        .AddMessageHandler<SpellCheckingDispatcher>()
         .AddMessageHandler<AliasDispatcher>()
         .AddUpdateHandler<AliasDispatcher>()
+        .AddUpdateHandler<WhoCallbackHandler>()
         .AddMessageHandler<VideoParsingDispatcher>()
         .AddMessageHandler<SillyThingsDispatcher>()
     )
-    .AddBasicTelegramCommands("Telegram:Commands")
+    .AddTelegramChannelPipeline()
+    .AddBasicTelegramCommands("Telegram:Commands", configuration)
+    .Configure<AliasWordSetsOptions>(configuration.GetSection("Telegram").GetSection("Alias"))
     .AddAliasGame()
     .AddTodolist("Telegram:Todolist")
     .AddSillyThings("Telegram:SillyThings")
     .AddCobaltTools("CobaltTools")
     .AddVideoParsing()
-    // TODO: Fix critical bug with commas
-    // .AddWrongLayoutDetection(configuration.GetSection("SpellChecking"))
+    .AddWrongLayoutDetection(configuration.GetSection("Telegram:SpellChecking"))
     .AddHostedService<TelegramBackgroundService>()
-
     // Discord part
     .AddDiscordBot(
         configureClient: client => client.UseLavalink(),
         configSectionPath: "Discord",
         assemblies: typeof(MusicCommandsModule).Assembly)
     .AddMusicServices("Discord:Lavalink")
-    .AddHostedService<DiscordBackgroundService>()
+    .AddHostedService<DiscordBackgroundService>();
 
+builder.Services
     // Observability part
     .AddSharedOpenTelemetry(configuration)
     .AddHealthChecks()

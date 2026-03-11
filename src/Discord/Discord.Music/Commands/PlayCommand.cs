@@ -1,4 +1,4 @@
-﻿using Ardalis.Result;
+using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Lavalink.Entities;
 using DisCatSharp.Lavalink.Enums;
@@ -10,9 +10,14 @@ using static Himawari.Discord.Music.Commands.PlayCommand;
 
 namespace Himawari.Discord.Music.Commands;
 
+/// <summary>Discord slash command: play or enqueue a track by search query or URL.</summary>
+/// <param name="Context">The interaction context.</param>
+/// <param name="Query">Search string or track/playlist URL.</param>
 public sealed record PlayCommand(BaseContext Context, string Query) : PlayerCommandBase(Context), ICommand<Response>
 {
+    /// <summary>Response payload: track name and current queue count.</summary>
     public sealed record Response(string TrackName, int QueueCount);
+    /// <inheritdoc />
     public sealed class Handler : IRequestHandler<PlayCommand, Result<Response>>
     {
         public async Task<Result<Response>> Handle(PlayCommand request, CancellationToken cancellationToken)

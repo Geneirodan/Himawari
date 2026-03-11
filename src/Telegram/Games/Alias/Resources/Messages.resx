@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
@@ -23,6 +23,12 @@
             PublicKeyToken=b77a5c561934e089
         </value>
     </resheader>
+    <data name="GameAlreadyRunning" xml:space="preserve">
+        <value>A game is already in progress. Wait for the round to end or use Stop.</value>
+    </data>
+    <data name="ChooseCategory" xml:space="preserve">
+        <value>Choose a word category:</value>
+    </data>
     <data name="StartGame" xml:space="preserve">
         <value>So, let's start playing alias. Who wants to be the presenter?</value>
     </data>
@@ -30,7 +36,7 @@
         <value>I want!</value>
     </data>
     <data name="PresenterChosen" xml:space="preserve">
-        <value>Ok, the next presenter is {0}.</value>
+        <value>Ok, the next presenter is <b>{0}</b>.</value>
     </data>
     <data name="Forbidden" xml:space="preserve">
         <value>Don't cheat!</value>
@@ -58,5 +64,26 @@
     </data>
     <data name="PartialGuess" xml:space="preserve">
         <value>You're almost there!</value>
+    </data>
+    <data name="CorrectButton" xml:space="preserve">
+        <value>✅ Guessed</value>
+    </data>
+    <data name="SkipButton" xml:space="preserve">
+        <value>⏭ Skip</value>
+    </data>
+    <data name="StopButton" xml:space="preserve">
+        <value>🛑 Stop</value>
+    </data>
+    <data name="CorrectWordConfirmed" xml:space="preserve">
+        <value>✅ Guessed! Next word is ready.</value>
+    </data>
+    <data name="RoundScoreSuffix" xml:space="preserve">
+        <value>Words guessed: {0}</value>
+    </data>
+    <data name="GameEndedWithScore" xml:space="preserve">
+        <value>Game ended. Words guessed: {0}.</value>
+    </data>
+    <data name="TimeUpWithScore" xml:space="preserve">
+        <value>⏰ Time's up! Round over. Words guessed: {0}.</value>
     </data>
 </root>

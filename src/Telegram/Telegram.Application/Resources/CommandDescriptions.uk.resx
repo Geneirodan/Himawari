@@ -1,4 +1,4 @@
-﻿<root>
+<root>
     <resheader name="resmimetype">
         <value>text/microsoft-resx</value>
     </resheader>
@@ -32,5 +32,8 @@
     </data>
     <data name="ShutUp" xml:space="preserve">
         <value>Попросити мене вічливо закрити рока комусь</value>
+    </data>
+    <data name="Start" xml:space="preserve">
+        <value>Запустити бота та показати меню команд</value>
     </data>
 </root>

@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using Ardalis.Result;
 using Himawari.CobaltTools;
 using Himawari.CobaltTools.Models;
@@ -9,6 +9,12 @@ using Telegram.Bot.Types;
 
 namespace Himawari.VideoParser.Services;
 
+/// <summary>
+/// <see cref="IVideoParser"/> implementation using <see cref="ICobaltToolsService"/>: detects TikTok, YouTube, Instagram reel URLs and returns album media (tunnel, redirect, or picker responses). Logs errors for <see cref="Status.Error"/> and returns user-facing messages.
+/// </summary>
+/// <param name="client">HTTP client for downloading media from resolved URLs.</param>
+/// <param name="service">CobaltTools API client.</param>
+/// <param name="logger">Logger for errors.</param>
 public sealed partial class CobaltToolsVideoParser(
     HttpClient client,
     ICobaltToolsService service,
@@ -24,7 +30,9 @@ public sealed partial class CobaltToolsVideoParser(
                     """, RegexOptions.IgnorePatternWhitespace)]
     private static partial Regex UrlRegex { get; }
 
+    /// <inheritdoc />
     public bool ContainsUrl(string url) => UrlRegex.IsMatch(url);
+    /// <inheritdoc />
     public async Task<Result<IAlbumInputMedia[]>> GetInputFiles(string url, CancellationToken token = default)
     {
         if (!ContainsUrl(url))
@@ -47,7 +55,7 @@ public sealed partial class CobaltToolsVideoParser(
 
                 case Status.Error when content is ErrorResponse response:
                     using (LogContext.PushProperty(nameof(response.Error), response.Error, destructureObjects: true))
-                        logger.LogError("CobaltTools error occured");
+                        logger.LogError("CobaltTools error occurred");
                     break;
 
                 case Status.LocalProcessing:
@@ -58,7 +66,7 @@ public sealed partial class CobaltToolsVideoParser(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "CobaltTools error occured");
+            logger.LogError(ex, "CobaltTools error occurred");
         }
 
         return Result.Error(Messages.DownloadFailed);

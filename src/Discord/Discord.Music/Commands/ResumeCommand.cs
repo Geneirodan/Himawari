@@ -1,4 +1,4 @@
-﻿using Ardalis.Result;
+using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
 using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
@@ -7,8 +7,10 @@ using MediatR;
 
 namespace Himawari.Discord.Music.Commands;
 
+/// <summary>Discord slash command: resume paused playback. Returns the resumed track name.</summary>
 public sealed record ResumeCommand(BaseContext Context) : CurrentTrackCommandBase(Context), ICommand<string>
 {
+    /// <inheritdoc />
     public sealed class Handler : IRequestHandler<ResumeCommand, Result<string>>
     {
         public async Task<Result<string>> Handle(ResumeCommand request, CancellationToken cancellationToken)

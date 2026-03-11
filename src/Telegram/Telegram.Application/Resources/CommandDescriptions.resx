@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
@@ -40,5 +40,8 @@
     </data>
     <data name="Who" xml:space="preserve">
         <value>Ask me to find the truth to your question through black magic and the wisdom of ancient machines </value>
+    </data>
+    <data name="Start" xml:space="preserve">
+        <value>Start the bot and show the command menu</value>
     </data>
 </root>
