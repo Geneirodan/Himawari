@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="Ardalis.Result" />
-    <PackageReference Include="JetBrains.Annotations"/>
-    <PackageReference Include="MediatR"/>
-    <PackageReference Include="Microsoft.Data.Sqlite"/>
-    <PackageReference Include="Scrutor"/>
-    <PackageReference Include="WTelegramBot"/>
+    <PackageReference Include="Geneirodan.Mediator" />
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="Microsoft.Data.Sqlite" />
+    <PackageReference Include="Scrutor" />
+    <PackageReference Include="WTelegramBot" />
   </ItemGroup>
-
 </Project>

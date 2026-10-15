@@ -1,7 +1,7 @@
 ﻿using Himawari.SillyThings.Responses;
 using Himawari.TestHelpers;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Moq;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -18,12 +18,9 @@ public sealed class SillyThingsDispatcherTests
     public SillyThingsDispatcherTests()
     {
         var serviceProvider = ServiceProviderMockFactory.CreateServiceProvider();
-        serviceProvider
-            .Setup(x => x.GetService(typeof(ISender)))
-            .Returns(_sender.Object);
+        serviceProvider.Setup(x => x.GetService(typeof(ISender))).Returns(_sender.Object);
         _dispatcher = new SillyThingsDispatcher(serviceProvider.Object);
     }
-
 
     [Fact]
     public async Task OnMessage_ShouldEarlyReturn_WhenMessageTextIsNull()

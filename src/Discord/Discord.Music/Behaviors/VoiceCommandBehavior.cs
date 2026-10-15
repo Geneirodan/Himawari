@@ -1,9 +1,13 @@
-﻿using Ardalis.Result;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Ardalis.Result;
 using DisCatSharp.Lavalink;
-using Geneirodan.MediatR;
+using Geneirodan.Mediator;
 using Himawari.Discord.Music.Abstractions;
 using Himawari.Discord.Music.Extensions;
-using MediatR;
+using Mediator;
 
 namespace Himawari.Discord.Music.Behaviors;
 
@@ -11,43 +15,44 @@ public sealed class VoiceCommandBehavior<TRequest, TResponse> : IPipelineBehavio
     where TRequest : IPlayerCommand
     where TResponse : class, IResult
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+    private static TResponse CreateErrorResult(params IEnumerable<string> errorMessages)
     {
-        var lavaResult = request.Context.GetLavalink();
+        var errorList = new ErrorList(errorMessages);
+        return DynamicResults.Error<TResponse>(errorList);
+    }
+
+    public async ValueTask<TResponse> Handle(
+        TRequest message,
+        MessageHandlerDelegate<TRequest, TResponse> next,
+        CancellationToken cancellationToken
+    )
+    {
+        var lavaResult = message.Context.GetLavalink();
         if (!lavaResult.IsSuccess)
             return CreateErrorResult(lavaResult.Errors);
-        
+
         var node = lavaResult.Value.ConnectedSessions.Values.First();
-        var voiceState = request.Context.Member?.VoiceState;
+        var voiceState = message.Context.Member?.VoiceState;
 
         if (voiceState?.Channel is null)
             return CreateErrorResult("You must be connected to a voice channel to use this command!");
-        
-        ArgumentNullException.ThrowIfNull(voiceState.Guild);
 
-        var connection = node.GetGuildPlayer(voiceState.Guild);
-        
+        var connection = node.GetGuildPlayer(voiceState.Guild!);
+
         if (connection is null)
         {
             const string errorMessage = "The bot is not connected to the voice channel in this guild!";
-            if (!request.ShouldAutoConnect) 
+            if (!message.ShouldAutoConnect)
                 return CreateErrorResult(errorMessage);
             await voiceState.Channel.ConnectAsync(node).ConfigureAwait(false);
-            connection = node.GetGuildPlayer(voiceState.Guild);
+            connection = node.GetGuildPlayer(voiceState.Guild!);
             if (connection is null)
                 return CreateErrorResult(errorMessage);
         }
         else if (voiceState.Channel != connection.Channel)
             return CreateErrorResult("You must be in the same voice channel as the bot!");
 
-        request.Player = connection;
-        return await next(cancellationToken).ConfigureAwait(false);
-    }
-
-    private static TResponse CreateErrorResult(params IEnumerable<string> errorMessages)
-    {
-        var errorList = new ErrorList(errorMessages);
-        return DynamicResults.Error<TResponse>(errorList);
+        message.Player = connection;
+        return await next(message, cancellationToken).ConfigureAwait(false);
     }
 }

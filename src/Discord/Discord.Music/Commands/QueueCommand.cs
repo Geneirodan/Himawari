@@ -1,19 +1,16 @@
 ﻿using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Lavalink.Entities;
-using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
-using MediatR;
+using Mediator;
 
 namespace Himawari.Discord.Music.Commands;
 
-public sealed record QueueCommand(BaseContext Context) : PlayerCommandBase(Context), ICommand<LavalinkTrack[]>
+public sealed record QueueCommand(BaseContext Context) : PlayerCommandBase(Context), ICommand<Result<LavalinkTrack[]>>
 {
-    public sealed class Handler : IRequestHandler<QueueCommand, Result<LavalinkTrack[]>>
+    public sealed class Handler : ICommandHandler<QueueCommand, Result<LavalinkTrack[]>>
     {
-        public Task<Result<LavalinkTrack[]>> Handle(
-            QueueCommand request,
-            CancellationToken cancellationToken
-        ) => Task.FromResult(Result<LavalinkTrack[]>.Success(request.Player.Queue.Take(100).ToArray()));
+        public ValueTask<Result<LavalinkTrack[]>> Handle(QueueCommand request, CancellationToken cancellationToken) =>
+            ValueTask.FromResult<Result<LavalinkTrack[]>>(request.Player.Queue.Take(100).ToArray());
     }
 }

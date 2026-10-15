@@ -2,20 +2,22 @@
 using DisCatSharp.ApplicationCommands.Context;
 using DisCatSharp.Lavalink.Entities;
 using DisCatSharp.Lavalink.Enums;
-using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
 using Himawari.Discord.Music.Extensions;
-using MediatR;
+using Mediator;
 using static Himawari.Discord.Music.Commands.PlayCommand;
 
 namespace Himawari.Discord.Music.Commands;
 
-public sealed record PlayCommand(BaseContext Context, string Query) : PlayerCommandBase(Context), ICommand<Response>
+public sealed record PlayCommand(BaseContext Context, string Query)
+    : PlayerCommandBase(Context),
+        ICommand<Result<Response>>
 {
     public sealed record Response(string TrackName, int QueueCount);
-    public sealed class Handler : IRequestHandler<PlayCommand, Result<Response>>
+
+    public sealed class Handler : ICommandHandler<PlayCommand, Result<Response>>
     {
-        public async Task<Result<Response>> Handle(PlayCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Result<Response>> Handle(PlayCommand request, CancellationToken cancellationToken)
         {
             var query = request.Query;
             var connection = request.Player;

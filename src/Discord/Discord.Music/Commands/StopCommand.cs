@@ -1,16 +1,15 @@
 ﻿using Ardalis.Result;
 using DisCatSharp.ApplicationCommands.Context;
-using Geneirodan.MediatR.Abstractions;
 using Himawari.Discord.Music.Abstractions;
-using MediatR;
+using Mediator;
 
 namespace Himawari.Discord.Music.Commands;
 
-public sealed record StopCommand(BaseContext Context) : CurrentTrackCommandBase(Context), ICommand
+public sealed record StopCommand(BaseContext Context) : CurrentTrackCommandBase(Context), ICommand<Result>
 {
-    public sealed class Handler : IRequestHandler<StopCommand, Result>
+    public sealed class Handler : ICommandHandler<StopCommand, Result>
     {
-        public async Task<Result> Handle(StopCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Result> Handle(StopCommand request, CancellationToken cancellationToken)
         {
             request.Player.ClearQueue();
             await request.Player.StopAsync().ConfigureAwait(false);

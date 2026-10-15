@@ -7,7 +7,7 @@ using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Models;
 using Himawari.Telegram.Core.Options;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -17,27 +17,27 @@ using WTelegram;
 namespace Himawari.Telegram.Application.Commands;
 
 [BotCommand("/lang")]
-public sealed record LangCommand(Message Message, string Lang) : ICommand
+public sealed record LangCommand(Message Message, string Lang) : ITelegramCommand
 {
     public sealed class Handler(
         Bot bot,
         SqliteConnection connection,
         IOptionsMonitor<BotOptions> optionsMonitor,
         IMemoryCache cache
-    ) : IRequestHandler<LangCommand, Message>
+    ) : ICommandHandler<LangCommand, Message>
     {
         private const string SqlCommand = """
-                                           INSERT INTO Chats (Id, Lang) 
-                                           VALUES (@Id, @Lang)
-                                           ON CONFLICT(Id) 
-                                           DO 
-                                             UPDATE SET Lang = @Lang
-                                             WHERE Id = @Id;
-                                          """;
+             INSERT INTO Chats (Id, Lang) 
+             VALUES (@Id, @Lang)
+             ON CONFLICT(Id) 
+             DO 
+               UPDATE SET Lang = @Lang
+               WHERE Id = @Id;
+            """;
 
         private readonly string[] _supportedLanguages = optionsMonitor.CurrentValue.SupportedLocales;
 
-        public async Task<Message> Handle(LangCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Message> Handle(LangCommand request, CancellationToken cancellationToken)
         {
             var (message, lang) = request;
             if (!_supportedLanguages.Contains(lang, StringComparer.OrdinalIgnoreCase))
@@ -66,6 +66,7 @@ public sealed record LangCommand(Message Message, string Lang) : ICommand
         : AbstractCommandDescriptor<LangCommand>(aliases.CurrentValue)
     {
         public override string Description => CommandDescriptions.Lang;
-        public override Func<Message, string, ICommand> Factory => (message, lang) => new LangCommand(message, lang);
+        public override Func<Message, string, ITelegramCommand> Factory =>
+            (message, lang) => new LangCommand(message, lang);
     }
 }

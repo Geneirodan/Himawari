@@ -9,6 +9,6 @@ public interface ICommandDescriptor
 {
     string Description { get; }
     string Keyword { get; }
-    Func<Message, string, ICommand> Factory { get; }
+    Func<Message, string, ITelegramCommand> Factory { get; }
     IReadOnlySet<string> Aliases { get; }
 }

@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\Common\CobaltTools\CobaltTools.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="Testcontainers.XunitV3" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --ignore-exit-code 8</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Common\CobaltTools\CobaltTools.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Testcontainers.XunitV3" />
+  </ItemGroup>
 </Project>

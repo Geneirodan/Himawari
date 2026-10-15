@@ -9,7 +9,7 @@ namespace Himawari.Telegram.Core.Services;
 
 public sealed class CommandResolver : ICommandResolver
 {
-    private readonly Dictionary<string, Func<Message, string, ICommand>> _commandFactories;
+    private readonly Dictionary<string, Func<Message, string, ITelegramCommand>> _commandFactories;
     private readonly Dictionary<string, string> _commandsByAlias;
     private readonly ICommandDescriptor[] _descriptors;
 
@@ -25,15 +25,15 @@ public sealed class CommandResolver : ICommandResolver
         _commandFactories = _descriptors.ToDictionary(x => x.Keyword, x => x.Factory, StringComparer.OrdinalIgnoreCase);
     }
 
-    public Func<Message, string, ICommand>? GetFactoryByName(string commandName)
+    public Func<Message, string, ITelegramCommand>? GetFactoryByName(string commandName)
     {
         return _commandFactories.GetValueOrDefault(commandName);
     }
 
     public string? GetCommandByAlias(string alias)
     {
-        return _commandsByAlias.GetValueOrDefault(alias) ??
-               _commandFactories.Keys.FirstOrDefault(x => string.Equals(x, alias, StringComparison.OrdinalIgnoreCase));
+        return _commandsByAlias.GetValueOrDefault(alias)
+            ?? _commandFactories.Keys.FirstOrDefault(x => string.Equals(x, alias, StringComparison.OrdinalIgnoreCase));
     }
 
     public IEnumerable<BotCommand> GetCommandsByCulture(CultureInfo cultureInfo)

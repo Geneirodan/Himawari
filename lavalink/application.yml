@@ -1,0 +1,149 @@
+server:
+  http2:
+    enabled: false # Personally we don't see any reason currently to enable it
+plugins:
+  youtube: # To read more about it's configuration visit https://github.com/lavalink-devs/youtube-source#plugin
+    enabled: true
+    allowSearch: true
+    allowDirectVideoIds: true
+    allowDirectPlaylistIds: true
+    clients: # We suggest using it like this, since it switches through the clients to get streams and search running
+      - M_WEB
+      - WEB
+      - MUSIC
+      - WEBEMBEDDED
+      - ANDROID_VR
+      - TV
+      - TVHTML5EMBEDDED
+    oauth: # Read https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#using-oauth-tokens for more information
+      enabled: true
+      skipInitialization: false # Set to true if you got your refresh token
+      # refreshToken: "" # Fill out after u got the refresh token
+    pot: # Read https://github.com/lavalink-devs/youtube-source?tab=readme-ov-file#using-a-potoken for more information or use this one
+      token: "CgtLYnJKeDl1N0pJMCjW2cO8BjIKCgJERRIEEgAgKg=="
+      visitorData: "MnRuJyEtJOv8LW4fImJbwY4qXcflEPdSWXwKWnQappnJt4Ee_3bFCJEUmiePXV3jvyjxMuT8pE3j-ZKoLtF-bIjo7-erKATkj38QRYgrGRsEHDC97Qk9a-tcYdXpmMQt2h6A1S325QgSsRfbfjBfBTeDq_oZBA=="
+  lavasrc: # To read more about it's configuration visit https://github.com/topi314/LavaSrc?tab=readme-ov-file
+    providers:
+      - "ytsearch:\"%ISRC%\""
+      - "ytsearch:%QUERY%"
+      - "scsearch:%QUERY%"
+      - "spsearch:%QUERY%"
+      - "sprec:%QUERY%"
+      - "ymsearch:%QUERY%"
+      #- "amsearch:%QUERY%"
+      #- "dzisrc:%ISRC%"
+      #- "dzsearch:%QUERY%"
+      - "ymsearch:%QUERY%"
+    sources:
+      spotify: false
+      applemusic: false
+      deezer: false
+      yandexmusic: false
+      flowerytts: false
+      vkmusic: false
+      youtube: true
+    lyrics-sources:
+      spotify: false
+      deezer: false
+      youtube: true
+      yandexmusic: false
+      vkmusic: false
+    spotify:
+      clientId: "" # Aquire it by visiting https://developer.spotify.com/dashboard/create
+      clientSecret: "" # Aquire it by visiting https://developer.spotify.com/dashboard/create
+      spDc: "AQAVOz2ds3D6rVEBHph_0pYyVsIvQJQT6Nlg5NlUB5cS5QqXQFpHv8caAyBQHaFvIpSmwZ8YwvzR8708nGaEjIiK6ne6ZgC78lxI51KD-fVTUmuwCdFlsrIBbxxUIFtvaiE_GfolUN_Pyoz95BssHXQEQuHBKy4kkIMTsMWNUereCnh9mrNR_OXkK1k9vIwk8xNUW4ljRb85nTyd6A" # Needed for lyrics, if used. Read https://github.com/topi314/LavaSrc?tab=readme-ov-file#spotify for more details.
+      playlistLoadLimit: 6
+      albumLoadLimit: 6
+      resolveArtistsInSearch: false
+      localFiles: true
+    yandexmusic:
+      accessToken: "" # Aquire it by visiting https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d
+      playlistLoadLimit: 1
+      albumLoadLimit: 1
+      artistLoadLimit: 1
+    flowerytts:
+      voice: "default voice"
+      translate: false
+      silence: 0
+      speed: 1.0
+      audioFormat: "mp3"
+  lavalyrics: # To read more about it's configuration visit https://github.com/topi314/LavaLyrics?tab=readme-ov-file#lavalink-usage
+    sources:
+      - spotify
+      - youtube
+      #- deezer
+      - yandexMusic
+lavalink:
+  plugins: # You can find more plugins on Lavalinks official site at https://lavalink.dev/plugins
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.15.0" # Source: https://github.com/lavalink-devs/youtube-source
+      snapshot: false
+    - dependency: "com.github.topi314.lavasearch:lavasearch-plugin:1.0.0" # Source: https://github.com/topi314/LavaSearch
+      repository: "https://maven.lavalink.dev/releases"
+      snapshot: false
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.4.1" # Source: https://github.com/topi314/LavaSrc
+      repository: "https://maven.lavalink.dev/releases"
+      snapshot: false
+  server:
+    password: "youshallnotpassMEOW" # Set your lavalink password
+    sources:
+      youtube: false # Disabled youtube because it's not maintained anymore and got replaced by youtube-plugin
+      bandcamp: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      http: true
+      local: true
+      nico: true
+    filters:
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelMix: true
+      lowPass: true
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    opusEncodingQuality: 10
+    resamplingQuality: MEDIUM
+    trackStuckThresholdMs: 10000
+    useSeekGhosting: true
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+
+sentry:
+  dsn: ""
+  environment: "dev"
+logging:
+  file:
+    path: ./logs/
+
+  level:
+    root: INFO
+    lavalink: INFO
+    dev.lavalink.youtube.http.YoutubeOauth2Handler: INFO
+
+  request:
+    enabled: true
+    includeClientInfo: true
+    includeHeaders: false
+    includeQueryString: true
+    includePayload: true
+    maxPayloadLength: 10000
+
+
+  logback:
+    rollingpolicy:
+      max-file-size: 1GB
+      max-history: 30

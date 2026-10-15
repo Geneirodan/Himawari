@@ -1,15 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" />
-      <PackageReference Include="MediatR" />
-      <PackageReference Include="Microsoft.Extensions.Logging" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Geneirodan.Mediator" />
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
 </Project>

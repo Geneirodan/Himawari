@@ -16,7 +16,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Telegram.Core\Telegram.Core.csproj"/>
+    <ProjectReference Include="..\..\Telegram.Core\Telegram.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\AliasCommand.Designer.cs">

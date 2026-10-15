@@ -1,16 +1,21 @@
 ﻿services:
-  service:
-    image: service
-    build:
-      context: src
-      dockerfile: Service/Dockerfile
+  lavalink:
+    image: 'ghcr.io/lavalink-devs/lavalink:latest'
+    expose:
+      - '2333'
+    ports:
+      - '2333:2333'
     volumes:
-      - himawari_data:/db
+      - './lavalink/application.yml:/opt/Lavalink/application.yml:ro'
     environment:
-      ConnectionStrings__DefaultConnection: Data Source=/db/Himawari.sqlite
-      Bot__Token: ${BOT_TOKEN}
-      Bot__ApiHash: ${BOT_API_HASH}
-      Bot__ApiId: ${BOT_API_ID}
-
-volumes:
-  himawari_data:
+      SERVER_PORT: 2333
+      LAVALINK_SERVER_PASSWORD: youshallnotpass
+      
+  cobalt-tools:
+    image: 'ghcr.io/imputnet/cobalt:latest'
+    expose:
+      - '9000'
+    ports:
+      - '9000:9000'
+    environment:
+      API_URL: 'http://localhost:9000' 

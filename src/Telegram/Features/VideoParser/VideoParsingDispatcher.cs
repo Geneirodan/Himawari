@@ -3,7 +3,7 @@ using Himawari.Telegram.Core.Abstractions.Messages;
 using Himawari.VideoParser.Replies;
 using Himawari.VideoParser.Services;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
@@ -28,7 +28,8 @@ public sealed partial class VideoParsingDispatcher(
             var parsers = scope.ServiceProvider.GetServices<IVideoParser>();
             foreach (var parser in parsers)
             {
-                if (!parser.ContainsUrl(url: messageText)) continue;
+                if (!parser.ContainsUrl(url: messageText))
+                    continue;
                 LogDetectedUrl(messageText);
                 var file = await parser.GetInputFiles(messageText).ConfigureAwait(false);
                 IReply reply = file.IsSuccess

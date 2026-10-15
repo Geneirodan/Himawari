@@ -6,7 +6,7 @@ using Himawari.Telegram.Core.Attributes;
 using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Models;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.Options;
 using WTelegram;
 using static Himawari.Telegram.Application.Resources.Messages;
@@ -15,11 +15,11 @@ using Message = Telegram.Bot.Types.Message;
 namespace Himawari.Telegram.Application.Commands;
 
 [BotCommand("/call")]
-public sealed record CallAllCommand(Message Message) : ICommand
+public sealed record CallAllCommand(Message Message) : ITelegramCommand
 {
-    public sealed class Handler(Bot bot) : IRequestHandler<CallAllCommand, Message>
+    public sealed class Handler(Bot bot) : ICommandHandler<CallAllCommand, Message>
     {
-        public async Task<Message> Handle(CallAllCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Message> Handle(CallAllCommand request, CancellationToken cancellationToken)
         {
             var message = request.Message;
 
@@ -44,6 +44,6 @@ public sealed record CallAllCommand(Message Message) : ICommand
         : AbstractCommandDescriptor<CallAllCommand>(aliases.CurrentValue)
     {
         public override string Description => CommandDescriptions.CallAll;
-        public override Func<Message, string, ICommand> Factory => (message, _) => new CallAllCommand(message);
+        public override Func<Message, string, ITelegramCommand> Factory => (message, _) => new CallAllCommand(message);
     }
 }

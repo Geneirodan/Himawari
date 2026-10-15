@@ -10,8 +10,9 @@ namespace Himawari.CobaltTools.Tests;
 public sealed class CobaltToolsContainerFixture(IMessageSink messageSink)
     : ContainerFixture<ContainerBuilder, IContainer>(messageSink)
 {
-    protected override ContainerBuilder Configure(ContainerBuilder builder) =>
-        builder.WithImage("ghcr.io/imputnet/cobalt:latest")
+    protected override ContainerBuilder Configure() =>
+        base.Configure()
+            .WithImage("ghcr.io/imputnet/cobalt:latest")
             .WithPortBinding(9000, 9000)
             .WithExposedPort(9000)
             .WithEnvironment("API_URL", "http://localhost:9000");
