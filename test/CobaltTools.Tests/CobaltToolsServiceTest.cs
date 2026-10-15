@@ -8,7 +8,6 @@ using Xunit;
 
 namespace Himawari.CobaltTools.Tests;
 
-#if DEBUG
 [TestSubject(typeof(CobaltToolsService))]
 public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerFixture>
 {
@@ -119,4 +118,3 @@ public sealed class CobaltToolsServiceTest : IClassFixture<CobaltToolsContainerF
         "somesort of somtsf",
     ];
 }
-#endif
