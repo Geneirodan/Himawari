@@ -7,7 +7,7 @@ using Himawari.Telegram.Core.Attributes;
 using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Models;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -17,33 +17,34 @@ using static Himawari.Alias.Resources.Messages;
 namespace Himawari.Alias.Commands;
 
 [BotCommand("/alias")]
-public sealed record AliasCommand(Message Message) : ICommand
+public sealed record AliasCommand(Message Message) : ITelegramCommand
 {
-    public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<AliasCommand, Message>
+    public sealed class Handler(Bot bot, IAliasService service) : ICommandHandler<AliasCommand, Message>
     {
-        public async Task<Message> Handle(AliasCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Message> Handle(AliasCommand request, CancellationToken cancellationToken)
         {
             var chatId = request.Message.Chat.Id;
             service.EndGame(chatId);
             return await bot.SendReplyMessage(
-                message: request.Message,
-                text: StartGame,
-                replyMarkup: new InlineKeyboardMarkup(
-                    InlineKeyboardButton.WithCallbackData(
-                        text: Want,
-                        callbackData: AliasCallbackType.Choose.Serialize()
+                    message: request.Message,
+                    text: StartGame,
+                    replyMarkup: new InlineKeyboardMarkup(
+                        InlineKeyboardButton.WithCallbackData(
+                            text: Want,
+                            callbackData: AliasCallbackType.Choose.Serialize()
+                        )
                     )
                 )
-            ).ConfigureAwait(false);
+                .ConfigureAwait(false);
         }
-
 
         [PublicAPI]
         public sealed class Descriptor(IOptionsMonitor<Aliases> aliases)
             : AbstractCommandDescriptor<AliasCommand>(aliases.CurrentValue)
         {
             public override string Description => Resources.AliasCommand.Description;
-            public override Func<Message, string, ICommand> Factory => (message, _) => new AliasCommand(message);
+            public override Func<Message, string, ITelegramCommand> Factory =>
+                (message, _) => new AliasCommand(message);
         }
     }
 }

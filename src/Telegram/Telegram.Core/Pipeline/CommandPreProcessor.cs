@@ -1,18 +1,19 @@
 ﻿using Himawari.Telegram.Core.Abstractions.Messages;
-using MediatR.Pipeline;
+using Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace Himawari.Telegram.Core.Pipeline;
 
-public sealed partial class CommandPreProcessor<TRequest>(ILogger<TRequest> logger) : IRequestPreProcessor<TRequest>
-    where TRequest : ICommand
+public sealed partial class CommandPreProcessor<TRequest, TResponse>(ILogger<TRequest> logger)
+    : MessagePreProcessor<TRequest, TResponse>
+    where TRequest : ITelegramCommand
 {
-    public Task Process(TRequest request, CancellationToken cancellationToken)
-    {
-        LogCommand(typeof(TRequest).Name, request.Message?.Text);
-        return Task.CompletedTask;
-    }
-
     [LoggerMessage(LogLevel.Information, "Executing command: {CommandName} with call \"{Text}\"")]
     private partial void LogCommand(string commandName, string? text);
+
+    protected override ValueTask Handle(TRequest message, CancellationToken cancellationToken)
+    {
+        LogCommand(typeof(TRequest).Name, message.Message?.Text);
+        return ValueTask.CompletedTask;
+    }
 }

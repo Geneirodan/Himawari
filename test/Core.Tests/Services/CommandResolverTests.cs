@@ -22,32 +22,38 @@ public sealed class CommandResolverTests
     {
         var aliases = new Aliases
         {
-            { "/start", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/begin", "/init" } },
-            { "/help", new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/assist", "/support" } }
+            {
+                "/start",
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/begin", "/init" }
+            },
+            {
+                "/help",
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "/assist", "/support" }
+            },
         };
         _aliasesMock.Setup(a => a.CurrentValue).Returns(aliases);
 
         _descriptorMock.Setup(d => d.Keyword).Returns("/start");
         _descriptorMock.Setup(d => d.Description).Returns("Start the bot");
-        _descriptorMock.Setup(d => d.Factory).Returns((_, _) => Mock.Of<ICommand>());
+        _descriptorMock.Setup(d => d.Factory).Returns((_, _) => Mock.Of<ITelegramCommand>());
 
         _commandResolver = new CommandResolver([_descriptorMock.Object], _aliasesMock.Object);
     }
 
     [Fact]
-    public void GetFactoryByName_ShouldReturnCorrectFactory() => 
+    public void GetFactoryByName_ShouldReturnCorrectFactory() =>
         _commandResolver.GetFactoryByName("/start").ShouldNotBeNull();
 
     [Theory]
     [InlineData("/unknown")]
     [InlineData("help")]
-    public void GetFactoryByName_ShouldReturnNull_WhenCommandDoesNotExist(string commandName) => 
+    public void GetFactoryByName_ShouldReturnNull_WhenCommandDoesNotExist(string commandName) =>
         _commandResolver.GetFactoryByName(commandName).ShouldBeNull();
 
     [Theory]
     [InlineData("/begin")]
     [InlineData("/init")]
-    public void GetCommandByAlias_ShouldReturnCorrectCommand(string commandName) => 
+    public void GetCommandByAlias_ShouldReturnCorrectCommand(string commandName) =>
         _commandResolver.GetCommandByAlias(commandName).ShouldBe("/start");
 
     [Theory]

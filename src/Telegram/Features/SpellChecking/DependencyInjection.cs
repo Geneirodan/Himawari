@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Himawari.SpellChecking.Models;
+﻿using Himawari.SpellChecking.Models;
 using Himawari.SpellChecking.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +11,10 @@ public static class DependencyInjection
     public static IServiceCollection AddWrongLayoutDetection(
         this IServiceCollection services,
         IConfiguration configuration
-    ) => services
-        .Configure<SpellCheckingOptions>(configuration)
-        .AddTransient<IDeserializer>(_ => new DeserializerBuilder().WithCaseInsensitivePropertyMatching().Build())
-        .AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()))
-        .AddSingleton<ILayoutService, LayoutService>()
-        .AddSingleton<IWrongLayoutParser, WrongLayoutParser>();
+    ) =>
+        services
+            .Configure<SpellCheckingOptions>(configuration)
+            .AddTransient<IDeserializer>(_ => new DeserializerBuilder().WithCaseInsensitivePropertyMatching().Build())
+            .AddSingleton<ILayoutService, LayoutService>()
+            .AddSingleton<IWrongLayoutParser, WrongLayoutParser>();
 }

@@ -8,7 +8,7 @@ using Himawari.Telegram.Core.Attributes;
 using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Models;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
 using WTelegram;
@@ -16,11 +16,11 @@ using WTelegram;
 namespace Himawari.Telegram.Application.Commands;
 
 [BotCommand("/who")]
-public sealed record WhoCommand(Message Message, string Rest) : ICommand
+public sealed record WhoCommand(Message Message, string Rest) : ITelegramCommand
 {
-    public sealed class Handler(Bot bot) : IRequestHandler<WhoCommand, Message>
+    public sealed class Handler(Bot bot) : ICommandHandler<WhoCommand, Message>
     {
-        public async Task<Message> Handle(WhoCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Message> Handle(WhoCommand request, CancellationToken cancellationToken)
         {
             var (message, rest) = request;
 
@@ -30,8 +30,8 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
             var index = Random.Shared.Next(members.Length);
 
             var cultureInfo = CultureInfo.CurrentUICulture;
-            var resourceSet = WhoCommandVariants.ResourceManager
-                .GetResourceSet(cultureInfo, createIfNotExists: true, tryParents: true)!
+            var resourceSet = WhoCommandVariants
+                .ResourceManager.GetResourceSet(cultureInfo, createIfNotExists: true, tryParents: true)!
                 .Cast<DictionaryEntry>()
                 .Select(entry => entry.Key)
                 .Cast<string>()
@@ -40,15 +40,12 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
             var quote = Random.Shared.Next(resourceSet.Length);
 
             var text = WhoCommandVariants.ResourceManager.GetString(resourceSet[quote], cultureInfo);
-            var stringBuilder = new StringBuilder(text)
-                .Append(' ')
-                .Append(members[index].User.GetUsername());
+            var stringBuilder = new StringBuilder(text).Append(' ').Append(members[index].User.GetUsername());
 
             if (!string.IsNullOrWhiteSpace(rest))
                 stringBuilder.Append(' ').Append(rest.TrimEnd('?'));
 
-            return await bot.SendReplyMessage(message, stringBuilder.ToString())
-                .ConfigureAwait(false);
+            return await bot.SendReplyMessage(message, stringBuilder.ToString()).ConfigureAwait(false);
         }
     }
 
@@ -57,6 +54,7 @@ public sealed record WhoCommand(Message Message, string Rest) : ICommand
         : AbstractCommandDescriptor<WhoCommand>(aliases.CurrentValue)
     {
         public override string Description => CommandDescriptions.Who;
-        public override Func<Message, string, ICommand> Factory => (message, text) => new WhoCommand(message, text);
+        public override Func<Message, string, ITelegramCommand> Factory =>
+            (message, text) => new WhoCommand(message, text);
     }
 }

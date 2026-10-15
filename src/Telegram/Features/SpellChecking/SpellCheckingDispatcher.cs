@@ -2,7 +2,7 @@
 using Himawari.SpellChecking.Services;
 using Himawari.Telegram.Core.Abstractions;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 
@@ -19,7 +19,7 @@ public sealed class SpellCheckingDispatcher(IWrongLayoutParser parser, IServiceP
 
         var message = new SendCorrectedTextMessageReply(msg, correctedText);
         var scope = serviceProvider.CreateAsyncScope();
-        await using (scope.ConfigureAwait(false)) 
+        await using (scope.ConfigureAwait(false))
             await scope.ServiceProvider.GetRequiredService<ISender>().Send(message).ConfigureAwait(false);
     }
 }

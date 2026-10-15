@@ -8,7 +8,7 @@ using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Models;
 using Himawari.Telegram.Core.Services;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.Options;
 using Telegram.Bot.Types;
 using WTelegram;
@@ -17,13 +17,14 @@ using static Himawari.Telegram.Application.Resources.Messages;
 namespace Himawari.Telegram.Application.Commands;
 
 [BotCommand("/help")]
-public sealed record HelpCommand(Message Message) : ICommand
+public sealed record HelpCommand(Message Message) : ITelegramCommand
 {
-    public sealed class Handler(Bot bot, ICommandResolver resolver) : IRequestHandler<HelpCommand, Message>
+    public sealed class Handler(Bot bot, ICommandResolver resolver) : ICommandHandler<HelpCommand, Message>
     {
-        public async Task<Message> Handle(HelpCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Message> Handle(HelpCommand request, CancellationToken cancellationToken)
         {
-            var help = resolver.GetCommandsByCulture(CultureInfo.CurrentUICulture)
+            var help = resolver
+                .GetCommandsByCulture(CultureInfo.CurrentUICulture)
                 .Aggregate(
                     new StringBuilder(Help).AppendLine(),
                     (b, c) => b.AppendLine($"\u26a1\ufe0f `{c.Command}` - {c.Description}"),
@@ -39,6 +40,6 @@ public sealed record HelpCommand(Message Message) : ICommand
         : AbstractCommandDescriptor<HelpCommand>(aliases.CurrentValue)
     {
         public override string Description => CommandDescriptions.Help;
-        public override Func<Message, string, ICommand> Factory => (message, _) => new HelpCommand(message);
+        public override Func<Message, string, ITelegramCommand> Factory => (message, _) => new HelpCommand(message);
     }
 }

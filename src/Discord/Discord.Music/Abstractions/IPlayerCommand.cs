@@ -1,5 +1,6 @@
 ﻿using DisCatSharp.Lavalink;
 using Himawari.Discord.Core.Abstractions;
+using Mediator;
 
 namespace Himawari.Discord.Music.Abstractions;
 

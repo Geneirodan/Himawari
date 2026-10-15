@@ -2,8 +2,9 @@
 using Himawari.Telegram.Core.Extensions;
 using Himawari.Telegram.Core.Services;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
+using Telegram.Bot.Types;
 using WTelegram;
 using Message = Telegram.Bot.Types.Message;
 
@@ -15,7 +16,8 @@ public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServi
 {
     protected override async Task OnNewMessage(Message msg)
     {
-        if (msg.Text is not { } messageText) return;
+        if ((msg.TLMessage() as TL.Message)?.message is not { } messageText)
+            return;
 
         var scope = serviceProvider.CreateAsyncScope();
         await using (scope.ConfigureAwait(false))
@@ -25,7 +27,8 @@ public sealed class CommandDispatcher(Bot bot, ICommandResolver resolver, IServi
             {
                 var (command, rest, forMe) = await bot.ParseCommandAsync(messageText).ConfigureAwait(false);
 
-                if (!forMe) return;
+                if (!forMe)
+                    return;
 
                 command = resolver.GetCommandByAlias(command);
                 if (command is null)

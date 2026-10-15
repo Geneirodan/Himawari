@@ -5,7 +5,7 @@ using Himawari.Alias.Replies;
 using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -16,23 +16,25 @@ namespace Himawari.Alias;
 
 [PublicAPI]
 public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasService aliasService)
-    : AbstractDispatcher, IUpdateHandler
+    : AbstractDispatcher,
+        IUpdateHandler
 {
     protected override async Task OnNewMessage(Message msg)
     {
-        if (msg.Text is not { } messageText) return;
+        if (msg.Text is not { } messageText)
+            return;
 
         var response = aliasService.VerifyWord(msg.Chat.Id, messageText) switch
         {
             Guess.Partial => new GuessReply(msg, IsCorrect: false),
             Guess.Correct => new GuessReply(msg, IsCorrect: true),
-            _ => null
+            _ => null,
         };
-        
+
         if (response is not null)
         {
             var scope = serviceProvider.CreateAsyncScope();
-            await using (scope.ConfigureAwait(false)) 
+            await using (scope.ConfigureAwait(false))
                 await scope.ServiceProvider.GetRequiredService<ISender>().Send(response).ConfigureAwait(false);
         }
     }
@@ -50,12 +52,12 @@ public sealed class AliasDispatcher(IServiceProvider serviceProvider, IAliasServ
             EndGame => new EndGameCallback(query),
             SeeWord => new SeeWordCallback(query),
             NextWord => new NextWordCallback(query),
-            _ => null
+            _ => null,
         };
         if (request is not null)
         {
             var scope = serviceProvider.CreateAsyncScope();
-            await using (scope.ConfigureAwait(false)) 
+            await using (scope.ConfigureAwait(false))
                 await scope.ServiceProvider.GetRequiredService<ISender>().Send(request).ConfigureAwait(false);
         }
     }

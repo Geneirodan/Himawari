@@ -1,18 +1,24 @@
-﻿using MediatR;
+﻿using Mediator;
 using Microsoft.Extensions.Logging;
 
 namespace Himawari.Shared.Pipeline;
 
 public sealed partial class UnhandledExceptionBehavior<TRequest, TResponse>(ILogger<TRequest> logger)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : IMessage
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+    [LoggerMessage(LogLevel.Error, "Request: Unhandled Exception for command {CommandName}")]
+    private partial void LogException(Exception exception, string commandName);
+
+    public async ValueTask<TResponse> Handle(
+        TRequest message,
+        MessageHandlerDelegate<TRequest, TResponse> next,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
-            return await next(cancellationToken).ConfigureAwait(false);
+            return await next(message, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -20,7 +26,4 @@ public sealed partial class UnhandledExceptionBehavior<TRequest, TResponse>(ILog
             throw;
         }
     }
-
-    [LoggerMessage(LogLevel.Error, "Request: Unhandled Exception for command {CommandName}")]
-    private partial void LogException(Exception exception, string commandName);
 }

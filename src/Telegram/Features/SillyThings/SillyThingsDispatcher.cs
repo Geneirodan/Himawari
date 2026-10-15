@@ -1,7 +1,7 @@
 ﻿using Himawari.SillyThings.Responses;
 using Himawari.Telegram.Core.Abstractions;
 using JetBrains.Annotations;
-using MediatR;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 
@@ -12,7 +12,8 @@ public sealed class SillyThingsDispatcher(IServiceProvider serviceProvider) : Ab
 {
     protected override async Task OnNewMessage(Message msg)
     {
-        if (msg.Text is not { } messageText) return;
+        if (msg.Text is not { } messageText)
+            return;
 
         var scope = serviceProvider.CreateAsyncScope();
         await using (scope.ConfigureAwait(false))

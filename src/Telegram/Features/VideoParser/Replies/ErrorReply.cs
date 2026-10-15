@@ -1,6 +1,6 @@
 ﻿using Himawari.Telegram.Core.Abstractions.Messages;
 using Himawari.Telegram.Core.Extensions;
-using MediatR;
+using Mediator;
 using Telegram.Bot.Types;
 using WTelegram;
 
@@ -10,7 +10,7 @@ public sealed record ErrorReply(Message Message, string Error) : IReply
 {
     public sealed class Handler(Bot bot) : IRequestHandler<ErrorReply, IEnumerable<Message>>
     {
-        public async Task<IEnumerable<Message>> Handle(ErrorReply request, CancellationToken cancellationToken)
+        public async ValueTask<IEnumerable<Message>> Handle(ErrorReply request, CancellationToken cancellationToken)
         {
             var (message, error) = request;
             return [await bot.SendReplyMessage(message, error).ConfigureAwait(false)];

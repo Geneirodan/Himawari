@@ -4,7 +4,7 @@ using Himawari.Alias.Extensions;
 using Himawari.Alias.Services;
 using Himawari.Telegram.Core.Abstractions;
 using Himawari.Telegram.Core.Extensions;
-using MediatR;
+using Mediator;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -17,7 +17,7 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
 {
     public sealed class Handler(Bot bot, IAliasService service) : IRequestHandler<ChoosePresenterCallback, Message?>
     {
-        public async Task<Message?> Handle(ChoosePresenterCallback request, CancellationToken cancellationToken)
+        public async ValueTask<Message?> Handle(ChoosePresenterCallback request, CancellationToken cancellationToken)
         {
             var chatId = request.Query.Message!.Chat.Id;
             if (service.GetPresenterId(chatId) is not null)
@@ -30,15 +30,20 @@ public sealed record ChoosePresenterCallback(CallbackQuery Query) : AbstractCall
             await service.StartAsync(chatId, request.Query.From.Id, cancellationToken).ConfigureAwait(false);
 
             return await bot.SendMessage(
-                chatId: chatId,
-                text: string.Format(CultureInfo.CurrentUICulture, PresenterChosen, request.Query.From.GetUsername()),
-                parseMode: ParseMode.MarkdownV2,
-                replyMarkup: new InlineKeyboardMarkup(
-                    InlineKeyboardButton.WithCallbackData(EndGame, AliasCallbackType.EndGame.Serialize()),
-                    InlineKeyboardButton.WithCallbackData(SeeWord, AliasCallbackType.SeeWord.Serialize()),
-                    InlineKeyboardButton.WithCallbackData(NextWord, AliasCallbackType.NextWord.Serialize())
+                    chatId: chatId,
+                    text: string.Format(
+                        CultureInfo.CurrentUICulture,
+                        PresenterChosen,
+                        request.Query.From.GetUsername()
+                    ),
+                    parseMode: ParseMode.MarkdownV2,
+                    replyMarkup: new InlineKeyboardMarkup(
+                        InlineKeyboardButton.WithCallbackData(EndGame, AliasCallbackType.EndGame.Serialize()),
+                        InlineKeyboardButton.WithCallbackData(SeeWord, AliasCallbackType.SeeWord.Serialize()),
+                        InlineKeyboardButton.WithCallbackData(NextWord, AliasCallbackType.NextWord.Serialize())
+                    )
                 )
-            ).ConfigureAwait(false);
+                .ConfigureAwait(false);
         }
     }
 }

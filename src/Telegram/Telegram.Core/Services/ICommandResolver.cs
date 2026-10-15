@@ -6,7 +6,7 @@ namespace Himawari.Telegram.Core.Services;
 
 public interface ICommandResolver
 {
-    Func<Message, string, ICommand>? GetFactoryByName(string commandName);
+    Func<Message, string, ITelegramCommand>? GetFactoryByName(string commandName);
     string? GetCommandByAlias(string alias);
     IEnumerable<BotCommand> GetCommandsByCulture(CultureInfo cultureInfo);
 }

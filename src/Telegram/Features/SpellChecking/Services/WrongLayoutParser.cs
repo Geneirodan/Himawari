@@ -9,10 +9,11 @@ public sealed partial class WrongLayoutParser(ILayoutService service) : IWrongLa
 {
     private const float Threshold = 0.5f;
 
+    [GeneratedRegex(@"[\s]", options: RegexOptions.None, matchTimeoutMilliseconds: 5000)]
+    private static partial Regex WhitespaceRegex { get; }
 
-    [GeneratedRegex(@"[\s]")] private static partial Regex WhitespaceRegex { get; }
-
-    [GeneratedRegex(@"['\-\w]+")] private static partial Regex AllowedCharactersRegex { get; }
+    [GeneratedRegex(@"['\-\w]+", options: RegexOptions.None, matchTimeoutMilliseconds: 5000)]
+    private static partial Regex AllowedCharactersRegex { get; }
 
     public bool TryParse(string inputString, [NotNullWhen(true)] out string? outputString)
     {
@@ -22,8 +23,10 @@ public sealed partial class WrongLayoutParser(ILayoutService service) : IWrongLa
         {
             var wordList = service.GetWordList(lang);
             foreach (var layout in service.GetLayouts(lang))
-                if (TryParse(inputString, out outputString, words, service.GetMap(layout), wordList)
-                    || TryParse(inputString, out outputString, words, service.GetReverseMap(layout), wordList))
+                if (
+                    TryParse(inputString, out outputString, words, service.GetMap(layout), wordList)
+                    || TryParse(inputString, out outputString, words, service.GetReverseMap(layout), wordList)
+                )
                     return true;
         }
 

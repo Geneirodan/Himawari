@@ -10,7 +10,7 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
     private static readonly Dictionary<long, long?> PresenterIds = [];
     private static readonly Dictionary<long, string> Words = [];
 
-    public async Task<string> StartAsync(long chatId, long presenterId, CancellationToken cancellationToken = default)
+    public async Task<string?> StartAsync(long chatId, long presenterId, CancellationToken cancellationToken = default)
     {
         PresenterIds[chatId] = presenterId;
         return await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
@@ -31,7 +31,7 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
             ["qu_words"] = "1",
             ["type_words"] = "objects",
             ["order"] = "in_order",
-            ["done"] = "Create"
+            ["done"] = "Create",
         };
         var formContent = new FormUrlEncodedContent(nameValueCollection);
         var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -39,13 +39,15 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
         using var response = await client.PostAsync(requestUri, formContent, cancellationToken).ConfigureAwait(false);
         var str = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         var word = ResultRegex.Matches(str).FirstOrDefault()?.Groups[1].Value.Trim();
-        if(word is not null) 
+        if (word is not null)
             Words[chatId] = word;
         return word;
     }
 
-    public async Task<string?> GetOrCreateCurrentWordAsync(long chatId, CancellationToken cancellationToken = default) =>
-        Words.GetValueOrDefault(chatId) ?? await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
+    public async Task<string?> GetOrCreateCurrentWordAsync(
+        long chatId,
+        CancellationToken cancellationToken = default
+    ) => Words.GetValueOrDefault(chatId) ?? await NextWordAsync(chatId, cancellationToken).ConfigureAwait(false);
 
     public Guess VerifyWord(long chatId, string word)
     {
@@ -58,14 +60,14 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
             0 => TestEquality(word, current),
             1 => TestPartialEquality(word, current),
             -1 => TestPartialEquality(current, word),
-            _ => 2
+            _ => 2,
         };
 
         return errors switch
         {
             0 => Guess.Correct,
             1 => Guess.Partial,
-            _ => Guess.Incorrect
+            _ => Guess.Incorrect,
         };
     }
 
@@ -105,7 +107,6 @@ public sealed partial class AliasService(HttpClient client) : IAliasService
 
         return errors;
     }
-
 
     [GeneratedRegex(@"<span>(\w+)</span>")]
     private static partial Regex ResultRegex { get; }
